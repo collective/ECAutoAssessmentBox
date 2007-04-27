@@ -119,7 +119,7 @@ class ECAutoAssignment(ECAssignment):
         """
         if not self.auto_feedback:
             try:
-                spooler = self.portal_ecspooler
+                spooler = self.ecspooler_tool
                 assert spooler != None, "Spooler tool not installed."
             
                 result = spooler.getResult(self.jobId)
@@ -262,7 +262,7 @@ class ECAutoAssignment(ECAssignment):
             self._changeWfState('review', 
                                 "Queued for automatic checking by '%s'." % backend)
     
-            spoolerWSI = self.portal_ecspooler
+            spoolerWSI = self.ecspooler_tool
             assert spoolerWSI != None, "A valid portal ecspooler is required."
     
             # enqueue students' solution
