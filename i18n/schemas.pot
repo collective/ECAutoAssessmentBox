@@ -1,0 +1,99 @@
+# --- PLEASE EDIT THE LINES BELOW CORRECTLY ---
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: ECAutoAssessmentBox\n"
+"POT-Creation-Date: 2006-04-03 13:38+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: eduComponents\n"
+
+#. Default: "Test backend"
+#: ECAutoAssessmentBox.py
+msgid "label_backend"
+msgstr ""
+
+#. Default: "Select a test backend."
+#: ECAutoAssessmentBox.py
+msgid "help_backend"
+msgstr ""
+
+#. Default: "Tests",
+#: ECAutoAssessmentBox.py
+msgid "label_tests"
+msgstr ""
+
+#. Default: "Select one or more tests."
+#: ECAutoAssessmentBox.py
+msgid "help_tests"
+msgstr ""
+
+#. Default: "Model solution',
+#: ECAutoAssessmentBox.py
+msgid "label_model_solution"
+msgstr ""
+
+#. Default: "Enter a model solution."
+#: ECAutoAssessmentBox.py
+msgid "help_model_solution"
+msgstr ""
+
+#. Default: "Help functions',
+#: ECAutoAssessmentBox.py
+msgid "label_help_functions"
+msgstr ""
+
+#. Default: "Enter help functions if needed."
+#: ECAutoAssessmentBox.py
+msgid "help_help_functions"
+msgstr ""
+
+#. Default: "Test data"
+#: ECAutoAssessmentBox.py
+msgid "label_test_data"
+msgstr ""
+
+#. Default: "Enter one or more function calls
+#.           A function call consists of the
+#.           function name (given in the exercise directives)
+#.           and test data as parameters of this funtion.
+#.           Each function call must be written in a single line."
+#: ECAutoAssessmentBox.py
+msgid "help_test_data"
+msgstr ""
+
+
+#. Default: "Auto feedback"
+#: ECAutoAssignment.py
+msgid "label_auto_feedback"
+msgstr ""
+
+#. Default: "The automatic feedback for this assignment."
+#: ECAutoAssignment.py
+msgid "help_auto_feedback"
+msgstr ""
+
+#. Default: "Backend result code"
+msgid "label_result_code"
+msgstr ""
+
+#. Default: "The result code of the backend for this assignment."
+msgid "help_result_code"
+msgstr ""
+
+#. Default: "Job id"
+msgid "label_job_id"
+msgstr ""
+
+#. Default: "The id of the spooler job for this assignment."
+msgid "help_job_id"
+msgstr ""
