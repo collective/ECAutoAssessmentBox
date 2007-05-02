@@ -54,7 +54,32 @@ def change_ecaa_portal_type(self):
         #output += u'Meta Type:        %s\n' % ecaa.meta_type
         output += u'Class:            %s\n' % ecaa.__class__
         output += u'ResultCode        %s (%s)\n' % (ecaa.getBackendResultCode(), type(ecaa.getBackendResultCode()))
-        output += u'ResultMsg         %s\n' % (ecaa.getAutoFeedback())
+        
+        ecaa.portal_type = "ECAA"
+        ecaa.meta_type = "ECAA"
+        ecaa.__class__ = ECAutoAssignment
+
+    return output
+
+
+def change_ecaa_result_type(self):
+    output = u'Time-stamp: <%s>\n' % time.strftime("%Y%m%d %H:%M:%S")
+    
+    catalog = getToolByName(self, 'portal_catalog')
+    
+    brains = catalog.searchResults(portal_type = 'ECAA')
+
+    for brain in brains:
+        ecaa = brain.getObject()
+
+        output += u'---------------------------------------\n'
+        output += u'Title:            %s\n' % ecaa.title
+        output += u'Id:               %s\n' % ecaa.getId()
+        #output += u'Creator:          %s\n' % ecaa.Creator()
+        output += u'Portal Type:      %s\n' % ecaa.portal_type
+        #output += u'Meta Type:        %s\n' % ecaa.meta_type
+        output += u'Class:            %s\n' % ecaa.__class__
+        output += u'ResultCode        %s (%s)\n' % (ecaa.getBackendResultCode(), type(ecaa.getBackendResultCode()))
         
         bRC = ecaa.getBackendResultCode()
 
@@ -63,9 +88,5 @@ def change_ecaa_portal_type(self):
                 ecaa.setBackendResultCode(False)
             elif bRC > 0:
                 ecaa.setBackendResultCode(True)
-
-        ecaa.portal_type = "ECAA"
-        ecaa.meta_type = "ECAA"
-        ecaa.__class__ = ECAutoAssignment
 
     return output
