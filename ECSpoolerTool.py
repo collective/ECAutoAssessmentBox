@@ -18,6 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with ECAutoAssessmentBox; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+from random import LOG4
 
 
 import os, sys
@@ -96,15 +97,15 @@ class ECSpoolerTool(UniqueObject, Folder):
         """
         Returns spooler status information
         """
+        #log("Getting spooler status information")
+        
         try:
             spooler = self._getSpoolerHandle(host, port)
             return spooler.getStatus(self._getAuth(username, password))
 
-        #except Exception, e:
-        #    return {}
         except (socket.error, xmlrpclib.Fault), err:
-            #log('%s' % err)
-            return
+            log_exc()
+            pass
 
 
     #security.declarePrivate('_getAvailableBackends')
@@ -112,15 +113,14 @@ class ECSpoolerTool(UniqueObject, Folder):
         """
         Returns a dict with all backends currently registered to ECSpooler.
         """
+        #log("Trying to get all available backends")
+        
         try:
             spooler = self._getSpoolerHandle(host, port)
             return spooler.getBackends(self._getAuth(username, password))
 
-        #except Exception, e:
-        #    return {}
         except (socket.error, xmlrpclib.Fault), err:
-            log('%s' % err)
-            #raise ConnectionFailedException(err)
+            log_exc()
             return {}
 
 
@@ -140,9 +140,6 @@ class ECSpoolerTool(UniqueObject, Folder):
                                  backends[key].get('version', '?'))
             
             dl.add(id, label)
-        
-        #if len(dl) == 0:
-        #    dl = self.getSelectedBackendsDL(False)
              
         return dl
 
@@ -152,47 +149,16 @@ class ECSpoolerTool(UniqueObject, Folder):
         """
         Values for all currently selected backends will be chached.
         """
+        log("manage_cacheBackends: reinit=%s" % reinit)
         
         if reinit:
-            cache = {}
-        else:    
-            cache = self.backendValueCache
+            self.backendValueCache.clear()
         
-        try:
-#            status = None
-#            spooler = self._getSpoolerHandle()
-            
-            # FIXME: clear cached values!?
-            #self.backendValueCache.clear()
-            
-            selectedBackends = self.portal_properties.ecspooler_properties.backends
+        selectedBackends = self.portal_properties.ecspooler_properties.backends
+        #log('ecspooler_properties.backends=%s' % selectedBackends)
         
-            for backend in selectedBackends:
-                self._cacheBackend(backend)
-#                status = spooler.getBackendStatus(self._getAuth(), backend)
-#                
-#                if status[0]:
-#                    cache[backend] = {}
-#                    cache[backend]['name'] = status[1]['name']
-#                    cache[backend]['version'] = status[1]['version']
-#                    
-#                    fields = spooler.getBackendInputFields(self._getAuth(), backend)
-#                    if fields[0]:
-#                        cache[backend]['fields'] = fields[1]
-#                        
-#                    tests = spooler.getBackendTestFields(self._getAuth(), backend)
-#                    if tests[0]:
-#                        cache[backend]['tests'] = tests[1]
-
-
-            self.backendValueCache = cache
-
-        except (socket.error, xmlrpclib.Fault), err:
-            pass
-        except Exception, e:
-            msg = '%s: %s (%s, %s)' % (sys.exc_info()[0], e, spooler, status)
-            log(msg)
-            raise Exception(msg)
+        for backend in selectedBackends:
+            self._cacheBackend(backend)
 
 
     security.declarePrivate('_cacheBackend')
@@ -201,6 +167,7 @@ class ECSpoolerTool(UniqueObject, Folder):
         Chaches all values for a backend.  Returns True if caching was ok, 
         otherwise False
         """
+        #log("Caching backend '%s'" % backend)
         
         if not backend: 
             return False
@@ -213,7 +180,7 @@ class ECSpoolerTool(UniqueObject, Folder):
             
             status = spooler.getBackendStatus(self._getAuth(), backend)
                 
-            if status[0]:
+            if status and status[0]:
                 cache[backend] = {}
                 cache[backend]['name'] = status[1]['name']
                 cache[backend]['version'] = status[1]['version']
@@ -226,16 +193,18 @@ class ECSpoolerTool(UniqueObject, Folder):
                 if tests[0]:
                     cache[backend]['tests'] = tests[1]
 
+                log("Backend '%s' cached" % backend)
+
                 return True
 
             else:
                 return False
 
         except (socket.error, xmlrpclib.Fault), err:
+            log_exc()
             return False
         except Exception, e:
-            msg = '%s: %s (%s, %s)' % (sys.exc_info()[0], e, spooler, status)
-            log(msg)
+            log_exc()
             raise Exception(msg)
 
 
@@ -244,6 +213,8 @@ class ECSpoolerTool(UniqueObject, Folder):
         """
         Returns a list of backends which schema information are cached. 
         """
+        #log("getCachedBackends")
+        
         result = []
         
         availableBackends = self._getAvailableBackends().keys()
@@ -300,10 +271,14 @@ class ECSpoolerTool(UniqueObject, Folder):
                 
                 isCached = self.backendValueCache.has_key(backend)
                 
+                #log('1-xxx: %s : is chached: %s' % (backend, isCached))
+                
                 if not isCached:
                     isCached = self._cacheBackend(backend) 
                 # end if
     
+                #log('2-xxx: %s : is chached: %s' % (backend, isCached))
+
                 if isCached:
                     dl.add(backend, '%s (%s)' % 
                            (self.backendValueCache[backend].get('name', '?'),
@@ -320,6 +295,8 @@ class ECSpoolerTool(UniqueObject, Folder):
         """
         Returns a dict with all fields for this backend.
         """
+        log("getBackendInputFields: %s" % backend)
+        
         # look if the backend is available
         if backend in self._getAvailableBackends():
             # is this backend already cached?
@@ -348,11 +325,13 @@ class ECSpoolerTool(UniqueObject, Folder):
             return {}
 
 
-    security.declarePublic('getBackendInputFields')
+    security.declarePublic('getBackendTestFields')
     def getBackendTestFields(self, backend):
         """
         Returns a dict with test specifiactions for this backend.
         """
+        log("getBackendTestFields: %s" % backend)
+
         # look if the backend is available
         if backend in self._getAvailableBackends():
             # is this backend already cached?
@@ -402,7 +381,7 @@ class ECSpoolerTool(UniqueObject, Folder):
 
     security.declarePublic('appendJob')
     #def appendJob(self, backend, input, **kwargs):
-    def appendJob(self, backend, source, inputFields, tests):
+    def appendJob(self, backend, submission, inputFields, tests):
         """
         Adds a job to the spooler server.
         """
@@ -414,7 +393,7 @@ class ECSpoolerTool(UniqueObject, Folder):
             # set the backend
             data['backend'] = backend
             # set student solution
-            data['studentSolution'] = source
+            data['submission'] = submission
             # set tests
             data['tests'] = tests
             # set input fields
@@ -423,15 +402,14 @@ class ECSpoolerTool(UniqueObject, Folder):
             result = spooler.appendJob(self._getAuth(), data)
 
             # FIXME: do some testing with this result
-            assert result[0] == 0, result[1]
+            assert result[0], result[1]
             
             return result
         
         #except AssertionError, aerr:
         except Exception, e:
             log_exc()
-
-        return (-1, 'Internal error: %s: %s' % (sys.exc_info()[0], e))
+            return (-1, 'Internal error: %s: %s' % (sys.exc_info()[0], e))
     
     
     security.declarePublic('getResult')
@@ -445,7 +423,7 @@ class ECSpoolerTool(UniqueObject, Folder):
 
         AUTH = {'username':username, 'password':password}
 
-        return handle.popResult(AUTH, jobId)
+        return handle.getResult(AUTH, jobId)
     
 
     security.declarePublic('refreshSpoolerHandle')
@@ -470,6 +448,8 @@ class ECSpoolerTool(UniqueObject, Folder):
             "Host is required and must not be empty."
         assert (port != None) and (type(port) == int), \
             "Port is required and must be an integer."
+            
+        log("Getting spooler handle: http://%s:%d" % (host, port))
 
         #try:
         #log('xmlrpclib.Server("http://%s:%d")' % (host, port), severity=DEBUG)

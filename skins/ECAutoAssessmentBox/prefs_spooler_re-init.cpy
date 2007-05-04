@@ -18,8 +18,9 @@ I18N_DOMAIN = 'eduComponents'
 ecs_tool = getToolByName(context, 'ecspooler_tool')
 
 # reset backend IDs
-ecs_tool.setSelectedBackends([])
-# clear backend cache
+#ecs_tool.setSelectedBackends([])
+
+# clear backend cache and re-init it
 ecs_tool.manage_cacheBackends(reinit=True)
 
 # set portal message

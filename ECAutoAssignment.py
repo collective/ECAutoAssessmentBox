@@ -120,15 +120,15 @@ class ECAutoAssignment(ECAssignment):
         if not self.auto_feedback:
             try:
                 spooler = getToolByName(self, 'ecspooler_tool')
-                assert spooler != None, "Spooler tool not installed."
+                assert spooler != None, "A valid portal ecspooler is required."
             
                 result = spooler.getResult(self.jobId)
                 
                 log('[%s] result: %s' % (self.getId(), repr(result)))
     
                 if result.has_key(self.jobId):
-                    self.setBackendResultCode(result[self.jobId].get('code'))
-                    self.setAuto_feedback(result[self.jobId].get('value'))
+                    self.setBackendResultCode(result[self.jobId].get('value'))
+                    self.setAuto_feedback(result[self.jobId].get('message'))
                     
                     #self._autoAccept()
                     
@@ -237,7 +237,7 @@ class ECAutoAssignment(ECAssignment):
         # get the selected backend in the parent box
         backend = parent.getBackend()
         
-        if backend == 'manual':
+        if backend == 'none':
             #return self.translate(
             #    msgid   = 'no_backend_given',
             #    domain  = I18N_DOMAIN,
@@ -274,7 +274,7 @@ class ECAutoAssignment(ECAssignment):
             log('[%s] enqueue: %s' % (self.getId(), repr(job)))
             
             # validate job id?
-            if job[0] == 0:
+            if job[0]:
                 # remember the job id and set inital values for feedback
                 self.jobId = job[1]
                 feedback = {}
@@ -291,10 +291,10 @@ class ECAutoAssignment(ECAssignment):
                     i += 1
                     
                 if feedback.has_key(self.jobId):
-                    self.setBackendResultCode(feedback[self.jobId].get('code'))
-                    #self.setBackendResultCode(feedback[self.jobId].get('value'))
-                    self.setAuto_feedback(feedback[self.jobId].get('value'))
-                    #self.setAuto_feedback(feedback[self.jobId].get('message'))
+                    #self.setBackendResultCode(feedback[self.jobId].get('code'))
+                    self.setBackendResultCode(feedback[self.jobId].get('value'))
+                    #self.setAuto_feedback(feedback[self.jobId].get('value'))
+                    self.setAuto_feedback(feedback[self.jobId].get('message'))
             
                     log("[%s] result value: '%s'" % 
                         (self.getId(), self.getBackendResultCode()))
