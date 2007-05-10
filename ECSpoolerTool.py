@@ -203,9 +203,9 @@ class ECSpoolerTool(UniqueObject, Folder):
         except (socket.error, xmlrpclib.Fault), err:
             log_exc()
             return False
-        except Exception, e:
-            log_exc()
-            raise Exception(msg)
+        #except Exception, e:
+        #    log_exc()
+        #    raise Exception(sys.exc_info()[0], e)
 
 
     security.declarePublic('getCachedBackends')
