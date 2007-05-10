@@ -180,32 +180,36 @@ class ECSpoolerTool(UniqueObject, Folder):
             
             status = spooler.getBackendStatus(self._getAuth(), backend)
                 
-            if status and status[0]:
-                cache[backend] = {}
-                cache[backend]['name'] = status[1]['name']
-                cache[backend]['version'] = status[1]['version']
-                
-                fields = spooler.getBackendInputFields(self._getAuth(), backend)
-                if fields[0]:
-                    cache[backend]['fields'] = fields[1]
+            if status:
+                if status[0] > 0:
+                    cache[backend] = {}
+                    cache[backend]['name'] = status[1]['name']
+                    cache[backend]['version'] = status[1]['version']
                     
-                tests = spooler.getBackendTestFields(self._getAuth(), backend)
-                if tests[0]:
-                    cache[backend]['tests'] = tests[1]
-
-                log("Backend '%s' cached" % backend)
-
-                return True
-
+                    fields = spooler.getBackendInputFields(self._getAuth(), backend)
+                    if fields[0]:
+                        cache[backend]['fields'] = fields[1]
+                        
+                    tests = spooler.getBackendTestFields(self._getAuth(), backend)
+                    if tests[0]:
+                        cache[backend]['tests'] = tests[1]
+    
+                    log("Backend '%s' cached" % backend)
+    
+                    return True
+                elif status[0] < 0:
+                    log('Error while getting backend status: %s, %s' % (status[0], status[1]))
+                    return False
             else:
+                log('Error while getting backend status: status is %s' % (status))
                 return False
 
         except (socket.error, xmlrpclib.Fault), err:
             log_exc()
             return False
-        #except Exception, e:
-        #    log_exc()
-        #    raise Exception(sys.exc_info()[0], e)
+        except Exception, e:
+            log_exc()
+            return False
 
 
     security.declarePublic('getCachedBackends')
