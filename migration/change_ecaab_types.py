@@ -111,6 +111,6 @@ def recheck_ecaa_(self):
             output += u'Id:               %s\n' % brain.id
             
             ecaa = brain.getObject()
-            #ecaa.ecaa_recheck
+            ecaa.ecaa_recheck
 
     return output
