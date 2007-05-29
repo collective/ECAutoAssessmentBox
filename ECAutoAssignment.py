@@ -323,7 +323,7 @@ class ECAutoAssignment(ECAssignment):
             log('%s: %s' % (sys.exc_info()[0], e))
             log(''.join(traceback.format_exception(*sys.exc_info())))
 
-            self._changeWfState('retract', 'Auto check failed: %s' % str(e))
+            #self._changeWfState('retract', 'Auto check failed: %s' % str(e))
             
             result = -42;
             msgId = 'submission_saved_check_failed'
