@@ -90,3 +90,27 @@ def change_ecaa_result_type(self):
                 ecaa.setBackendResultCode(True)
 
     return output
+
+
+def recheck_ecaa_(self):
+    output = u'Time-stamp: <%s>\n' % time.strftime("%Y%m%d %H:%M:%S")
+    
+    catalog = getToolByName(self, 'portal_catalog')
+    
+    brains = catalog.searchResults(path={'query':'/'.join(here.getPhysicalPath()), 'depth':1, },
+                                   portal_type = 'ECAA'
+                                   )
+    for brain in brains:
+
+        output += u'---------------------------------------\n'
+        output += u'Id:               %s\n' % brain.id
+        output += u'State:            %s\n' % brain.review_state
+
+        if brain.review_state == 'submitted':
+            output += u'---------------------------------------\n'
+            output += u'Id:               %s\n' % brain.id
+            
+            ecaa = brain.getObject()
+            #ecaa.ecaa_recheck
+
+    return output
