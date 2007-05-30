@@ -261,10 +261,13 @@ class ECSpoolerTool(UniqueObject, Folder):
         if withNone:
             # set a value for none testing
             value = 'none'
-            label = self.translate(msgid = 'label_no_backend', 
-                                   domain = I18N_DOMAIN,
-                                   default = 'None')
-            dl.add(value, label)
+            #label = self.translate(msgid = 'label_no_backend', 
+            #                       domain = I18N_DOMAIN,
+            #                       default = 'None')
+            #
+            #dl.add(value, label)
+
+            dl.add(value, '----')
         
         # add backends (they must be in the list of selected backends)
         selectedBackends = self.portal_properties.ecspooler_properties.backends
