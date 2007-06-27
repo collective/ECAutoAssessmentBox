@@ -15,7 +15,7 @@ Overview
 
 Download
 
-  * "Project page":http://wwwai.cs.uni-magdeburg.de/software/ecaab
+  * "Project page":http://wwwai.cs.uni-magdeburg.de/software/
 
   * "plone.org products page":http://plone.org/products/ecaab
 
