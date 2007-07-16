@@ -171,6 +171,7 @@ def install(self):
     factory_tool = getToolByName(self, 'portal_factory')
     factory_types=[
         ECAAB_NAME,
+		ECAAT_NAME,
         ECAA_NAME,
         ] + factory_tool.getFactoryTypes().keys()
     factory_tool.manage_setPortalFactoryTypes(listOfTypeIds=factory_types)

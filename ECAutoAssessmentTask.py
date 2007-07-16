@@ -18,31 +18,16 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301  USA
 #
 from Products.Archetypes.atapi import *
-from Products.ATContentTypes.content.base import registerATCT,updateAliases
+from Products.ATContentTypes.content.base import registerATCT,updateAliases,updateActions
 from Products.ATContentTypes.content.schemata import finalizeATCTSchema
 from Products.ATContentTypes.content.folder import ATFolderSchema,ATFolder
 
-from Products.ECAssignmentBox.ECAssignmentTask import ECAssignmentTask
-from Products.ECAssignmentBox.ECAssignmentTask import ECAssignmentTaskSchema
-
+from Products.ECAutoAssessmentBox.PlainTextField import PlainTextField
 from Products.ECAutoAssessmentBox.config import *
 
-ECAssignmentTaskSchema = ATFolderSchema.copy() + Schema((
-#	TextField(
-#		'directions',
-#		default_content_type = 'text/structured',
-#		default_output_type = 'text/html',
-#		allowable_content_types = TEXT_TYPES,
-#		widget = RichWidget(
-#			label = 'Directions',
-#			label_msgid = 'label_directions',
-#			description = 'Instructions/directions for that assignment task',
-#			description_msgid = 'help_directions',
-#			i18n_domain = I18N_DOMAIN,
-#			rows = 10,
-#			cols = 20,
-#		),
-#	),
+
+
+ECAutoAssessmentTaskSchema = ATFolderSchema.copy() + Schema((
 	TextField(
 		'assignment_text',
 		required = True,
@@ -71,36 +56,86 @@ ECAssignmentTaskSchema = ATFolderSchema.copy() + Schema((
 			format = 0,
 		),
 	),
+#    StringField(
+#        'backend',
+#        required = True,
+#        vocabulary = 'getBackendDisplayList',
+#        widget = SelectionWidget(
+#            modes=('edit'),
+#            label='Test backend',
+#            label_msgid='label_backend',
+#            description='Select a test backend.',
+#            description_msgid='help_backend',
+#            i18n_domain=I18N_DOMAIN,
+#        ),
+#        read_permission = permissions.ModifyPortalContent,
+#    ),
+#    BooleanField(
+#        'autoAccept',
+#        default = False,
+#        #required = True,
+#        widget = BooleanWidget(
+#            label = 'Automatically accept assignments',
+#            label_msgid = 'label_auto_accept',
+#            description = 'If selected, an assignment which passes all tests will be automatically accepted.',
+#            description_msgid = 'help_auto_accept',
+#            i18n_domain = I18N_DOMAIN,
+#        ),
+#        schemata = 'backend',
+#        read_permission = permissions.ModifyPortalContent,
+#    ),
+#    StringField(
+#        'tests',
+#        #required = True,
+#        vocabulary = '_getTestsDisplayList',
+#        widget = MultiSelectionWidget(
+#            modes=('edit'),
+#            label='Tests',
+#            label_msgid='label_tests',
+#            description='Select one or more tests.',
+#            description_msgid='help_tests',
+#            i18n_domain=I18N_DOMAIN,
+#        ),
+#        schemata = 'backend',
+#        read_permission = permissions.ModifyPortalContent,
+#    ),
 ))
 
-finalizeATCTSchema(ECAssignmentTaskSchema)
+finalizeATCTSchema(ECAutoAssessmentTaskSchema)
 
 
 
-class ECAssignmentTask(ATFolder):
-	"""A folderish document type, which can contain other types.
+class ECAutoAssessmentTask(ATFolder):
+	"""Defines the task for an auto assessment box.
 	"""
 
-	portal_type = meta_type = ECAT_META
-	archetype_name = ECAT_NAME
-	content_icon = 'ecat.png'
-	schema = ECAssignmentTaskSchema
+	portal_type = meta_type = ECAAT_META
+	archetype_name = ECAAT_NAME
+	content_icon = 'ecaat.png'
+	schema = ECAutoAssessmentTaskSchema
 	typeDescription = 'Allows the creation of online assignments.'
-	typeDescMsgID = 'description_edit_ecat'
+	typeDescMsgID = 'description_edit_ecaat'
 
 	_at_rename_after_creation = True
 	__implements__ = ATFolder.__implements__
 
 	# Attach views
-	default_view = 'ecat_view'
-	immediate_view = 'ecat_view'
+	default_view = 'ecaat_view'
+	immediate_view = 'ecaat_view'
 	suppl_views = None
 
-	actions = ATFolder.actions
+	actions = updateActions(ATFolder, ({
+			'action':      'string:$object_url/ecat_backlinks',
+			'category':    'object',
+			'id':          'ecat_backlinks',
+			'name':        'Backlinks',
+			'permissions': (permissions.ManageProperties,),
+		},))
+
 
 	aliases = updateAliases(ATFolder, {
-		'view'		: 'ecat_view',
+		'view'		: 'ecaat_view',
 	})
 
 
-registerATCT(ECAssignmentTask,PROJECTNAME)
+registerATCT(ECAutoAssessmentTask,PRODUCT_NAME)

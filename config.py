@@ -62,6 +62,9 @@ ECAA_TITLE = 'Auto Assessed Assignment'
 ECAA_META = ECAA_NAME
 ECAA_ICON = ''
 
+ECAAT_META = "ECAutoAssessmentTask"
+ECAAT_NAME = "Auto Assessment Task"
+
 ECS_NAME = 'ecspooler_tool'
 ECS_META = ECS_NAME
 ECS_TITLE = 'Auto Assessment Settings'

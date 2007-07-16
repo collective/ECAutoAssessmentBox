@@ -17,6 +17,8 @@ from Products.ATContentTypes.content.schemata import finalizeATCTSchema
 from Products.Archetypes.atapi import *
 from Products.Archetypes.public import BooleanField, BooleanWidget
 from Products.CMFCore.utils import getToolByName
+from Products.ATReferenceBrowserWidget.ATReferenceBrowserWidget \
+     import ReferenceBrowserWidget
 
 # Other product imports
 from Products.ECAssignmentBox.ECAssignmentBox import ECAssignmentBox
@@ -28,6 +30,8 @@ from Products.ECAutoAssessmentBox.config import *
 from Products.ECAutoAssessmentBox.ECAutoAssignment import ECAutoAssignment
 from Products.ECAutoAssessmentBox.DynamicDataField import DynamicDataField
 from Products.ECAutoAssessmentBox.DynamicDataWidget import DynamicDataWidget
+
+
 
 ECAutoAssessmentBoxSchema = ECAssignmentBoxSchema.copy() + Schema((
 
@@ -93,6 +97,32 @@ ECAutoAssessmentBoxSchema = ECAssignmentBoxSchema.copy() + Schema((
     ),
 
 ))
+
+#
+# This crude hack is needed because of  Plone's inflexibility in 
+# changing schemas, we have to use the old name for that reason. 
+#
+ECAutoAssessmentBoxSchema.replaceField(
+	'assignment_reference',
+	ReferenceField(
+        'assignment_reference',
+        allowed_types = ('ECAssignmentTask','ECAutoAssessmentTask',),
+        required = False,
+        accessor = 'getReference',
+        index = "FieldIndex:schema", # Adds "getRawAssignment_reference"
+                                     # to catalog
+        multiValued = False,
+        relationship = 'alter_ego',
+        widget = ReferenceBrowserWidget(
+			description = 'Select an auto assessed assignment task.  The reference supersedes the auto assessment text and answer template below.',
+            description_msgid = 'help_auto_assessment_reference',
+            i18n_domain = I18N_DOMAIN,
+            label = 'Reference to auto assessment task',
+            label_msgid = 'label_auto_assessment_reference',
+            allow_search = True,
+            show_indexes = False,
+        ),
+    ))
 
 finalizeATCTSchema(ECAutoAssessmentBoxSchema, folderish=True,
                    moveDiscussion=False)
