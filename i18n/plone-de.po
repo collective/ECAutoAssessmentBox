@@ -22,6 +22,14 @@ msgstr ""
 msgid "Auto Assessment Box"
 msgstr "Automatisch überprüfte Aufgabe"
 
+#: ECAutoAssessmentTask.py
+msgid "Auto Assessment Task"
+msgstr "Automatisch überprüfte Aufgabenstellung"
+
+#: ECAutoAssessmentTask.py
+msgid "Assignment task for an auto assessment box."
+msgstr "Aufgabenstellung zur Verwendung in einer automatisch überprüften Aufgabe"
+
 #: ECAutoAssessmentBox.py
 # Original: Enables the creation, submission and grading of automatically tested online assignments.
 msgid "description_edit_ecaab"

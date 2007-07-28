@@ -16,7 +16,6 @@ from Products.ATContentTypes.content.base import updateActions, updateAliases
 from Products.ATContentTypes.content.schemata import finalizeATCTSchema
 from Products.Archetypes.atapi import *
 from Products.Archetypes.public import BooleanField, BooleanWidget
-from Products.CMFCore.utils import getToolByName
 from Products.ATReferenceBrowserWidget.ATReferenceBrowserWidget \
      import ReferenceBrowserWidget
 
