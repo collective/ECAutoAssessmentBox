@@ -73,7 +73,7 @@ msgstr "Spooler/Backend-Einstellungen"
 #: .\skins\ECAutoCheckAssignmentBox\ecspooler_prefs_form.cpt
 # Original: "The address of your spooler service (e.g., aix.cs.uni-magdeburg.de)."
 msgid "help_host"
-msgstr "Die Adresse Ihres Spooler-Dienstes (z. B. aix.cs.uni-magdeburg.de)."
+msgstr "Die Adresse Ihres Spooler-Dienstes (z. B. host.yourdomain.de)."
 
 
 #: .\skins\ECAutoCheckAssignmentBox\ecspooler_prefs_form.cpt

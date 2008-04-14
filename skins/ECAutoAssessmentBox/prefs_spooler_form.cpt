@@ -65,7 +65,7 @@
             <span class="fieldRequired" title="Required">(Required)</span>
 
             <div class="formHelp" i18n:translate="help_host">
-              The address of your spooler service (e.g., aix.cs.uni-magdeburg.de).
+              The address of your spooler service (e.g., host.yourdomain.com).
             </div>
 
             <div tal:condition="error" 
