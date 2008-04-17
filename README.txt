@@ -17,29 +17,39 @@ Download
 
   * "Project page":http://wdok.cs.uni-magdeburg.de/software/
 
-  * "plone.org products page":http://plone.org/products/ecaab
+  * "plone.org products page":http://plone.org/products/ecautoassessmentbox/
 
 Prerequisites
 
- To use ECAutoAssessmentBox you need a Plone 2.1.x installation.  Check
- "plone.org":http://plone.org/products/plone for Plone's
- prerequisites.
+ 1. To use ECAutoAssessmentBox you need a Plone 2.1.x or 2.5.x
+    installation.  Check "plone.org":http://plone.org/products/plone
+    for Plone's prerequisites.
+
+ 2. The "ECAssignmentBox":http://plone.org/products/ecassignmentbox/ product.
 
 Installation
 
  If you have a suitable Zope/Plone installation, you can install
  ECAutoAssessmentBox as follows:
 
- 1. Extract the archive into the 'Products' directory of your Zope
-    instance. (You can find out where your Zope instance is installed
-    by opening the Zope Management Interface (ZMI) and going to the
-    Control Panel; the directory listed as 'INSTANCE_HOME' is what
-    you're looking for.)
+ 1. Extract the ECAssignmentBox archive into the 'Products' directory
+    of your Zope instance. (You can find out where your Zope instance
+    is installed by opening the Zope Management Interface (ZMI) and
+    going to the Control Panel; the directory listed as
+    'INSTANCE_HOME' is what you're looking for.)
 
- 2. Restart Zope
+ 2. Extract the ECAutoAssessmentBox archive into the 'Products'
+    directory of your Zope instance.
 
- 3. Use the 'portal_quickinstaller' of your Plone site in which you
-    want to use ECAutoAssessmentBox.
+ 3. Restart Zope.
+
+ 4. Log in to your Plone site as a manager and use the "Add/Remove
+    Products" tool under "Site Setup" to install ECAssignmentBox and
+    ECAutoAssessmentBox in this Plone site.  Alternatively, in the
+    ZMI, you can use the 'portal_quickinstaller' of the Plone site in
+    which you want to use ECAutoAssessmentBox.  In both cases, check
+    the boxes next to ECAssignmentBox and ECAutoAssessmentBox and
+    click "Install".
 
 Support
 
@@ -78,5 +88,4 @@ License
  You should have received a copy of the GNU General Public License
  along with ECAutoAssessmentBox; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
 
