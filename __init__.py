@@ -1,51 +1,105 @@
-# -*- coding: UTF-8 -*-
-# $Id$
+# -*- coding: utf-8 -*-
 #
-# Copyright (c) 2005 Otto-von-Guericke-Universität Magdeburg
+# File: ECAutoAssessmentBox.py
 #
-# This file is part of ECAutoAssessmentBox.
-import os, os.path
+# Copyright (c) 2008 by []
+# Generator: ArchGenXML Version 2.1
+#            http://plone.org/products/archgenxml
+#
+# GNU General Public License (GPL)
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+#
 
+__author__ = """unknown <unknown>"""
+__docformat__ = 'plaintext'
+
+
+# There are three ways to inject custom code here:
+#
+#   - To set global configuration variables, create a file AppConfig.py.
+#       This will be imported in config.py, which in turn is imported in
+#       each generated class and in this file.
+#   - To perform custom initialisation after types have been registered,
+#       use the protected code section at the bottom of initialize().
+
+import logging
+logger = logging.getLogger('ECAutoAssessmentBox')
+logger.debug('Installing Product')
+
+import os
+import os.path
 from Globals import package_home
-
-from Products.Archetypes.public import process_types, listTypes
-from Products.CMFCore import utils
-from Products.CMFCore.DirectoryView import registerDirectory
-
-# local imports
+import Products.CMFPlone.interfaces
+from Products.Archetypes import listTypes
+from Products.Archetypes.atapi import *
+from Products.Archetypes.utils import capitalize
+from Products.CMFCore import DirectoryView
+from Products.CMFCore import permissions as cmfpermissions
+from Products.CMFCore import utils as cmfutils
+from Products.CMFPlone.utils import ToolInit
 from config import *
 
-registerDirectory(SKINS_DIR, GLOBALS)
+DirectoryView.registerDirectory('skins', product_globals)
+
+
+##code-section custom-init-head #fill in your manual code here
+##/code-section custom-init-head
+
 
 def initialize(context):
-    """
-    """
-    # Import Types here to register them
-    import ECAutoAssessmentBox, ECAutoAssignment, ECAutoAssessmentTask
+    """initialize product (called by zope)"""
+    ##code-section custom-init-top #fill in your manual code here
+    ##/code-section custom-init-top
 
-    from AccessControl import ModuleSecurityInfo
-    from AccessControl import allow_module, allow_class, allow_type
+    # imports packages and types for registration
+    import content
+    import tool
 
-    content_types, constructors, ftis = process_types(
-        listTypes(PRODUCT_NAME),
-        PRODUCT_NAME)
-    
-    utils.ContentInit(
-        PRODUCT_NAME + ' Content',
-        content_types      = content_types,
-        permission         = add_permission,
-        extra_constructors = constructors,
-        fti                = ftis,
+
+    # Initialize portal tools
+    tools = [tool.ECSpoolerTool.ECSpoolerTool]
+    ToolInit( PROJECTNAME +' Tools',
+                tools = tools,
+                icon='ec_tool.png'
+                ).initialize( context )
+
+    # Initialize portal content
+    all_content_types, all_constructors, all_ftis = process_types(
+        listTypes(PROJECTNAME),
+        PROJECTNAME)
+
+    cmfutils.ContentInit(
+        PROJECTNAME + ' Content',
+        content_types      = all_content_types,
+        permission         = DEFAULT_ADD_CONTENT_PERMISSION,
+        extra_constructors = all_constructors,
+        fti                = all_ftis,
         ).initialize(context)
 
-    # Import tools here to register them
-    from ECSpoolerTool import ECSpoolerTool
-    from Products.CMFPlone.utils import ToolInit
+    # Give it some extra permissions to control them on a per class limit
+    for i in range(0,len(all_content_types)):
+        klassname=all_content_types[i].__name__
+        if not klassname in ADD_CONTENT_PERMISSIONS:
+            continue
 
-    tools = (ECSpoolerTool,)
-    
-    ToolInit(PRODUCT_NAME + ' Tool',
-        tools = tools,
-        product_name = PRODUCT_NAME,
-        icon = ECS_ICON
-        ).initialize(context)
+        context.registerClass(meta_type   = all_ftis[i]['meta_type'],
+                              constructors= (all_constructors[i],),
+                              permission  = ADD_CONTENT_PERMISSIONS[klassname])
+
+    ##code-section custom-init-bottom #fill in your manual code here
+    ##/code-section custom-init-bottom
+
