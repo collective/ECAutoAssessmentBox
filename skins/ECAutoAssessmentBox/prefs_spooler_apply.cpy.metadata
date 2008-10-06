@@ -1,6 +1,0 @@
-[default]
-title=Apply spooler connection settings
-
-[actions]
-action.success=redirect_to:string:prefs_spooler_form
-action.failure=traverse_to:string:prefs_spooler_form
