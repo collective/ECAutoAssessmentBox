@@ -3,7 +3,7 @@
         meta_type="Factory-based Type Information with dynamic views"
         xmlns:i18n="http://xml.zope.org/namespaces/i18n">
    
- <property name="title">ECSpoolerTool</property>
+ <property name="title">Auto Assessment Settings</property>
  <property name="description"></property>
  <property name="content_icon">ec_tool.png</property>
  <property name="content_meta_type">ECSpoolerTool</property>
@@ -30,10 +30,11 @@
          action_id="view"
          category="object" 
          condition_expr="python:1"
-         url_expr="string:${object_url}/prefs_spooler_form" 
+         url_expr="string:${object_url}/view" 
          visible="True">
   <permission value="View"/>
  </action>
+ <!-- 
  <action title="Edit" 
          action_id="edit"
          category="object" 
@@ -50,4 +51,5 @@
          visible="True">
   <permission value="Modify portal content"/>
  </action>
-</object>
+ -->
+ </object>

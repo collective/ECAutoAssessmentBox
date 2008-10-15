@@ -74,8 +74,8 @@ def initialize(context):
     tools = [tool.ECSpoolerTool.ECSpoolerTool]
     ToolInit( PROJECTNAME +' Tools',
                 tools = tools,
-                icon='ec_tool.png'
-                ).initialize( context )
+                icon  = 'ec_tool.png'
+                ).initialize(context)
 
     # Initialize portal content
     all_content_types, all_constructors, all_ftis = process_types(

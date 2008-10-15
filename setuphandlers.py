@@ -31,7 +31,7 @@ def setupHideToolsFromNavigation(context):
     if isNotECAutoAssessmentBoxProfile(context): return 
     # uncatalog tools
     site = context.getSite()
-    toolnames = ['portal_ecspoolertool']
+    toolnames = ['ecspooler_tool']
     portalProperties = getToolByName(site, 'portal_properties')
     navtreeProperties = getattr(portalProperties, 'navtree_properties')
     if navtreeProperties.hasProperty('idsNotToList'):

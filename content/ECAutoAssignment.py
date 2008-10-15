@@ -1,16 +1,25 @@
 # -*- coding: utf-8 -*-
 # $Id$
 #
-# Copyright (c) 2005 Otto-von-Guericke-University, Magdeburg
-#
-# Generator: ArchGenXML Version 2.1
-#            http://plone.org/products/archgenxml
+# Copyright (c) 2006-2008 Otto-von-Guericke-Universität Magdeburg
 #
 # This file is part of ECAutoAssessmentBox.
 #
-# GNU General Public License (GPL)
+# ECAutoAssessmentBox is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 #
-__author__ = """unknown <unknown>"""
+# ECAutoAssessmentBox is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with ECAutoAssessmentBox; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+#
+__author__ = """Mario Amelung <amelung@iws.cs.uni-magdeburg.de>"""
 __docformat__ = 'plaintext'
 
 from AccessControl import ClassSecurityInfo
@@ -18,14 +27,26 @@ from Products.Archetypes.atapi import *
 from zope.interface import implements
 import interfaces
 
+from AccessControl import Unauthorized
+from AccessControl.SecurityManagement import getSecurityManager, setSecurityManager, newSecurityManager
+
 from Products.CMFDynamicViewFTI.browserdefault import BrowserDefaultMixin
 
 from Products.ECAutoAssessmentBox.config import *
 
 ##code-section module-header #fill in your manual code here
+import sys, re, time
+import xmlrpclib
+import traceback
+import logging
 
 from Products.CMFPlone.utils import log_exc, log
+
+from Products.CMFCore.utils import getToolByName
+
 from Products.ECAssignmentBox.content.ECAssignment import ECAssignment
+
+logger = logging.getLogger('ECAutoAssessmentBox')
 
 # set max wait time; after a maxium of 15 tries we will give up getting 
 # any result from the spooler until this assignment will be accessed again
@@ -115,8 +136,6 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
         @return: feedback message as String
         """
         
-        # FIXME: comment in if spooler tool is available
-        """
         if not self.auto_feedback:
             try:
                 spooler = getToolByName(self, 'ecspooler_tool')
@@ -124,7 +143,7 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
             
                 result = spooler.getResult(self.jobId)
                 
-                log('[%s] result: %s' % (self.getId(), repr(result)))
+                logger.debug('[%s] result: %s' % (self.getId(), repr(result)))
     
                 if result.has_key(self.jobId):
                     self.setBackendResultCode(result[self.jobId].get('value'))
@@ -142,8 +161,8 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
                                            "Automatically checked by '%s'." % backend)
                     
             except Exception, e:
-                log('Error: %s' % str(e))
-        """   
+                log_exc('Error: %s' % str(e))
+
         return self.getAuto_feedback()
 
 
@@ -168,8 +187,8 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
     def _changeWfState(self, transition, comment=None):
         """
         Sets the workflow state of this assignment to state. Since unpriviliged
-        users are not allowed to change workflow state we switch security
-        context.
+        users are not allowed to change workflow states we switch the whole
+        security context.
         
         @param transition
         @param comment
@@ -178,7 +197,7 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
         # FIXME: we use the 1st workflow for this object, but there can be
         #        more workflows assigned to this object!
         wf = wftool.getWorkflowsFor(self)[0]
-        #log('xxx: review_state: %s' % wf.getInfoFor(self, 'review_state', ''))
+        #logger.debug('xxx: review_state: %s' % wf.getInfoFor(self, 'review_state', ''))
         
         REQUEST = self.REQUEST
         
@@ -187,14 +206,14 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
         # get user of parent object
         wrappedUser = self.aq_parent.getWrappedOwner() 
         
-        #log('current user: %s' % currentUser)
-        #log('wrapped user: %s' % wrappedUser)
+        #logger.debug('current user: %s' % currentUser)
+        #logger.debug('wrapped user: %s' % wrappedUser)
         
         # set security context for the owner of the parent object (assignment box)
         newSecurityManager(REQUEST, wrappedUser) 
 
-        #log('xxx: %s' % repr(wftool.getTransitionsFor(self, REQUEST=REQUEST)))
-        #log('xxx: isActionSupported(%s): %s' % (transition, wf.isActionSupported(self, transition)))
+        #logger.debug('xxx: %s' % repr(wftool.getTransitionsFor(self, REQUEST=REQUEST)))
+        #logger.debug('xxx: isActionSupported(%s): %s' % (transition, wf.isActionSupported(self, transition)))
         
         # do the workflow state change
         if wf.getInfoFor(self, 'review_state', '') != 'superseded':
@@ -208,7 +227,7 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
             
                 wftool.doActionFor(self, transition, comment=comment)
             else:
-                log('Unsupported workflow action %s for object %s.' % (repr(transition), repr(self)))
+                logger.warn('Unsupported workflow action %s for object %s.' % (repr(transition), repr(self)))
             
             #except Exception, e:
             #    log_exc(e)
@@ -236,6 +255,8 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
         
         # get the selected backend in the parent box
         backend = parent.getBackend()
+        
+        logger.debug('xxx: %s' % backend)
         
         if backend == 'none':
             #return self.translate(
@@ -271,7 +292,7 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
             job = spoolerWSI.appendJob(backend, studentSolution, 
                                        inputFields, tests)
 
-            log('[%s] enqueue: %s' % (self.getId(), repr(job)))
+            logger.debug('[%s] enqueue: %s' % (self.getId(), repr(job)))
             
             # validate job id?
             if job[0]:
@@ -296,7 +317,7 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
                     #self.setAuto_feedback(feedback[self.jobId].get('value'))
                     self.setAuto_feedback(feedback[self.jobId].get('message'))
             
-                    log("[%s] result value: '%s'" % 
+                    logger.debug("[%s] result value: '%s'" % 
                         (self.getId(), self.getBackendResultCode()))
 
                     if (parent.getAutoAccept()) and (self.isSolved()):
@@ -314,14 +335,14 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
                                             "by '%s'." % backend)
         
                 else:
-                    log('[%s] no feedback after %d polls' % (self.getId(), 
+                    logger.warn('[%s] no feedback after %d polls' % (self.getId(), 
                                                            MAX_WAIT_TIME))
                 # end if
             # end if
 
         except Exception, e:
-            log('%s: %s' % (sys.exc_info()[0], e))
-            log(''.join(traceback.format_exception(*sys.exc_info())))
+            logger.debug('%s: %s' % (sys.exc_info()[0], e))
+            logger.debug(''.join(traceback.format_exception(*sys.exc_info())))
 
             #self._changeWfState('retract', 'Auto check failed: %s' % str(e))
             

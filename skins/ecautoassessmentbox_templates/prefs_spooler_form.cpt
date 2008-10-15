@@ -9,21 +9,21 @@
       metal:use-macro="here/prefs_main_template/macros/master"
       i18n:domain="eduComponents">
 
-  <metal:block fill-slot="top_slot"
-    tal:define="dummy python:request.set('disable_border', 1)" />
-
-  <metal:javascript_head_slot fill-slot="javascript_head_slot">
-    <script type="text/javascript" src="portal_skins/archetypes/widgets/js/picklist.js"> </script>
-  </metal:javascript_head_slot>
+  <head>
+    <metal:border fill-slot="top_slot">
+      <tal:border define="dummy python:request.set('disable_border',1)" />
+    </metal:border>
+  
+    <metal:javascript_head_slot fill-slot="javascript_head_slot">
+      <script type="text/javascript"
+              tal:attributes="src string:$portal_url/portal_skins/archetypes/widgets/js/picklist.js"></script>
+    </metal:javascript_head_slot>
+  </head>
 
   <body>
     <div metal:fill-slot="prefs_configlet_main"
         tal:define="errors  options/state/getErrors;
-                    ecs_tool here/ecspooler_tool;">
-        <!-- 
-                    port    request/port | ecs_tool/port;
-                    host    request/host | ecs_tool/host;">
-        -->
+                    ecs_tool nocall: here/ecspooler_tool;">
 
       <!-- for debugging -->
       <!--
@@ -68,9 +68,15 @@
               The address of your spooler service (e.g., host.yourdomain.com).
             </div>
 
+            <!-- 
             <div tal:condition="error" 
                 tal:content="error" 
                 i18n:translate="error_host">Error message
+            </div>
+             -->
+
+            <div tal:condition="error" 
+                tal:content="error">Error message
             </div>
 
             <input name="host" 
@@ -91,11 +97,17 @@
               The port of your spooler service (e.g., 5050).
             </div>
 
+            <!-- 
             <div tal:condition="error" 
                 tal:content="error" 
                 i18n:translate="error_port">Error message
             </div>
-    
+            -->    
+
+            <div tal:condition="error" 
+                tal:content="error">Error message
+            </div>
+
             <input name="port" 
                 type="text" 
                 tal:attributes="value    port;
@@ -117,11 +129,17 @@
               Username for authentication to your spooler service.
             </div>
 
+            <!-- 
             <div tal:condition="error" 
                 tal:content="error" 
                 i18n:translate="error_username">Error message
             </div>
+            -->
     
+            <div tal:condition="error" 
+                tal:content="error">Error message
+            </div>
+
             <input name="username" 
                 type="text" 
                 tal:attributes="value    username;
@@ -143,11 +161,17 @@
               The password for the user account.
             </div>
 
+            <!--
             <div tal:condition="error" 
                 tal:content="error" 
                 i18n:translate="error_password">Error message
             </div>
-    
+            -->
+
+            <div tal:condition="error" 
+                tal:content="error">Error message
+            </div>
+                
             <input name="password" 
                 type="password" 
                 tal:attributes="value    password;
@@ -192,11 +216,17 @@
               accessible backends for your site.
             </div>
   
+<!--
             <div tal:condition="error" 
                 tal:content="error" 
                 i18n:translate="error_selected_backends">Error message
             </div>
+-->
   
+            <div tal:condition="error" 
+                tal:content="error">Error message
+            </div>
+
 <!--
             <metal:use use-macro="here/widget_addremove/macros/add_remove_box" />
 -->

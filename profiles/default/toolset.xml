@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <tool-setup>
- <required tool_id="portal_ecspoolertool"
+ <required tool_id="ecspooler_tool"
            class="Products.ECAutoAssessmentBox.tool.ECSpoolerTool.ECSpoolerTool"/>
 
  <!-- ##code-section toolset.xml -->

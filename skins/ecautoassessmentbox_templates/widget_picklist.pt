@@ -7,7 +7,7 @@
   <body>
 
     <!-- 
-      A Picklist Widgets width additions form AddRemoveWidget.
+      A Picklist Widgets with additions form AddRemoveWidget.
       See also 
         Archetype/skins/archetypes/widgets/picklist.pt 
         AddRemoveWidget/skins/AddRemoveWidget/widget_addremove.pt

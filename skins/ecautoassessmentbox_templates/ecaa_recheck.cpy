@@ -27,7 +27,9 @@ if result[0]:
 
     msg += ' ' + result[1]
 
-    return state.set(portal_status_message=msg)
+    context.plone_utils.addPortalMessage(msg)
+    return state
 
 else:
-    return state.set(status='failure', portal_status_message=result)
+    context.plone_utils.addPortalMessage(result)
+    return state.set(status='failure')
