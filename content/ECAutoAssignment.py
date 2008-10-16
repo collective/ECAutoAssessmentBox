@@ -40,9 +40,11 @@ import xmlrpclib
 import traceback
 import logging
 
-from Products.CMFPlone.utils import log_exc, log
+from types import BooleanType
+from types import IntType
 
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.utils import log_exc, log
 
 from Products.ECAssignmentBox.content.ECAssignment import ECAssignment
 
