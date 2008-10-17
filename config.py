@@ -33,11 +33,11 @@ PROJECTNAME = "ECAutoAssessmentBox"
 DEFAULT_ADD_CONTENT_PERMISSION = "Add portal content"
 setDefaultRoles(DEFAULT_ADD_CONTENT_PERMISSION, ('Manager', 'Owner'))
 ADD_CONTENT_PERMISSIONS = {
-    'ECAutoAssesmentBox': 'ECAutoAssessmentBox: Add ECAutoAssesmentBox',
+    'ECAutoAssessmentBox': 'ECAutoAssessmentBox: Add ECAutoAssessmentBox',
     'ECAutoAssignment': 'ECAutoAssessmentBox: Add ECAutoAssignment',
 }
 
-setDefaultRoles('ECAutoAssessmentBox: Add ECAutoAssesmentBox', ('Manager','Owner'))
+setDefaultRoles('ECAutoAssessmentBox: Add ECAutoAssessmentBox', ('Manager','Owner'))
 setDefaultRoles('ECAutoAssessmentBox: Add ECAutoAssignment', ('Manager','Owner'))
 
 product_globals = globals()

@@ -31,7 +31,7 @@ __docformat__ = 'plaintext'
 # Additional
 
 # Classes
-import ECAutoAssesmentBox
+import ECAutoAssessmentBox
 import ECAutoAssignment
 
 ##code-section init-module-footer #fill in your manual code here

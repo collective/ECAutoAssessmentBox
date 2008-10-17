@@ -27,8 +27,8 @@ from zope.interface import Interface
 ##code-section HEAD
 ##/code-section HEAD
 
-class IECAutoAssesmentBox(Interface):
-    """Marker interface for .ECAutoAssesmentBox.ECAutoAssesmentBox
+class IECAutoAssessmentBox(Interface):
+    """Marker interface for .ECAutoAssessmentBox.ECAutoAssessmentBox
     """
 
 class IECAutoAssignment(Interface):

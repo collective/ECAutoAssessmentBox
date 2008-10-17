@@ -122,23 +122,23 @@ schema = Schema((
 ##code-section after-local-schema #fill in your manual code here
 ##/code-section after-local-schema
 
-ECAutoAssesmentBox_schema = ECAssignmentBox_schema.copy() + \
+ECAutoAssessmentBox_schema = ECAssignmentBox_schema.copy() + \
     schema.copy()
 
 ##code-section after-schema #fill in your manual code here
 ##/code-section after-schema
 
-class ECAutoAssesmentBox(ECAssignmentBox):
+class ECAutoAssessmentBox(ECAssignmentBox):
     """
     """
     security = ClassSecurityInfo()
 
-    implements(interfaces.IECAutoAssesmentBox)
+    implements(interfaces.IECAutoAssessmentBox)
 
-    meta_type = 'ECAutoAssesmentBox'
+    meta_type = 'ECAAB'
     _at_rename_after_creation = True
 
-    schema = ECAutoAssesmentBox_schema
+    schema = ECAutoAssessmentBox_schema
 
     # FIXME: allowed_content_types is defined in profile.default.types.ECAutoAssessmentBox.xml
     #        and should be used elsewhere
@@ -235,10 +235,10 @@ class ECAutoAssesmentBox(ECAssignmentBox):
         
         return result
 
-interface.alsoProvides(ECAutoAssesmentBox, IMultiPageSchema)
+interface.alsoProvides(ECAutoAssessmentBox, IMultiPageSchema)
 
-registerType(ECAutoAssesmentBox, PROJECTNAME)
-# end of class ECAutoAssesmentBox
+registerType(ECAutoAssessmentBox, PROJECTNAME)
+# end of class ECAutoAssessmentBox
 
 ##code-section module-footer #fill in your manual code here
 ##/code-section module-footer

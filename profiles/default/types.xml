@@ -2,10 +2,10 @@
 <object name="portal_types"
         meta_type="Plone Types Tool">
 
- <object name="ECAutoAssesmentBox"
+ <object name="ECAAB"
          meta_type="Factory-based Type Information with dynamic views"/>
 
- <object name="ECAutoAssignment"
+ <object name="ECAA"
          meta_type="Factory-based Type Information with dynamic views"/>
 
  <object name="ECSpoolerTool"

@@ -1,1 +1,1 @@
-1.1-alpha cvs-unreleased
+1.1-beta cvs-unreleased

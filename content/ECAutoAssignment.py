@@ -120,7 +120,7 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
 
     implements(interfaces.IECAutoAssignment)
 
-    meta_type = 'ECAutoAssignment'
+    meta_type = 'ECAA'
     _at_rename_after_creation = True
 
     schema = ECAutoAssignment_schema
