@@ -36,8 +36,7 @@ failure_msg = context.translate(
                 default = 'Please correct the indicated errors.')
 
 if errors:
-    return state.set(status = 'failure', 
-                     errors = errors, 
-                     portal_status_message = failure_msg)
+    context.plone_utils.addPortalMessage(failure_msg)
+    return state.set(status = 'failure', errors = errors)
 else:
     return state

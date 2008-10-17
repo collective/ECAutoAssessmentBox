@@ -37,4 +37,5 @@ else:
                                        REQUEST.get('port', ''))
                             )
 
-return state.set(portal_status_message = msg)
+context.plone_utils.addPortalMessage(msg)
+return state

@@ -33,5 +33,5 @@ msg = context.translate(
         domain  = I18N_DOMAIN,
         default = 'Your changes have been saved.')
 
-return state.set(portal_status_message = msg)
-#return printed
+context.plone_utils.addPortalMessage(msg)
+return state

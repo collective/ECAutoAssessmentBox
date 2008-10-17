@@ -29,5 +29,5 @@ msg = context.translate(
         domain  = I18N_DOMAIN,
         default = 'Backend cache has been reinitialized.')
 
-return state.set(portal_status_message = msg)
-#return printed
+context.plone_utils.addPortalMessage(msg)
+return state
