@@ -24,9 +24,11 @@ __docformat__ = 'plaintext'
 
 from AccessControl import ClassSecurityInfo
 from Products.Archetypes.atapi import *
+from zope import interface
 from zope.interface import implements
 import interfaces
 
+from Products.Archetypes.interfaces import IMultiPageSchema
 from Products.CMFCore.utils import getToolByName
 from Products.CMFDynamicViewFTI.browserdefault import BrowserDefaultMixin
 
@@ -180,6 +182,8 @@ class ECAutoAssesmentBox(ECAssignmentBox):
               edit mode.
         """
         result = []
+        
+        logger.debug('xxx: self.backend: %s' % self.backend)
 
         ecs_tool = getToolByName(self, ECS_NAME)
         fields = ecs_tool.getBackendInputFields(self.backend)
@@ -230,6 +234,8 @@ class ECAutoAssesmentBox(ECAssignmentBox):
                               )
         
         return result
+
+interface.alsoProvides(ECAutoAssesmentBox, IMultiPageSchema)
 
 registerType(ECAutoAssesmentBox, PROJECTNAME)
 # end of class ECAutoAssesmentBox
