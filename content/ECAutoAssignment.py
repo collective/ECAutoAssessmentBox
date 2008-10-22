@@ -431,7 +431,7 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
                 if self.isSolved():
                     icon = 'ec_accept.png'
                 else:
-                    icon = 'ec_error.png'
+                    icon = 'ec_exclamation.png'
             
                 result.append({'icon':icon, 
                                'alt':'Auto feedback',
@@ -442,7 +442,7 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
             # end if
             elif (type(resultValue) == IntType) and resultValue < 0:
                 
-                icon = 'ec_exclamation.png'
+                icon = 'ec_error.png'
                 
                 result.append({'icon':icon, 
                                'alt':'Auto feedback',

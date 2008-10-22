@@ -41,7 +41,7 @@ import logging
 
 from Products.ECAssignmentBox.content.ECAssignmentBox import ECAssignmentBox
 from Products.ECAssignmentBox.content.ECAssignmentBox import ECAssignmentBox_schema
-from Products.ECAssignmentBox import permissions
+#from Products.ECAssignmentBox import permissions
 
 from Products.ECAutoAssessmentBox.content.ECAutoAssignment import ECAutoAssignment
 from Products.ECAutoAssessmentBox.content.DynamicDataField import DynamicDataField
@@ -66,7 +66,7 @@ schema = Schema((
             description_msgid='help_backend',
             i18n_domain=I18N_DOMAIN,
         ),
-        read_permission = permissions.ModifyPortalContent,
+        read_permission = 'Modify Portal Content',
     ),
     
     BooleanField(
@@ -81,7 +81,7 @@ schema = Schema((
             i18n_domain = I18N_DOMAIN,
         ),
         schemata = 'backend',
-        read_permission = permissions.ModifyPortalContent,
+        read_permission = 'Modify Portal Content',
     ),
 
     StringField(
@@ -97,7 +97,7 @@ schema = Schema((
             i18n_domain=I18N_DOMAIN,
         ),
         schemata = 'backend',
-        read_permission = permissions.ModifyPortalContent,
+        read_permission = 'Modify Portal Content',
     ),
 
     # FIXME: comment in if available
@@ -113,7 +113,7 @@ schema = Schema((
             description_msgid = 'help_input_field',
             i18n_domain = I18N_DOMAIN,
         ),
-        read_permission = permissions.ModifyPortalContent,
+        read_permission = 'Modify Portal Content',
     ),
 
 ),

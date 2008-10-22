@@ -38,7 +38,9 @@ import xmlrpclib
 import traceback
 
 import logging
-from Products.CMFPlone.utils import log_exc, log
+
+from Products.CMFCore import permissions
+from Products.CMFPlone.utils import log_exc
 
 logger = logging.getLogger('ECAutoAssessmentBox')
 ##/code-section module-header
@@ -376,7 +378,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
             return {}
 
 
-    security.declareProtected(edit_permission, 'test')
+    security.declareProtected(permissions.ModifyPortalContent, 'test')
     def test(self, host=None, port=None, username=None, password=None):
         """
         Tests the connection to the spooler server.
