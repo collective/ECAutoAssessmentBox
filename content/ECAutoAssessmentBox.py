@@ -143,7 +143,7 @@ class ECAutoAssessmentBox(ECAssignmentBox):
 
     # FIXME: allowed_content_types is defined in profile.default.types.ECAutoAssessmentBox.xml
     #        and should be used elsewhere
-    allowed_content_types = ['ECAutoAssignment']
+    allowed_content_types = ['ECAA']
     
     ##/code-section class-header
 
