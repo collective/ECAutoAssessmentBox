@@ -132,7 +132,6 @@ class ECAutoAssessmentBox(ECAssignmentBox):
     """
     """
     security = ClassSecurityInfo()
-
     implements(interfaces.IECAutoAssessmentBox)
 
     meta_type = 'ECAAB'
@@ -140,11 +139,12 @@ class ECAutoAssessmentBox(ECAssignmentBox):
 
     schema = ECAutoAssessmentBox_schema
 
+    ##code-section class-header #fill in your manual code here
+
     # FIXME: allowed_content_types is defined in profile.default.types.ECAutoAssessmentBox.xml
     #        and should be used elsewhere
     allowed_content_types = ['ECAutoAssignment']
-
-    ##code-section class-header #fill in your manual code here
+    
     ##/code-section class-header
 
     # Methods
