@@ -163,7 +163,8 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
                                            "Automatically checked by '%s'." % backend)
                     
             except Exception, e:
-                log_exc('Error: %s' % str(e))
+                #log_exc('Error: %s' % str(e))
+                logger.warn('Could not get result from spooler: %s' % str(e))
 
         return self.getAuto_feedback()
 
