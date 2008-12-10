@@ -6,7 +6,7 @@ proxy = Manager, Authenticated
 View = 0:Authenticated
 
 [validators]
-validators=
+validators=ecaa_recheck_validate
 
 [actions]
 action.success=traverse_to:string:ecaa_view

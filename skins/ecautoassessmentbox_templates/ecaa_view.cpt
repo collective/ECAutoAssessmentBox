@@ -19,10 +19,11 @@
       <tal:main-macro metal:define-macro="main"
           define="fieldNames here/getViewModeReadFieldNames;
                   auto_feedback here/getAutoFeedback | nothing;
-                  isOwner python: user.has_role(['Owner', 'Reviewer', 'Manager'], context.aq_parent);
-                  canRecheck python: isOwner and (context.aq_parent.backend != 'none');"
+                  parent nocall:here/aq_parent;
+                  isOwner python: user.has_role(['Owner', 'Reviewer', 'Manager'], parent);
+                  canRecheck python: isOwner;"
       >
-          
+
         <!-- show header information -->
         <metal:use use-macro="here/base_macros/macros/eca_view_head" />
 
