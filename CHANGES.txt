@@ -1,6 +1,6 @@
-# Changes in release 1.1 (planed for 2008-10-xx)
+# Changes in release 1.1 (2008-12-12)
 
-- Complete re-design and Plone-3.0 compatibility
+- Complete re-implementation for Plone-3.x
 
 # Changes in release 1.0 (2007-04-16)
 
