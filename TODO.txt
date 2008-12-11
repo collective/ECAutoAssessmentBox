@@ -1,0 +1,8 @@
+<!-- -*- coding: utf-8 -*- -->
+
+# Todos for release 1.1 (2008-12-10)
+
+- Migration of 'ECAutoAssessmentBox' content from Plone 2.x has not 
+  been tested.
+
+- 'ECAutoAssessmentTask' has not been integrated.
