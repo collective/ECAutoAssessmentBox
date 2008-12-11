@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # $Id$
 #
-# Copyright (c) 2007 Otto-von-Guericke-Universität Magdeburg
+# Copyright (c) 2006-2008 Otto-von-Guericke-Universität Magdeburg
 #
 # This file is part of ECAutoAssessmentBox.
 #
@@ -19,8 +19,9 @@
 # along with ECAutoAssessmentBox; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-__author__ = """Mario Amelung <amelung@eudemonia-solutions.de>"""
+__author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
+__version__   = '$Revision$'
 
 from AccessControl import ClassSecurityInfo
 from Products.Archetypes.atapi import *

@@ -21,6 +21,7 @@
 #
 __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
+__version__   = '$Revision$'
 
 # Python imports
 from types import DictionaryType, StringType, UnicodeType, ListType

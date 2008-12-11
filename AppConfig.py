@@ -21,6 +21,7 @@
 #
 __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
+__version__   = '$Revision$'
 
 from Products.CMFCore import permissions
 from Products.ATContentTypes.configuration.config import zconf
