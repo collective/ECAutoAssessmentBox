@@ -26,7 +26,7 @@ __version__   = '$Revision$'
 import os
 import transaction
 import logging
-logger = logging.getLogger('ECAutoAssessmentBox: setuphandlers')
+log = logging.getLogger('ECAutoAssessmentBox: setuphandlers')
 
 from Products.ECAutoAssessmentBox.config import PROJECTNAME
 from Products.ECAutoAssessmentBox.config import DEPENDENCIES
@@ -41,7 +41,7 @@ def isNotECAutoAssessmentBoxProfile(context):
 def setupHideToolsFromNavigation(context):
     """hide tools"""
     
-    #logger.info('Hiding tools')
+    #log.info('Hiding tools')
 
     if isNotECAutoAssessmentBoxProfile(context): return 
     # uncatalog tools
@@ -65,7 +65,7 @@ def setupHideToolsFromNavigation(context):
 def fixTools(context):
     """do post-processing on auto-installed tool instances"""
     
-    #logger.info('Fixing tools')
+    #log.info('Fixing tools')
 
     if isNotECAutoAssessmentBoxProfile(context): return 
     site = context.getSite()
@@ -81,7 +81,7 @@ def updateRoleMappings(context):
     """after workflow changed update the roles mapping. this is like pressing
     the button 'Update Security Setting' and portal_workflow"""
     
-    #logger.info('Updating role mappings')
+    #log.info('Updating role mappings')
 
     if isNotECAutoAssessmentBoxProfile(context): return 
     wft = getToolByName(context.getSite(), 'portal_workflow')
@@ -92,7 +92,7 @@ def postInstall(context):
     """Called as at the end of the setup process. """
     # the right place for your custom code
     
-    #logger.info('Doing post install')
+    #log.info('Doing post install')
 
     if isNotECAutoAssessmentBoxProfile(context): return 
     
@@ -123,11 +123,11 @@ def installQIDependencies(context):
     quickinstaller = portal.portal_quickinstaller
     for dependency in DEPENDENCIES:
         if quickinstaller.isProductInstalled(dependency):
-            logger.info('Reinstalling dependency %s:' % dependency)
+            log.info('Reinstalling dependency %s:' % dependency)
             quickinstaller.reinstallProducts([dependency])
             transaction.savepoint()
         else:
-            logger.info('Installing dependency %s:' % dependency)
+            log.info('Installing dependency %s:' % dependency)
             quickinstaller.installProduct(dependency)
             transaction.savepoint()
 
@@ -163,6 +163,6 @@ def reindexIndexes(context):
     if ids:
         pc.manage_reindexIndex(ids=ids)
     
-    logger.info('Reindexed %s' % indexes)
+    log.info('Reindexed %s' % indexes)
 
 ##/code-section FOOT
