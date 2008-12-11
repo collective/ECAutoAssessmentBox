@@ -39,6 +39,26 @@
  </import-step>
 
 <!-- ##code-section ADDITIONALSTEPS -->
+
+<import-step 
+    id="ECAutoAssessmentBox-GS-dependencies" 
+    handler="Products.ECAutoAssessmentBox.setuphandlers.installGSDependencies"
+    title="Dependend GS profiles for ECAutoAssessmentBox"
+    version="20081026-01">
+   <dependency step="plone-final"/>
+   install Generic Setup profile dependencies for ECAutoAssessmentBox
+ </import-step>
+
+ <import-step 
+    id="ECAutoAssessmentBox-QI-dependencies" 
+    handler="Products.ECAutoAssessmentBox.setuphandlers.installQIDependencies"
+    title="Dependend QI installables for ECAutoAssessmentBox"
+    version="20081026-01">
+   <dependency step="ECAutoAssessmentBox-GS-dependencies"/>
+   install quickinstaller dependencies for ECAutoAssessmentBox
+ </import-step>
+
+
 <!-- ##/code-section ADDITIONALSTEPS --> 
 
 </import-steps>
