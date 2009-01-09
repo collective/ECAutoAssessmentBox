@@ -35,6 +35,7 @@ import logging
 logger = logging.getLogger('ECAutoAssessmentBox')
 logger.debug('Installing Product')
 
+import sys
 import os
 import os.path
 from Globals import package_home
@@ -46,9 +47,18 @@ from Products.CMFCore import DirectoryView
 from Products.CMFCore import permissions as cmfpermissions
 from Products.CMFCore import utils as cmfutils
 from Products.CMFPlone.utils import ToolInit
-from config import *
+
+from Products.ECAutoAssessmentBox import content
+from Products.ECAutoAssessmentBox import tool
+from Products.ECAutoAssessmentBox.config import *
 
 DirectoryView.registerDirectory('skins', product_globals)
+
+# special code which provides migration of auto assessment boxes 
+# created with 1.0 
+sys.modules['Products.ECAutoAssessmentBox.ECAutoAssessmentBox'] = content.ECAutoAssessmentBox
+sys.modules['Products.ECAutoAssessmentBox.ECAutoAssignment'] = content.ECAutoAssignment
+sys.modules['Products.ECAutoAssessmentBox.ECSpoolerTool'] = tool.ECSpoolerTool
 
 ##code-section custom-init-head #fill in your manual code here
 ##/code-section custom-init-head
