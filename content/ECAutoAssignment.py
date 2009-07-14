@@ -161,9 +161,12 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
                     if (self.aq_parent.getAutoAccept()) and (self.isSolved()):
                         self._changeWfState('accept', 
                                            "Automatically checked by '%s' and accepted." % backend)
-                    else:
-                        self._changeWfState('retract', 
-                                           "Automatically checked by '%s'." % backend)
+                    # 2009-03-30, ma: 
+                    # For some reasons we do not put the assignment in 
+                    # state peding
+                    #else:
+                    #    self._changeWfState('retract', 
+                    #                       "Automatically checked by '%s'." % backend)
                     
             except Exception, e:
                 #log_exc('Error: %s' % str(e))
@@ -285,9 +288,11 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
             if not studentSolution:
                 # FIXME: translate error message
                 raise Exception('Submission is not plain text.')
-    
-            self._changeWfState('review', 
-                                "Queued for automatic checking by '%s'." % backend)
+  
+            # 2009-03-30, ma: 
+            # For some reasons we do not put the assignment in state peding
+            #self._changeWfState('review', 
+            #                    "Queued for automatic checking by '%s'." % backend)
     
             spoolerWSI =  getToolByName(self, 'ecspooler_tool')
             assert spoolerWSI != None, "A valid portal ecspooler is required."
@@ -336,9 +341,12 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
                         msgId = 'submission_accepted'
                         msgDefault = 'Submission has been accepted.'
 
-                    else:
-                        self._changeWfState('retract', "Automatically checked "
-                                            "by '%s'." % backend)
+                    # 2009-03-30, ma: 
+                    # For some reasons we do not put the assignment in 
+                    # state peding
+                    #else:
+                    #    self._changeWfState('retract', "Automatically checked "
+                    #                        "by '%s'." % backend)
         
                 else:
                     logger.warn('[%s] no feedback after %d polls' % (self.getId(), 
