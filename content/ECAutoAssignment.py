@@ -21,7 +21,7 @@
 #
 __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
-__version__   = '$Revision$'
+__version__   = '$Revision: 1191 $'
 
 from AccessControl import ClassSecurityInfo
 from Products.Archetypes.atapi import *
@@ -163,7 +163,7 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
                                            "Automatically checked by '%s' and accepted." % backend)
                     # 2009-03-30, ma: 
                     # For some reasons we do not put the assignment in 
-                    # state peding
+                    # state pending
                     #else:
                     #    self._changeWfState('retract', 
                     #                       "Automatically checked by '%s'." % backend)
@@ -343,7 +343,7 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
 
                     # 2009-03-30, ma: 
                     # For some reasons we do not put the assignment in 
-                    # state peding
+                    # state pending
                     #else:
                     #    self._changeWfState('retract', "Automatically checked "
                     #                        "by '%s'." % backend)
