@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<action-icons>
+ <action-icon category="controlpanel"
+              action_id="ECSpoolerTool"
+              title="Auto Assessment Settings" priority="0"
+              icon_expr="ec_tool.png"/>
+</action-icons>
