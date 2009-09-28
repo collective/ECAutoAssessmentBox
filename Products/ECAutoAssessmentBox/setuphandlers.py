@@ -23,16 +23,13 @@ __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
 __version__   = '$Revision$'
 
-import os
+#import os
 import transaction
 import logging
 log = logging.getLogger('ECAutoAssessmentBox: setuphandlers')
 
-from Products.ECAutoAssessmentBox.config import PROJECTNAME
-from Products.ECAutoAssessmentBox.config import DEPENDENCIES
 from Products.CMFCore.utils import getToolByName
-##code-section HEAD
-##/code-section HEAD
+from Products.ECAutoAssessmentBox import config
 
 def isNotECAutoAssessmentBoxProfile(context):
     return context.readDataFile("ECAutoAssessmentBox_marker.txt") is None
@@ -44,37 +41,46 @@ def setupHideToolsFromNavigation(context):
     #log.info('Hiding tools')
 
     if isNotECAutoAssessmentBoxProfile(context): return 
+
     # uncatalog tools
-    site = context.getSite()
     toolnames = ['ecspooler_tool']
+
+    site = context.getSite()
+    portal = getToolByName(site, 'portal_url').getPortalObject()
+
     portalProperties = getToolByName(site, 'portal_properties')
     navtreeProperties = getattr(portalProperties, 'navtree_properties')
+    
     if navtreeProperties.hasProperty('idsNotToList'):
+        current = list(navtreeProperties.getProperty('idsNotToList') or [])
+        # add all ids 
         for toolname in toolnames:
-            try:
-                portal[toolname].unindexObject()
-            except:
-                pass
-            current = list(navtreeProperties.getProperty('idsNotToList') or [])
             if toolname not in current:
                 current.append(toolname)
                 kwargs = {'idsNotToList': current}
                 navtreeProperties.manage_changeProperties(**kwargs)
 
+        for item in current:
+            try:
+                portal[item].unindexObject()
+            except:
+                log.warn('Could not unindex object: %s' % item)
+
 
 def fixTools(context):
     """do post-processing on auto-installed tool instances"""
-    
+
     #log.info('Fixing tools')
 
     if isNotECAutoAssessmentBoxProfile(context): return 
+
     site = context.getSite()
     tool_ids=['ecspoolertool']
+    
     for tool_id in tool_ids:
-	    if hasattr(site, tool_id):
-	        tool=site[tool_id]
-	        tool.initializeArchetype()
-
+        if hasattr(site, tool_id):
+            tool=site[tool_id]
+            tool.initializeArchetype()
 
 
 def updateRoleMappings(context):
@@ -121,7 +127,7 @@ def installQIDependencies(context):
 
     portal = getToolByName(site, 'portal_url').getPortalObject()
     quickinstaller = portal.portal_quickinstaller
-    for dependency in DEPENDENCIES:
+    for dependency in config.DEPENDENCIES:
         if quickinstaller.isProductInstalled(dependency):
             log.info('Reinstalling dependency %s:' % dependency)
             quickinstaller.reinstallProducts([dependency])
@@ -164,5 +170,3 @@ def reindexIndexes(context):
         pc.manage_reindexIndex(ids=ids)
     
     log.info('Reindexed %s' % indexes)
-
-##/code-section FOOT
