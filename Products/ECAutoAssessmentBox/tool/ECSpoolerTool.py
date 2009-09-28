@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# $Id$
+# $Id:ECSpoolerTool.py 1304 2009-09-28 06:55:16Z amelung $
 #
 # Copyright (c) 2006-2008 Otto-von-Guericke-Universität Magdeburg
 #
@@ -21,7 +21,7 @@
 #
 __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
-__version__   = '$Revision$'
+__version__   = '$Revision:1304 $'
 
 from AccessControl import ClassSecurityInfo
 from Products.Archetypes.atapi import *
@@ -73,6 +73,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
 
     implements(interfaces.IECSpoolerTool)
 
+    plone_tool = True
     meta_type = 'ECSpoolerTool'
     _at_rename_after_creation = True
 
