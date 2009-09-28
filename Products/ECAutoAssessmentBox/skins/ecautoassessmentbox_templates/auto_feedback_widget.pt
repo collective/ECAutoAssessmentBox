@@ -1,0 +1,26 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      xml:lang="en" lang="en"
+      i18n:domain="eduComponents">
+
+  <body>
+
+    <metal:define define-macro="search">
+      <metal:use use-macro="here/widgets/field/macros/edit" />
+    </metal:define>
+
+    <metal:define define-macro="edit">
+      <metal:use use-macro="here/widgets/file/macros/edit" />
+    </metal:define>
+
+    <metal:define define-macro="view">
+      <pre tal:define="auto_feedback accessor;"
+           tal:condition="auto_feedback | nothing"
+           tal:content="auto_feedback">
+      </pre>
+    </metal:define>
+
+  </body>
+</html>
