@@ -1,0 +1,302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+                      "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="here/prefs_main_template/macros/master"
+      i18n:domain="eduComponents">
+
+  <head>
+    <metal:border fill-slot="top_slot">
+      <tal:border define="dummy python:request.set('disable_border',1)" />
+    </metal:border>
+  
+    <metal:javascript_head_slot fill-slot="javascript_head_slot">
+      <script type="text/javascript"
+              tal:attributes="src string:$portal_url/portal_skins/archetypes/widgets/js/picklist.js"></script>
+    </metal:javascript_head_slot>
+  </head>
+
+  <body>
+    <div metal:fill-slot="prefs_configlet_main"
+        tal:define="errors  options/state/getErrors;
+                    ecs_tool nocall: here/ecspooler_tool;">
+
+      <!-- for debugging -->
+      <!--
+      <div tal:content="python: ecs_tool.backendValueCache" />
+      -->
+
+      <h1 i18n:translate="heading_ecspooler_setup">Spooler/Auto Assessment Box Settings</h1>
+
+      <a href=""
+        class="link-parent"
+        tal:attributes="href string: $portal_url/plone_control_panel"
+        i18n:domain="plone"
+        i18n:translate="label_up_to_plone_setup">
+          Up to Site Setup
+      </a>
+
+      <p i18n:translate="description_ecspooler_setup">
+        Lets you control which spooler service will be used and which 
+        backends are available in your site.
+      </p>
+
+
+      <form action=""
+          name="prefs_spooler"
+          method="post"
+          tal:attributes="action string:${here_url}/${template_id}">
+
+        <fieldset>
+          <legend i18n:translate="legend_ecspooler_details">
+            Spooler connection settings
+          </legend>
+
+          <div class="field"
+              tal:define="host request/host | portal_properties/ecspooler_properties/host;
+                  error errors/host | nothing;"
+              tal:attributes="class  python:test(error, 'field error', 'field');">
+
+            <label i18n:translate="label_host">Host</label>
+            <span class="fieldRequired" title="Required">(Required)</span>
+
+            <div class="formHelp" i18n:translate="help_host">
+              The address of your spooler service (e.g., host.yourdomain.com).
+            </div>
+
+            <!-- 
+            <div tal:condition="error" 
+                tal:content="error" 
+                i18n:translate="error_host">Error message
+            </div>
+             -->
+
+            <div tal:condition="error" 
+                tal:content="error">Error message
+            </div>
+
+            <input name="host" 
+                type="text" 
+                tal:attributes="value    host;
+                                tabindex tabindex/next;"/>
+          </div>
+  
+          <div class="field"
+              tal:define="port request/port | portal_properties/ecspooler_properties/port;
+                  error errors/port | nothing;"
+              tal:attributes="class  python:test(error, 'field error', 'field');">
+        
+            <label i18n:translate="label_port">Port</label>
+            <span class="fieldRequired" title="Required">(Required)</span>
+
+            <div class="formHelp" i18n:translate="help_port">
+              The port of your spooler service (e.g., 5050).
+            </div>
+
+            <!-- 
+            <div tal:condition="error" 
+                tal:content="error" 
+                i18n:translate="error_port">Error message
+            </div>
+            -->    
+
+            <div tal:condition="error" 
+                tal:content="error">Error message
+            </div>
+
+            <input name="port" 
+                type="text" 
+                tal:attributes="value    port;
+                                tabindex tabindex/next;"/>
+          </div>
+
+          <div class="field"
+              tal:define="username request/username | portal_properties/ecspooler_properties/username;
+                  error errors/username | nothing;"
+              tal:attributes="class  python:test(error, 'field error', 'field');">
+
+            <label i18n:translate="label_username">Username
+            </label>
+            <span class="fieldRequired" title="Required">
+              (Required)
+            </span>
+
+            <div class="formHelp" i18n:translate="help_username">
+              Username for authentication to your spooler service.
+            </div>
+
+            <!-- 
+            <div tal:condition="error" 
+                tal:content="error" 
+                i18n:translate="error_username">Error message
+            </div>
+            -->
+    
+            <div tal:condition="error" 
+                tal:content="error">Error message
+            </div>
+
+            <input name="username" 
+                type="text" 
+                tal:attributes="value    username;
+                                tabindex tabindex/next;"/>
+          </div>
+
+          <div class="field"
+              tal:define="password  request/password | portal_properties/ecspooler_properties/password;
+                  error errors/password | nothing;"
+              tal:attributes="class  python:test(error, 'field error', 'field');">
+
+            <label i18n:translate="label_password">Password
+            </label>
+            <span class="fieldRequired" title="Required">
+              (Required)
+            </span>
+
+            <div class="formHelp" i18n:translate="help_password">
+              The password for the user account.
+            </div>
+
+            <!--
+            <div tal:condition="error" 
+                tal:content="error" 
+                i18n:translate="error_password">Error message
+            </div>
+            -->
+
+            <div tal:condition="error" 
+                tal:content="error">Error message
+            </div>
+                
+            <input name="password" 
+                type="password" 
+                tal:attributes="value    password;
+                                tabindex tabindex/next;"/>
+          </div>
+
+          <div class="formControls">
+            <input class="context"
+              tabindex=""
+              type="submit"
+              name="form.button.Apply"
+              value="Apply"
+              i18n:attributes="value"
+              tal:attributes="tabindex tabindex/next;"/>
+
+          </div>
+
+        </fieldset>
+
+        <fieldset>
+          <legend i18n:translate="legend_backend_details">
+            Available and selected backends.
+          </legend>
+
+          <div class="field"
+              tal:define="fieldName string:selectedBackends;
+                          error errors/selectedBackends | nothing;
+                          host request/host | portal_properties/ecspooler_properties/host;
+                          port request/port | portal_properties/ecspooler_properties/port;
+                          leftVocabulary ecs_tool/getAvailableBackendsDL;
+                          rightVocabulary ecs_tool/getSelectedBackendsDL;
+                          
+                          value      request/selectedBackends | ecs_tool/getSelectedBackends;
+                          orderable  python:True;"
+              tal:attributes="class  python:test(error, 'field error', 'field');">
+  
+            <div class="formHelp" i18n:translate="help_backend_details">
+              In the left box you will find all backends currently available 
+              by the spooler service at 
+              <span i18n:name="host" tal:replace="host"/>:<span i18n:name="port" tal:replace="port"/>. 
+              Select one or more backends and add them to the list of 
+              accessible backends for your site.
+            </div>
+  
+<!--
+            <div tal:condition="error" 
+                tal:content="error" 
+                i18n:translate="error_selected_backends">Error message
+            </div>
+-->
+  
+            <div tal:condition="error" 
+                tal:content="error">Error message
+            </div>
+
+<!--
+            <metal:use use-macro="here/widget_addremove/macros/add_remove_box" />
+-->
+            <metal:use use-macro="here/widget_picklist/macros/picklist_box" />
+          </div>
+
+        </fieldset>
+
+        <div class="formControls">
+          <input class="context"
+            tabindex=""
+            type="submit"
+            name="form.button.Save"
+            value="Save"
+            i18n:domain="plone"
+            i18n:attributes="value"
+            tal:attributes="tabindex tabindex/next;"/>
+
+          <input class="standalone"
+            tabindex=""
+            type="submit"
+            name="form.button.Cancel"
+            value="Cancel"
+            i18n:domain="plone"
+            i18n:attributes="value"
+            tal:attributes="tabindex tabindex/next;"/>
+        </div>
+
+        <fieldset>
+          <legend i18n:translate="legend_cache_details">
+            Backend schema cache.
+          </legend>
+
+          <div class="formHelp" i18n:translate="help_backend_cache">
+            Each backend provides a schema which describes the required input 
+            fields. The schema is cached. The cached values will be used for 
+            faster access or in case a backend is temporarily off-line. 
+            Schemata for the backends listed below are currently in
+            the cache. You can reset and reinitialize the cache with the 
+            selected backends for this site. 
+          </div>
+
+          <div class="formHelp" i18n:translate="help_backend_cache_note">
+            Note: Reinitializing the cache will delete information about 
+            backends currently unavailable. If there are auto assessment boxes
+            using these backends they will become unusable.
+          </div>
+          
+          <ul tal:repeat="item ecs_tool/getCachedBackends">
+            <li class="" 
+                tal:attributes="class python:test(item['online'], 'backend-online', 'backend-offline');" 
+                tal:content="python: '%s (%s)' % (item['name'], item['version'])" />
+          </ul>
+
+          <div class="formControls">
+            <input class="context"
+              tabindex=""
+              type="submit"
+              name="form.button.Reinitialize"
+              value="Reinitialize"
+              i18n:attributes="value"
+              tal:attributes="tabindex tabindex/next;"/>
+          </div>
+
+        </fieldset>
+
+        <input type="hidden" name="form.submitted" value="1" />
+
+      </form>
+      
+    </div>
+  </body>
+</html>

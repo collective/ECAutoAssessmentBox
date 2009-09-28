@@ -1,0 +1,18 @@
+[default]
+title=Auto assessment settings
+
+[security]
+View=0:Authenticated
+
+[validators]
+validators..Apply=prefs_spooler_validate
+validators..Save=prefs_spooler_validate
+validators=
+
+[actions]
+action.success..Apply=traverse_to:string:prefs_spooler_apply
+action.success..Reinitialize=redirect_to:string:prefs_spooler_re-init
+action.success..Save=traverse_to:string:prefs_spooler_set
+action.success..Cancel=redirect_to:string:plone_control_panel
+action.success=traverse_to:string:prefs_spooler_set
+action.failure=traverse_to:string:prefs_spooler_form
