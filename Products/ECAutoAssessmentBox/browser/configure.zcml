@@ -1,0 +1,19 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
+
+  <resource
+      file="ecaab.kss"
+      name="ecaab.kss"
+      />
+
+  <page
+     for="plone.app.kss.interfaces.IPortalObject"
+     class=".ecaab_kss.DemoView"
+     attribute="response1"
+     name="response1"
+     permission="zope2.View"
+  />
+
+</configure>

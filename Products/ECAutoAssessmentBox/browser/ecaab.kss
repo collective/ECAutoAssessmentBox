@@ -1,0 +1,14 @@
+select#backend:change {
+   action-server: response1;
+   response1-backend: currentFormVar('backend');
+}
+
+select#backend:keypress {
+   action-server: response1;
+   response1-backend: currentFormVar('backend');
+}
+
+div.mylist h2:click {
+   evt-click-preventdefault: true;
+   action-server: response1;
+}
