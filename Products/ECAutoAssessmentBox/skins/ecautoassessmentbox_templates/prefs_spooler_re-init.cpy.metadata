@@ -1,6 +1,0 @@
-[default]
-title=Reinitialize backend cache
-
-[actions]
-action.failure=traverse_to:string:prefs_spooler_form
-action.success=redirect_to:string:prefs_spooler_form
