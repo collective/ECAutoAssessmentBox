@@ -1,6 +1,13 @@
-# Changes in release 1.1 (2008-12-12)
+History
+=======
 
-- Complete re-implementation for Plone-3.x
+# Changes in release 1.1 (2009-10-09)
+
+- ECAutoAssessmentBox was completly re-implemented with support for 
+  Plone 3.
+
+- ECAutoAssessmentBox is now eggified and uploaded to PyPI.  An old-style 
+  tarball distribution is still available at plone.org.
 
 # Changes in release 1.0 (2007-04-16)
 
