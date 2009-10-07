@@ -276,9 +276,12 @@
           </div>
           
           <ul tal:repeat="item ecs_tool/getCachedBackends">
+            <!-- 
             <li class="" 
                 tal:attributes="class python:test(item['online'], 'backend-online', 'backend-offline');" 
                 tal:content="python: '%s (%s)' % (item['name'], item['version'])" />
+            -->
+            <li tal:content="python: '%s (%s)' % (item['name'], item['version'])" />
           </ul>
 
           <div class="formControls">
