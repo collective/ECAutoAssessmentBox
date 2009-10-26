@@ -23,48 +23,44 @@ __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
 __version__   = '$Revision:1304 $'
 
-from AccessControl import ClassSecurityInfo
-from Products.Archetypes.atapi import *
-from zope.interface import implements
-import interfaces
-
-from Products.CMFDynamicViewFTI.browserdefault import BrowserDefaultMixin
-from Products.ECAutoAssessmentBox.config import *
-from Products.CMFCore.utils import UniqueObject
-
-    
-##code-section module-header #fill in your manual code here
+import sys
 import socket
 import xmlrpclib
-import traceback
-
 import logging
+import interfaces
 
+#from xml.parsers.expat import ExpatError
+
+from zope.interface import implements
+
+from AccessControl import ClassSecurityInfo
+
+from Products.Archetypes.atapi import Schema, BaseSchema, registerType
+from Products.Archetypes.atapi import BaseContent, DisplayList
+
+from Products.CMFDynamicViewFTI.browserdefault import BrowserDefaultMixin
+from Products.CMFCore.utils import UniqueObject
 from Products.CMFCore import permissions
 from Products.CMFPlone.utils import log_exc
 
+from Products.ECAutoAssessmentBox import config
+
 logger = logging.getLogger('ECAutoAssessmentBox')
-##/code-section module-header
 
 schema = Schema((
 
 ),
 )
 
-##code-section after-local-schema #fill in your manual code here
-##/code-section after-local-schema
-
 ECSpoolerTool_schema = BaseSchema.copy() + \
     schema.copy()
 
-##code-section after-schema #fill in your manual code here
 
 class ConnectionFailedException(Exception):
     """
     """
     pass
 
-##/code-section after-schema
 
 class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
     """
@@ -106,13 +102,13 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Returns spooler status information
         """
-        logger.info("xxxxxxxx: _getStatus: Requesting spooler status information")
+        logger.info("xxx: _getStatus: Requesting spooler status information")
         
         try:
             spooler = self._getSpoolerHandle(host, port)
             return spooler.getStatus(self._getAuth(username, password))
 
-        except (socket.error, xmlrpclib.Fault), err:
+        except (socket.error, xmlrpclib.Fault):
             log_exc()
             pass
 
@@ -122,13 +118,13 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Returns a dict with all backends currently registered to ECSpooler.
         """
-        logger.info("xxxxxxxx: _getAvailableBackends: Trying to get available backends")
+        logger.info("xxx: _getAvailableBackends: Trying to get available backends")
         
         try:
             spooler = self._getSpoolerHandle(host, port)
             return spooler.getBackends(self._getAuth(username, password))
 
-        except (socket.error, xmlrpclib.Fault), err:
+        except (socket.error, xmlrpclib.Fault):
             log_exc()
             return {}
 
@@ -215,10 +211,10 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
                 logger.warn('Error while getting backend status: status is %s' % (status))
                 return False
 
-        except (socket.error, xmlrpclib.Fault), err:
+        except (socket.error, xmlrpclib.Fault):
             log_exc()
             return False
-        except Exception, e:
+        except Exception:
             log_exc()
             return False
 
@@ -240,7 +236,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
                                'version': self.backendValueCache[backend]['version'],
                                #'online': backend in availableBackends,
                                })
-            except Exception, e:
+            except Exception:
                 log_exc()
         
         return result
@@ -333,7 +329,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
                         # chache fields for this backend
                         self.backendValueCache[backend]['fields'] = fields[1]
 
-                except (socket.error, xmlrpclib.Fault), err:
+                except (socket.error, xmlrpclib.Fault):
                     #logger.error('%s' % err)
                     pass
 
@@ -366,7 +362,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         
                         self.backendValueCache[backend]['tests'] = tests[1]
         
-                except (socket.error, xmlrpclib.Fault), err:
+                except (socket.error, xmlrpclib.Fault):
                     #logger.error('%s' % err)
                     pass
             
@@ -401,7 +397,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
 
     security.declarePublic('appendJob')
     #def appendJob(self, backend, input, **kwargs):
-    def appendJob(self, backend, submission, inputFields, tests):
+    def appendJob(self, backend, submission, inputFields, tests, retry=True):
         """
         Adds a job to the spooler server.
         """
@@ -426,7 +422,15 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
             
             return result
         
-        #except AssertionError, aerr:
+        except xmlrpclib.Fault, ef:
+            logger.warn('%s: %s' % (sys.exc_info()[0], ef))
+            
+            if retry:
+                # take care of hexadecimal Unicode escape sequences
+                submission = submission.decode('unicode_escape')
+                # retry appending this submission 
+                return self.appendJob(backend, submission, inputFields, tests, False)
+
         except Exception, e:
             log_exc()
             return (-1, 'Internal error: %s: %s' % (sys.exc_info()[0], e))
@@ -498,4 +502,4 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         return {'username':username, 'password':password}
 
 
-registerType(ECSpoolerTool, PROJECTNAME)
+registerType(ECSpoolerTool, config.PROJECTNAME)
