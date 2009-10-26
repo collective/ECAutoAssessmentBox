@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# $Id$
+# $Id:ECAutoAssignment.py 1311 2009-09-28 07:03:00Z amelung $
 #
 # Copyright (c) 2006-2008 Otto-von-Guericke-Universität Magdeburg
 #
@@ -285,6 +285,9 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
             # set student solution 
             studentSolution = self.getAsPlainText()
             
+            #logger.debug('xxx: %s' % studentSolution)
+            #logger.debug('xxx: %s' % studentSolution.decode('unicode_escape'))
+            
             if not studentSolution:
                 # FIXME: translate error message
                 raise Exception('Submission is not plain text.')
@@ -305,8 +308,12 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
 
             logger.debug('[%s] enqueue: %s' % (self.getId(), repr(job)))
             
-            # validate job id?
-            if job[0]:
+            # An error occured; return error message
+            if job[0] < 0:
+                result = job[0];
+                msgId = 'submission_saved_check_failed'
+                msgDefault = 'Testing this submission failed (%s).' % (job[1],)
+            else:
                 # remember the job id and set inital values for feedback
                 self.jobId = job[1]
                 feedback = {}
@@ -356,14 +363,13 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
 
         except Exception, e:
             logger.debug('%s: %s' % (sys.exc_info()[0], e))
-            logger.debug(''.join(traceback.format_exception(*sys.exc_info())))
+            logger.debug(''.join(traceback.format_exception(sys.exc_info())))
 
             #self._changeWfState('retract', 'Auto check failed: %s' % str(e))
             
             result = -42;
             msgId = 'submission_saved_check_failed'
-            msgDefault = 'Auto checking this submission failed ' \
-                         '(%s).' % (e,)
+            msgDefault = 'Testing this submission failed (%s).' % (e,)
 
         message = self.translate(msgid = msgId,
                                  domain = I18N_DOMAIN,
