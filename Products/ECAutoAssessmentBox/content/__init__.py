@@ -1,39 +1,14 @@
 # -*- coding: utf-8 -*-
-# $Id$
+# $Id:__init__.py 1313 2009-09-28 07:03:29Z amelung $
 #
-# Copyright (c) 2006-2008 Otto-von-Guericke-Universität Magdeburg
+# Copyright (c) 2006-2009 Otto-von-Guericke University Magdeburg
 #
 # This file is part of ECAutoAssessmentBox.
 #
-# ECAutoAssessmentBox is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# ECAutoAssessmentBox is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with ECAutoAssessmentBox; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-#
-__author__ = """Mario Amelung <amelung@iws.cs.uni-magdeburg.de>"""
+__author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
-
-
-##code-section init-module-header #fill in your manual code here
-##/code-section init-module-header
-
-
-# Subpackages
-# Additional
+__version__   = '$Revision:1313 $'
 
 # Classes
 import ECAutoAssessmentBox
 import ECAutoAssignment
-
-##code-section init-module-footer #fill in your manual code here
-##/code-section init-module-footer
-
