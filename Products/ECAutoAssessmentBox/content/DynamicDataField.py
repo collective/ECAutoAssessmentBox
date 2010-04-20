@@ -42,7 +42,7 @@ from Products.ECAutoAssessmentBox.content import DynamicDataWidget
 class DynamicDataField(ObjectField):
     """ A dynamic field with undefined number of other fields
 
-    DynamicDataField provides an user fillable list of field with 
+    DynamicDataField provides an user fillable list with an 
     undefined number of fields.
 
     Data is maintained internally:
@@ -80,6 +80,7 @@ class DynamicDataField(ObjectField):
 
         # call super constructor
         ObjectField.__init__(self, name, **kwargs)
+
 
     security.declarePublic('fieldVocabulary')
     def fieldVocabulary(self, content_instance=None):
@@ -172,9 +173,11 @@ class DynamicDataField(ObjectField):
 #            log('getxxx: %s' % tuple(data))
 #            return tuple(data)
 
+
     security.declarePrivate('getRaw')
     def getRaw(self, instance, **kwargs):
         return self.get(instance, **kwargs)
+
 
     security.declarePublic('get_size')
     def get_size(self, instance):

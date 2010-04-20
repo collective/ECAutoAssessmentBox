@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # $Id:__init__.py 1313 2009-09-28 07:03:29Z amelung $
 #
-# Copyright (c) 2006-2009 Otto-von-Guericke University Magdeburg
+# Copyright (c) 2006-2010 Otto-von-Guericke University Magdeburg
 #
 # This file is part of ECAutoAssessmentBox.
 #

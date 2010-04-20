@@ -4,16 +4,22 @@
     xmlns:zcml="http://namespaces.zope.org/zcml">
 
   <resource
-      file="ecaab.kss"
-      name="ecaab.kss"
-      />
+    file="ecaab.kss"
+    name="ecaab.kss"
+  />
+
+  <zope:adapter
+    name="ecaab.backend_form"
+    provides="zope.contentprovider.interfaces.IContentProvider"
+    factory=".ecaab_kss.BackendForm"
+  />
 
   <page
-     for="plone.app.kss.interfaces.IPortalObject"
-     class=".ecaab_kss.DemoView"
-     attribute="response1"
-     name="response1"
-     permission="zope2.View"
+    name="refresh_fieldset_backend"
+    for="Products.ECAutoAssessmentBox.content.interfaces.IECAutoAssessmentBox"
+    class=".ecaab_kss.Refresh"
+    attribute="refresh_fieldset_backend"
+    permission="cmf.ModifyPortalContent"
   />
 
 </configure>

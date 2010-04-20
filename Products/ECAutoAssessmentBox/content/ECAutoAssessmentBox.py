@@ -1,27 +1,13 @@
 # -*- coding: utf-8 -*-
-# $Id$
+# $Id:ECAutoAssessmentBox.py 1311 2009-09-28 07:03:00Z amelung $
 #
-# Copyright (c) 2006-2008 Otto-von-Guericke-Universität Magdeburg
+# Copyright (c) 2006-2010 Otto-von-Guericke-Universität Magdeburg
 #
 # This file is part of ECAutoAssessmentBox.
 #
-# ECAutoAssessmentBox is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# ECAutoAssessmentBox is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with ECAutoAssessmentBox; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-#
 __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
-__version__   = '$Revision$'
+__version__   = '$Revision:1311 $'
 
 from AccessControl import ClassSecurityInfo
 from Products.Archetypes.atapi import *
@@ -68,6 +54,7 @@ schema = Schema((
             description_msgid='help_backend',
             i18n_domain=I18N_DOMAIN,
         ),
+        schemata = 'backend',
         read_permission = 'Modify Portal Content',
     ),
     
@@ -102,10 +89,8 @@ schema = Schema((
         read_permission = 'Modify Portal Content',
     ),
 
-    # FIXME: comment in if available
     DynamicDataField('inputFields',
         #required = True,
-        schemata = 'backend',
         fields = '_getBackendInputFields',
         widget = DynamicDataWidget(
             visible = {'edit':'visible', 'view':'invisible'},
@@ -115,6 +100,7 @@ schema = Schema((
             description_msgid = 'help_input_field',
             i18n_domain = I18N_DOMAIN,
         ),
+        schemata = 'backend',
         read_permission = 'Modify Portal Content',
     ),
 
@@ -127,8 +113,8 @@ schema = Schema((
 ECAutoAssessmentBox_schema = ECAssignmentBox_schema.copy() + \
     schema.copy()
 
-##code-section after-schema #fill in your manual code here
-##/code-section after-schema
+ECAutoAssessmentBox_schema['id'].widget.visible = dict(edit=0, view=0)
+
 
 class ECAutoAssessmentBox(ECAssignmentBox):
     """
@@ -147,8 +133,6 @@ class ECAutoAssessmentBox(ECAssignmentBox):
     #        and should be used elsewhere
     allowed_content_types = ['ECAA']
     
-    ##/code-section class-header
-
     # Methods
     #security.declarePrivate('getBackendDisplayList')
     def getBackendDisplayList(self):
@@ -174,7 +158,7 @@ class ECAutoAssessmentBox(ECAssignmentBox):
         return result
     
     #security.declarePrivate('_getBackendInputFields')
-    def _getBackendInputFields(self):
+    def _getBackendInputFields(self, backend=None):
         """
         Returns a list of field objects depending on the cached values
         for backend input fields in the spooler.
@@ -185,10 +169,15 @@ class ECAutoAssessmentBox(ECAssignmentBox):
         """
         result = []
         
-        logger.debug('xxx: self.backend: %s' % self.backend)
+        logger.info('xxx: self.backend: %s' % self.backend)
+        logger.info('xxx: backend: %s' % backend)
 
         ecs_tool = getToolByName(self, ECS_NAME)
-        fields = ecs_tool.getBackendInputFields(self.backend)
+        
+        if backend:
+            fields = ecs_tool.getBackendInputFields(backend)
+        else:
+            fields = ecs_tool.getBackendInputFields(self.backend)
         
         for field in fields:
             # get field information
@@ -196,7 +185,9 @@ class ECAutoAssessmentBox(ECAssignmentBox):
             label = fields[field].get('label', '')
             description = fields[field].get('description', '')
             required = fields[field].get('required', False),
+            
             # set widget
+            # StringField
             if type in ['string',]:
                 widget = StringWidget(label = label,
                             label_msgid = label,
@@ -207,8 +198,9 @@ class ECAutoAssessmentBox(ECAssignmentBox):
 
                 result.append(StringField(field, 
                                           widget = widget, 
-                                          ), 
-                              )
+                                          ),
+                             ) 
+            # BooleanField                  
             elif type == 'boolean':
                 widget = BooleanWidget(label = label,
                             label_msgid = label,
@@ -221,6 +213,7 @@ class ECAutoAssessmentBox(ECAssignmentBox):
                                            widget = widget, 
                                           ), 
                               )
+            # TextField for all others
             else:
                 widget = TextAreaWidget(label = label,
                             label_msgid = label,

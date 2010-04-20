@@ -45,7 +45,7 @@ from Products.CMFPlone.utils import log_exc
 
 from Products.ECAutoAssessmentBox import config
 
-logger = logging.getLogger('ECAutoAssessmentBox')
+log = logging.getLogger('ECAutoAssessmentBox')
 
 schema = Schema((
 
@@ -102,7 +102,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Returns spooler status information
         """
-        logger.info("xxx: _getStatus: Requesting spooler status information")
+        log.info("xxx: _getStatus: Requesting spooler status information")
         
         try:
             spooler = self._getSpoolerHandle(host, port)
@@ -118,7 +118,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Returns a dict with all backends currently registered to ECSpooler.
         """
-        logger.info("xxx: _getAvailableBackends: Trying to get available backends")
+        log.info("xxx: _getAvailableBackends: Trying to get available backends")
         
         try:
             spooler = self._getSpoolerHandle(host, port)
@@ -134,12 +134,14 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Returns a display list of all (actually) available backends.
         """
-        logger.info("xxxxxxxx: getAvailableBackendsDL")
+        log.info("xxx: getAvailableBackendsDL")
 
         dl = DisplayList(())
         
         # get all available backends from spooler setup utily 
         backends = self._getAvailableBackends()
+        
+        log.info('xxx: backends: ' + repr(backends))
         
         for key in backends.keys():
             id = key
@@ -156,13 +158,13 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Values for all currently selected backends will be chached.
         """
-        logger.info("xxxxxxxx: manage_cacheBackends: reinit=%s" % reinit)
+        log.info("xxxxxxxx: manage_cacheBackends: reinit=%s" % reinit)
         
         if reinit:
             self.backendValueCache.clear()
         
         selectedBackends = self.portal_properties.ecspooler_properties.backends
-        #logger.debug('ecspooler_properties.backends=%s' % selectedBackends)
+        #log.debug('ecspooler_properties.backends=%s' % selectedBackends)
         
         for backend in selectedBackends:
             self._cacheBackend(backend)
@@ -174,7 +176,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         Chaches all values for a backend.  Returns True if caching was ok, 
         otherwise False
         """
-        logger.info("xxxxxxxx: Caching backend '%s'" % backend)
+        log.info("xxxxxxxx: Caching backend '%s'" % backend)
         
         if not backend: 
             return False
@@ -201,14 +203,14 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
                     if tests[0]:
                         cache[backend]['tests'] = tests[1]
     
-                    logger.debug("Backend '%s' cached" % backend)
+                    log.info("Backend '%s' cached" % backend)
     
                     return True
                 elif status[0] < 0:
-                    logger.warn('Error while getting backend status: %s, %s' % (status[0], status[1]))
+                    log.warn('Error while getting backend status: %s, %s' % (status[0], status[1]))
                     return False
             else:
-                logger.warn('Error while getting backend status: status is %s' % (status))
+                log.warn('Error while getting backend status: status is %s' % (status))
                 return False
 
         except (socket.error, xmlrpclib.Fault):
@@ -224,7 +226,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Returns a list of backends which schema information are cached. 
         """
-        logger.info("xxxxxxxx: getCachedBackends")
+        log.info("xxxxxxxx: getCachedBackends")
         
         result = []
         
@@ -280,18 +282,20 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         selectedBackends = self.portal_properties.ecspooler_properties.backends
         
         for backend in selectedBackends:
+
+            log.info('0-xxx: backend: %s' % (backend))
             
             if backend:
                 
                 isCached = self.backendValueCache.has_key(backend)
                 
-                #logger.debug('1-xxx: %s : is chached: %s' % (backend, isCached))
+                log.info('1-xxx: %s : is chached: %s' % (backend, isCached))
                 
                 if not isCached:
                     isCached = self._cacheBackend(backend) 
                 # end if
     
-                #logger.debug('2-xxx: %s : is chached: %s' % (backend, isCached))
+                log.info('2-xxx: %s : is chached: %s' % (backend, isCached))
 
                 if isCached:
                     dl.add(backend, '%s (%s)' % 
@@ -309,7 +313,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Returns a dict with all fields for this backend.
         """
-        logger.info("getBackendInputFields: %s" % backend)
+        log.info("getBackendInputFields: %s" % backend)
         
         # look if the backend is available
         if backend in self._getAvailableBackends():
@@ -330,7 +334,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
                         self.backendValueCache[backend]['fields'] = fields[1]
 
                 except (socket.error, xmlrpclib.Fault):
-                    #logger.error('%s' % err)
+                    #log.error('%s' % err)
                     pass
 
         if self.backendValueCache.has_key(backend):
@@ -344,7 +348,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Returns a dict with test specifiactions for this backend.
         """
-        logger.info("getBackendTestFields: %s" % backend)
+        log.info("getBackendTestFields: %s" % backend)
 
         # look if the backend is available
         if backend in self._getAvailableBackends():
@@ -363,7 +367,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
                         self.backendValueCache[backend]['tests'] = tests[1]
         
                 except (socket.error, xmlrpclib.Fault):
-                    #logger.error('%s' % err)
+                    #log.error('%s' % err)
                     pass
             
         if self.backendValueCache.has_key(backend):
@@ -379,7 +383,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         
         @return success or fail message string
         """
-        logger.info("xxxxxxxx: test")
+        log.info("xxxxxxxx: test")
 
         status = self._getStatus(host, port, username, password)
 
@@ -423,7 +427,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
             return result
         
         except xmlrpclib.Fault, ef:
-            logger.warn('%s: %s' % (sys.exc_info()[0], ef))
+            log.warn('%s: %s' % (sys.exc_info()[0], ef))
             
             if retry:
                 # take care of hexadecimal Unicode escape sequences
@@ -475,10 +479,10 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         assert (port != None) and (type(port) == int), \
             "Port is required and must be an integer."
             
-        #logger.debug("Spooler handle: http://%s:%d" % (host, port))
+        #log.debug("Spooler handle: http://%s:%d" % (host, port))
 
         #try:
-        #logger.debug('xmlrpclib.Server("http://%s:%d")' % (host, port), severity=DEBUG)
+        #log.debug('xmlrpclib.Server("http://%s:%d")' % (host, port), severity=DEBUG)
         return xmlrpclib.ServerProxy("http://%s:%d" % (host, port))
 
         #except (socket.error, xmlrpclib.Fault), err:

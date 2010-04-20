@@ -23,7 +23,7 @@
   
 			      tal:condition="python:visState == 'visible' and visCondition">
 
-          <div tal:condition="python:'view' in widget.modes and 'r' in item.mode and item.checkPermission('r',here)">
+          <div tal:condition="python:'view' in widget.modes and 'r' in item.mode and item.checkPermission('r', here)">
 		          <tal:if_use_label condition="use_label | nothing">
 		            <metal:use_label use-macro="label_macro" />
 		          </tal:if_use_label>
@@ -56,9 +56,10 @@
 
     <!-- EDIT -->
     <metal:edit_macro define-macro="edit"
-        tal:define="fieldvocab python:field.fieldVocabulary(context);
+        tal:define="fieldvocab extFieldVocab | python:field.fieldVocabulary(context);
                     fielddata  python:field.getEditAccessor(context)();">
 
+      <div id="fieldset-backend">
       <metal:block tal:repeat="field fieldvocab">
         <tal:field define="fieldName string:${fieldName}.${field/getName}:records;
                            widget    python:field.widget;
@@ -97,6 +98,7 @@
 
         </tal:field>
       </metal:block>
+      </div>
 <!--
       <metal:use use-macro="field_macro | here/widgets/field/macros/edit">
         <metal:body metal:fill-slot="widget_body">
