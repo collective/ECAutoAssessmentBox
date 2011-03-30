@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# $Id$
+# $Id:config.py 1313 2009-09-28 07:03:29Z amelung $
 #
 # Copyright (c) 2006-2008 Otto-von-Guericke-Universität Magdeburg
 #
@@ -21,7 +21,7 @@
 #
 __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
-__version__   = '$Revision$'
+__version__   = '$Revision:1313 $'
 
 # Product configuration.
 #
@@ -31,41 +31,52 @@ __version__   = '$Revision$'
 # If you wish to perform custom configuration, you may put a file
 # AppConfig.py in your product's root directory. The items in there
 # will be included (by importing) in this file if found.
+from Products.CMFCore import permissions
+from Products.ATContentTypes.configuration.config import zconf
 
-from Products.CMFCore.permissions import setDefaultRoles
-##code-section config-head #fill in your manual code here
-##/code-section config-head
+# load custom configuration from product ECAssignmentBox
+try:
+    from Products.ECAssignmentBox.config import *
+except ImportError:
+    pass
 
 
 PROJECTNAME = "ECAutoAssessmentBox"
 
-# Permissions
-DEFAULT_ADD_CONTENT_PERMISSION = "Add portal content"
-setDefaultRoles(DEFAULT_ADD_CONTENT_PERMISSION, ('Manager', 'Owner'))
-ADD_CONTENT_PERMISSIONS = {
-    'ECAutoAssessmentBox': 'ECAutoAssessmentBox: Add ECAutoAssessmentBox',
-    'ECAutoAssignment': 'ECAutoAssessmentBox: Add ECAutoAssignment',
-}
+PRODUCT_GLOBALS = globals()
 
-setDefaultRoles('ECAutoAssessmentBox: Add ECAutoAssessmentBox', ('Manager','Owner'))
-setDefaultRoles('ECAutoAssessmentBox: Add ECAutoAssignment', ('Manager','Owner'))
 
-product_globals = globals()
+# define tool names
+ECS_NAME = 'ecaab_utils'
+ECS_META = ECS_NAME
+ECS_TITLE = 'Auto Assessment Settings'
+ECS_ICON = 'ec_tool.png'
 
-# Dependencies of Products to be installed by quick-installer
-# override in custom configuration
-DEPENDENCIES = []
+ECS_PREFS_NAME = "ecspooler_setup"
+ECS_PREFS_META = ECS_PREFS_NAME
+ECS_PREFS_TITLE = "Auto Assessment Settings"
+ECS_PREFS_ICON = ECS_ICON
+
+ECS_PROP_NAME = "ecaab_properties"
+ECS_PROP_META = ECS_PREFS_NAME
+ECS_PROP_TITLE = "Auto Assessment Properties"
+
+
+# Dependend products - installed by quick-installer
+DEPENDENCIES = ['ECAssignmentBox']
 
 # Dependend products - not quick-installed - used in testcase
 # override in custom configuration
 PRODUCT_DEPENDENCIES = []
 
-##code-section config-bottom #fill in your manual code here
-##/code-section config-bottom
 
+# Permissions
+DEFAULT_ADD_CONTENT_PERMISSION = "Add portal content"
+permissions.setDefaultRoles(DEFAULT_ADD_CONTENT_PERMISSION, ('Manager', 'Owner'))
+ADD_CONTENT_PERMISSIONS = {
+    'ECAutoAssessmentBox': 'ECAutoAssessmentBox: Add ECAutoAssessmentBox',
+    'ECAutoAssignment': 'ECAutoAssessmentBox: Add ECAutoAssignment',
+}
 
-# Load custom configuration not managed by archgenxml
-try:
-    from Products.ECAutoAssessmentBox.AppConfig import *
-except ImportError:
-    pass
+permissions.setDefaultRoles('ECAutoAssessmentBox: Add ECAutoAssessmentBox', ('Manager','Owner'))
+permissions.setDefaultRoles('ECAutoAssessmentBox: Add ECAutoAssignment', ('Manager','Owner'))

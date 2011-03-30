@@ -15,7 +15,9 @@
              tal:content="string: @import url($portal_url/ecabstyles.css);" />
     </metal:block>
 
-    <metal:main fill-slot="main">
+    <metal:main fill-slot="main"
+      tal:define="template_id   template/getId;">
+      
       <h1 class="documentFirstHeading" tal:content="here/title_or_id"/>
 
       <a href=""

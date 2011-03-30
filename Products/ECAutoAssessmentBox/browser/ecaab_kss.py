@@ -9,10 +9,6 @@ __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
 __version__   = '$Revision: 1332 $'
 
-import logging
-
-from datetime import datetime
-
 from Acquisition import aq_inner
 from Acquisition import Explicit
 
@@ -23,18 +19,16 @@ from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import safe_unicode
-
-from plone.app.kss.plonekssview import PloneKSSView
-
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
-from kss.core import KSSView, kssaction
-
-logger = logging.getLogger('ECAutoAssessmentBox')
+from plone.app.kss.plonekssview import PloneKSSView
+from kss.core import KSSView
+from kss.core import kssaction
 
 from Products.ECAutoAssessmentBox import ECMessageFactory as _
+from Products.ECAutoAssessmentBox import LOG
 
-class BackendForm(Explicit):
+class FieldsetBackendInput(Explicit):
     """
     """
     adapts(Interface, IDefaultBrowserLayer, IBrowserView)
@@ -42,8 +36,8 @@ class BackendForm(Explicit):
     def __init__(self, context, request, view):
         """
         """
-        #logger.info('request: %s' % request)
-        #logger.info('xxx: backend: %s' % hasattr(request, 'backend'))
+        #LOG.info('xdebug: request: %s' % request)
+        #LOG.info('xdebug: backend: %s' % hasattr(request, 'backend'))
         
         self.__parent__ = view
         self.context = context
@@ -63,9 +57,41 @@ class BackendForm(Explicit):
     def update(self):
         pass
 
-    logger.info("Processing 'BackendForm'")
-    render = ViewPageTemplateFile("fieldset_backend.pt")
+    #LOG.info("xdebug: Processing 'FieldsetBackendInput'")
+    render = ViewPageTemplateFile("fieldset_backend_input.pt")
 
+
+class SelectBackendTests(Explicit):
+    """
+    """
+    adapts(Interface, IDefaultBrowserLayer, IBrowserView)
+
+    def __init__(self, context, request, view):
+        """
+        """
+        #LOG.info('xdebug: request: %s' % request)
+        #LOG.info('xdebug: backend: %s' % hasattr(request, 'backend'))
+        
+        self.__parent__ = view
+        self.context = context
+        self.request = request
+        self.view = view
+        self.backend = request.backend
+        #planned = self.context.restrictedTraverse('@@planned-iterations')
+        #self.projectlist = planned.projectlist()
+        #self.total = planned.total()
+        self.portal = getToolByName(context, 'portal_url').getPortalObject()
+        
+        if hasattr(request, 'errors'):
+            self.errors = request.errors
+        else:
+            self.errors = {}
+
+    def update(self):
+        pass
+
+    #LOG.info("xdebug: Processing 'SelectBackendTests'")
+    render = ViewPageTemplateFile("select_backend_tests.pt")
 
 class Refresh(PloneKSSView):
     """
@@ -75,8 +101,8 @@ class Refresh(PloneKSSView):
     def refresh_fieldset_backend(self, backend):
         """
         """
-        logger.info("Processing 'refresh_fieldset_backend'")
-        #logger.info(ViewPageTemplateFile("hello_world.pt"))
+        LOG.info("xdebug: Processing 'refresh_fieldset_backend'")
+        LOG.info("xdebug: Selected backend is '%s'" % backend)
         
         context = aq_inner(self.context)
 
@@ -87,12 +113,16 @@ class Refresh(PloneKSSView):
         #plone_utils = getToolByName(self.context, 'plone_utils')
 
         # set new backend
-        logger.info('context: %s' % repr(context))
-        context.tmpBackend = backend;
+        LOG.info('xdebug: context: %s' % repr(context))
+        context.kssBackend = backend;
 
-        selector = core_commands.getHtmlIdSelector('fieldsetBackend')
-        #zope_commands.refreshProvider('#fieldsetBackend', name='ec.backend_form')
-        zope_commands.refreshProvider(selector, name='ecaab.backend_form')
-        #core_commands.replaceHTML(selector, '<fieldset tal:define="fieldsetid string:backend;sole_fieldset python:False"<div>Hello world!</div></fieldset>')
+        # refresh backend tests selection
+        selector = core_commands.getHtmlIdSelector("archetypes-fieldname-tests")
+        zope_commands.refreshProvider(selector, name='ecaab.select_backend_tests')
+        
+        
+        # refresh backend input fields
+        selector = core_commands.getHtmlIdSelector("fieldset-backend-data")
+        zope_commands.refreshProvider(selector, name='ecaab.fieldset_backend_input')
                 
-        plone_commands.issuePortalMessage((u'Backend changed to %s' % backend), msgtype='info')
+        #plone_commands.issuePortalMessage((u'Backend changed to %s' % backend), msgtype='info')

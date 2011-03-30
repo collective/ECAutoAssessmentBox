@@ -1,4 +1,7 @@
+<!-- 
 <div id="fieldsetBackend"
+ -->
+<div id="fieldset-backend-data"
   tal:define="portal  view/portal;
               errors  view/errors;
               backend view/backend;

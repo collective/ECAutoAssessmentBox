@@ -60,7 +60,7 @@ class DynamicDataField(ObjectField):
     """
     
     #__implements__ = (ObjectField.__implements__, IDataGridField,)
-    __implements__ = (ObjectField.__implements__,)
+    #__implements__ = (ObjectField.__implements__,)
 
     _properties = ObjectField._properties.copy()
     _properties.update({

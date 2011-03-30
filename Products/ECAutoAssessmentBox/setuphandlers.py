@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # $Id$
 #
-# Copyright (c) 2006-2008 Otto-von-Guericke-Universität Magdeburg
+# Copyright (c) 2006-2011 Otto-von-Guericke-Universität Magdeburg
 #
 # This file is part of ECAutoAssessmentBox.
 #
@@ -23,27 +23,32 @@ __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
 __version__   = '$Revision$'
 
-#import os
 import transaction
 import logging
 log = logging.getLogger('ECAutoAssessmentBox: setuphandlers')
 
 from Products.CMFCore.utils import getToolByName
+
 from Products.ECAutoAssessmentBox import config
+from Products.ECAutoAssessmentBox import LOG
+
 
 def isNotECAutoAssessmentBoxProfile(context):
+    """Read marker file
+    """
     return context.readDataFile("ECAutoAssessmentBox_marker.txt") is None
 
 
 def setupHideToolsFromNavigation(context):
-    """hide tools"""
+    """Hide ecaab_utils from navigation
+    """
     
-    #log.info('Hiding tools')
-
     if isNotECAutoAssessmentBoxProfile(context): return 
 
-    # uncatalog tools
-    toolnames = ['ecspooler_tool']
+    LOG.info("Hiding '%s' from navigation" % config.ECS_NAME)
+
+    # uncatalog ecaab_utils
+    toolnames = [config.ECS_NAME]
 
     site = context.getSite()
     portal = getToolByName(site, 'portal_url').getPortalObject()
@@ -64,76 +69,77 @@ def setupHideToolsFromNavigation(context):
             try:
                 portal[item].unindexObject()
             except:
-                log.warn('Could not unindex object: %s' % item)
+                LOG.warn('Could not unindex object: %s' % item)
 
 
 def fixTools(context):
-    """do post-processing on auto-installed tool instances"""
-
-    #log.info('Fixing tools')
-
+    """Do post-processing on ecaab_utils
+    """
     if isNotECAutoAssessmentBoxProfile(context): return 
 
+    LOG.info("Fixing '%s' after installation" % config.ECS_NAME)
+
     site = context.getSite()
-    tool_ids=['ecspoolertool']
     
-    for tool_id in tool_ids:
-        if hasattr(site, tool_id):
-            tool=site[tool_id]
-            tool.initializeArchetype()
+    if hasattr(site, config.ECS_NAME):
+        tool = site[config.ECS_NAME]
+        tool.initializeArchetype()
 
 
 def updateRoleMappings(context):
-    """after workflow changed update the roles mapping. this is like pressing
-    the button 'Update Security Setting' and portal_workflow"""
-    
-    #log.info('Updating role mappings')
+    """After workflow has changed update the roles mapping. This 
+    is like pressing the button 'Update Security Setting' at portal_workflow
+    """
 
     if isNotECAutoAssessmentBoxProfile(context): return 
+    
+    LOG.info('Updating role mappings')
+
     wft = getToolByName(context.getSite(), 'portal_workflow')
     wft.updateRoleMappings()
 
 
 def postInstall(context):
-    """Called as at the end of the setup process. """
-    # the right place for your custom code
+    """Called at the end of the setup process (the right place for 
+    your custom code). 
+    """
     
-    #log.info('Doing post install')
-
     if isNotECAutoAssessmentBoxProfile(context): return 
     
+    LOG.info('Post installation...')
     reindexIndexes(context)
 
 
-##code-section FOOT
-
 def installGSDependencies(context):
-    """Install dependend profiles."""
+    """Install dependend profiles.
+    """
 
     if isNotECAutoAssessmentBoxProfile(context): return 
     
     # Has to be refactored as soon as generic setup allows a more 
     # flexible way to handle dependencies.
-    
     return
 
 
 def installQIDependencies(context):
-    """Install dependencies"""
+    """Install dependencies
+    """
 
     if isNotECAutoAssessmentBoxProfile(context): return 
     
+    LOG.info("Installing QI dependencies...")
+
     site = context.getSite()
 
     portal = getToolByName(site, 'portal_url').getPortalObject()
     quickinstaller = portal.portal_quickinstaller
     for dependency in config.DEPENDENCIES:
         if quickinstaller.isProductInstalled(dependency):
-            log.info('Reinstalling dependency %s:' % dependency)
+            LOG.info('Reinstalling dependency %s:' % dependency)
             quickinstaller.reinstallProducts([dependency])
             transaction.savepoint()
         else:
-            log.info('Installing dependency %s:' % dependency)
+            LOG.info('Installing dependency %s:' % dependency)
             quickinstaller.installProduct(dependency)
             transaction.savepoint()
 
@@ -163,10 +169,11 @@ def reindexIndexes(context):
         'getRawRelatedItems',
         'review_state',
         ]
+
     # Don't reindex an index if it isn't actually in the catalog.
     # Should not happen, but cannot do any harm.
     ids = [id for id in indexes if id in pc.indexes()]
     if ids:
         pc.manage_reindexIndex(ids=ids)
     
-    log.info('Reindexed %s' % indexes)
+    LOG.info('Reindexed %s' % indexes)

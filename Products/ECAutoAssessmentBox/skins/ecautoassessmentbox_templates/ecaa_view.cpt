@@ -17,11 +17,13 @@
 
     <metal:main fill-slot="main">
       <tal:main-macro metal:define-macro="main"
-          define="fieldNames here/getViewModeReadFieldNames;
-                  auto_feedback here/getAutoFeedback | nothing;
-                  parent nocall:here/aq_parent;
-                  isOwner python: user.has_role(['Owner', 'Reviewer', 'Manager'], parent);
-                  canRecheck python: isOwner;"
+          define="template_id template/getId;
+                  wtool       context/portal_workflow;
+                  putils      context/plone_utils;
+                  fieldNames  here/getViewModeReadFieldNames;
+                  parent      nocall:here/aq_parent;
+                  isOwner     python:user.has_role(['Owner', 'Reviewer', 'Manager'], parent);
+                  canRecheck  python:isOwner;"
       >
 
         <!-- show header information -->
@@ -39,25 +41,22 @@
             method="post"
             tal:attributes="action string:${here/absolute_url}/${template/getId}"
             tal:condition="python: isOwner and canRecheck"
-            >
-            <!-- tal:condition="not: auto_feedback">-->
-  
-         <!-- submit button -->
-         <div class="formControls">
-           <input class="context"
-               tabindex=""
-               type="submit"
-               name="form.button.Recheck"
-               value="Recheck"
-               i18n:domain="plone"
-               i18n:attributes="value"
-               tal:attributes="tabindex tabindex/next;"/>
-  
-          <!-- hidden fields -->
-          <input type="hidden" name="form.submitted" value="1" />
+         >
+           <!-- submit button -->
+           <div class="formControls">
+             <input class="context"
+                 type="submit"
+                 name="form.button.Recheck"
+                 value="Recheck"
+                 i18n:domain="plone"
+                 i18n:attributes="value" />
+           </div>
+
+           <!-- hidden fields -->
+           <input type="hidden" name="form.submitted" value="1" />
         </form>
         
-        <div metal:use-macro="here/document_byline/macros/byline" />
+        <div tal:replace="structure provider:plone.belowcontenttitle" />
 
       </tal:main-macro>
     </metal:main>

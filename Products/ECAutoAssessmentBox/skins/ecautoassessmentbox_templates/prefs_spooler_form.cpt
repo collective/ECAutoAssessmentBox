@@ -22,8 +22,9 @@
 
   <body>
     <div metal:fill-slot="prefs_configlet_main"
-        tal:define="errors  options/state/getErrors;
-                    ecs_tool nocall: here/ecspooler_tool;">
+        tal:define="template_id template/getId;
+                    errors      options/state/getErrors;
+                    ecs_tool    nocall:context/ecaab_utils;">
 
       <!-- for debugging -->
       <!--
@@ -57,7 +58,7 @@
           </legend>
 
           <div class="field"
-              tal:define="host request/host | portal_properties/ecspooler_properties/host;
+              tal:define="host request/host | portal_properties/ecaab_properties/host;
                   error errors/host | nothing;"
               tal:attributes="class  python:test(error, 'field error', 'field');">
 
@@ -86,7 +87,7 @@
           </div>
   
           <div class="field"
-              tal:define="port request/port | portal_properties/ecspooler_properties/port;
+              tal:define="port request/port | portal_properties/ecaab_properties/port;
                   error errors/port | nothing;"
               tal:attributes="class  python:test(error, 'field error', 'field');">
         
@@ -115,7 +116,7 @@
           </div>
 
           <div class="field"
-              tal:define="username request/username | portal_properties/ecspooler_properties/username;
+              tal:define="username request/username | portal_properties/ecaab_properties/username;
                   error errors/username | nothing;"
               tal:attributes="class  python:test(error, 'field error', 'field');">
 
@@ -147,7 +148,7 @@
           </div>
 
           <div class="field"
-              tal:define="password  request/password | portal_properties/ecspooler_properties/password;
+              tal:define="password  request/password | portal_properties/ecaab_properties/password;
                   error errors/password | nothing;"
               tal:attributes="class  python:test(error, 'field error', 'field');">
 
@@ -199,8 +200,8 @@
           <div class="field"
               tal:define="fieldName string:selectedBackends;
                           error errors/selectedBackends | nothing;
-                          host request/host | portal_properties/ecspooler_properties/host;
-                          port request/port | portal_properties/ecspooler_properties/port;
+                          host request/host | portal_properties/ecaab_properties/host;
+                          port request/port | portal_properties/ecaab_properties/port;
                           leftVocabulary ecs_tool/getAvailableBackendsDL;
                           rightVocabulary ecs_tool/getSelectedBackendsDL;
                           

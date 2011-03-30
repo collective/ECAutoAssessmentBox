@@ -14,10 +14,10 @@
     -->
 
     <metal:view_macro define-macro="view"
-		      tal:define="vocabulary python:field.Vocabulary(here);
-		      value python:accessor();
-		      display python:here.displayValue(vocabulary, value);"
-		      tal:replace="structure display" />
+        tal:define="vocabulary python:field.Vocabulary(here);
+                    value python:accessor();
+                    display python:here.displayValue(vocabulary, value);"
+        tal:replace="structure display" />
 
     <!-- Edit - display two boxes, side-by-side, with Add and Remove buttons.
          
