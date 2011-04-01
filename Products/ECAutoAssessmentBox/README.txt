@@ -25,7 +25,7 @@ Prerequisites
 =============
 
 #. To use ECAutoAssessmentBox you need a current Plone installation, 
-   specifically Plone 3.  Check `plone.org`_ for Plone's
+   specifically Plone 4.x.  Check `plone.org`_ for Plone's
    prerequisites.
 
 #. The `ECAssignmentBox`_ product.

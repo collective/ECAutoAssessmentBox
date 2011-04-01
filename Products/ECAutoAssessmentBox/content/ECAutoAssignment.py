@@ -123,7 +123,7 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
             
                 result = ecaab_utils.getResult(self.jobId)
                 
-                LOG.debug('xdebug: [%s] result: %s' % (self.getId(), repr(result)))
+                #LOG.debug('xdebug: [%s] result: %s' % (self.getId(), repr(result)))
     
                 if result.has_key(self.jobId):
                     self.setBackendResultCode(result[self.jobId].get('value'))
@@ -243,7 +243,7 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
         # get the selected backend in the parent box
         backend = parent.getBackend()
         
-        LOG.debug('xdebug: %s' % backend)
+        #LOG.debug('xdebug: %s' % backend)
         
         if backend == ECSpoolerTool.BACKEND_NONE:
             #return self.translate(

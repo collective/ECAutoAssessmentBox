@@ -108,7 +108,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         
         try:
             spooler = self._getSpoolerHandle(host, port)
-            LOG.info("%s" % repr(spooler))
+            #LOG.info("%s" % repr(spooler))
 
             return spooler.getBackends(self._getAuth(username, password))
 
@@ -125,14 +125,14 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Returns a display list of all (actually) available backends.
         """
-        LOG.info("xdebug: getAvailableBackendsDL")
+        #LOG.info("xdebug: getAvailableBackendsDL")
 
         dl = DisplayList(())
         
         # get all available backends from spooler setup utily 
         backends = self._getAvailableBackends()
         
-        LOG.info('xdebug: backends: ' + repr(backends))
+        #LOG.info('xdebug: backends: ' + repr(backends))
         
         for key in backends.keys():
             id = key
@@ -149,7 +149,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Values for all currently selected backends will be chached.
         """
-        LOG.info("xdebug: manage_cacheBackends: reinit=%s" % reinit)
+        #LOG.info("xdebug: manage_cacheBackends: reinit=%s" % reinit)
         
         if reinit:
             self.backendValueCache.clear()
@@ -163,7 +163,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """ Caches all values for a given backend.  Returns True if 
         the caching procedure was successful, otherwise False.
         """
-        LOG.info("xdebug: Caching backend '%s'" % backend)
+        #LOG.info("xdebug: Caching backend '%s'" % backend)
         
         if not backend: 
             return False
@@ -190,7 +190,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
                     if tests[0]:
                         cache[backend]['tests'] = tests[1]
     
-                    LOG.info("xdebug: Backend '%s' successfully cached" % backend)
+                    #LOG.info("xdebug: Backend '%s' successfully cached" % backend)
     
                     return True
                 
@@ -211,7 +211,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """Returns a list of backends which schema information 
         is in the local cache. 
         """
-        LOG.info("xdebug: Getting cached backends")
+        #LOG.info("xdebug: Getting cached backends")
         
         result = []
         
@@ -250,7 +250,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
     def getSelectedBackendsDL(self, withNone=True):
         """Returns a display list of all backends selected for this site.
         """
-        LOG.info("Getting all selected backends as Archetypes.utils.DisplayList...")
+        #LOG.info("Getting all selected backends as Archetypes.utils.DisplayList...")
 
         dl = DisplayList(())
         
@@ -295,7 +295,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         
         if backend != BACKEND_NONE:
             
-            LOG.info("Loading backend input fields for '%s'" % backend)
+            #LOG.info("Loading backend input fields for '%s'" % backend)
             
             # look if the backend is available
             #if backend in self._getAvailableBackends():
@@ -304,7 +304,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
             if not self.backendValueCache.has_key(backend):
                 # not in cache -> try getting field information directly from 
                 # spooler and cache them
-                LOG.info("xdebug: Input fields for backend '%s' are not cached" % (backend))
+                #LOG.info("xdebug: Input fields for backend '%s' are not cached" % (backend))
                 self._cacheBackend(backend)
             # end if
     
@@ -324,7 +324,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         
         if backend != BACKEND_NONE:
             
-            LOG.info("Loading backend test fields for '%s'" % backend)
+            #LOG.info("Loading backend test fields for '%s'" % backend)
     
             # look if the backend is available
             #if backend in self._getAvailableBackends():
@@ -333,7 +333,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
             if not self.backendValueCache.has_key(backend):
                 # not in cache -> try getting field information directly from 
                 # spooler and cache them
-                LOG.info("xdebug: Test fields for backend '%s' are not cached" % (backend))
+                #LOG.info("xdebug: Test fields for backend '%s' are not cached" % (backend))
                 self._cacheBackend(backend)
             # end if
                 

@@ -192,7 +192,7 @@ class ECAutoAssessmentBox(ECAssignmentBox):
                             i18n_domain = config.I18N_DOMAIN,)
 
                 result.append(StringField(field,
-                                          required = required, 
+                                          #required = required, 
                                           widget = widget, 
                                          ),
                              ) 
@@ -206,7 +206,7 @@ class ECAutoAssessmentBox(ECAssignmentBox):
                             i18n_domain = config.I18N_DOMAIN,)
 
                 result.append(BooleanField(field, 
-                                           required = required, 
+                                           #required = required, 
                                            widget = widget, 
                                           ), 
                               )

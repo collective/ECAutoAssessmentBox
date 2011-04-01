@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <import-steps>
 
-<!-- 
  <import-step 
     id="ECAutoAssessmentBox-Hide-Tools-From-Navigation" 
     handler="Products.ECAutoAssessmentBox.setuphandlers.setupHideToolsFromNavigation"
@@ -19,7 +18,6 @@
    <dependency step="ECAutoAssessmentBox-QI-dependencies"/>
    call initializeArchetyps for tools in ECAutoAssessmentBox
  </import-step>
---> 
  
  <import-step 
     id="ECAutoAssessmentBox-Update-RoleMappings" 

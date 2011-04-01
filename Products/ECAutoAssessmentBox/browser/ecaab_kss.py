@@ -100,8 +100,8 @@ class Refresh(PloneKSSView):
     def refresh_fieldset_backend(self, backend):
         """
         """
-        LOG.info("xdebug: Processing 'refresh_fieldset_backend'")
-        LOG.info("xdebug: Selected backend is '%s'" % backend)
+        #LOG.info("xdebug: Processing 'refresh_fieldset_backend'")
+        #LOG.info("xdebug: Selected backend is '%s'" % backend)
         
         context = aq_inner(self.context)
 
@@ -112,7 +112,7 @@ class Refresh(PloneKSSView):
         #plone_utils = getToolByName(self.context, 'plone_utils')
 
         # set new backend
-        LOG.info('xdebug: context: %s' % repr(context))
+        #LOG.info('xdebug: context: %s' % repr(context))
         context.kssBackend = backend;
 
         # refresh backend tests selection
