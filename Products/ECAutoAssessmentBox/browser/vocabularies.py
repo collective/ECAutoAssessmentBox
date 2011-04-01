@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# $Id: $
+# $Id$
 #
 # Copyright (c) 2006-2011 Otto-von-Guericke-Universität Magdeburg
 #
