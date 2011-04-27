@@ -18,8 +18,6 @@ __version__   = '$Revision:1313 $'
 #       use the protected code section at the bottom of initialize().
 
 import logging
-logger = logging.getLogger('ECAutoAssessmentBox')
-logger.debug('Installing Product')
 
 import sys
 import os
@@ -45,6 +43,8 @@ from Products.ECAutoAssessmentBox.config import *
 ECMessageFactory = MessageFactory('eduComponents')
 
 DirectoryView.registerDirectory('skins', product_globals)
+
+LOG = logging.getLogger(PROJECTNAME)
 
 # special code which provides migration of auto assessment boxes 
 # created with 1.0 
