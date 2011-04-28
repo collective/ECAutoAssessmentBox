@@ -1,17 +1,32 @@
 <configure
     xmlns="http://namespaces.zope.org/browser"
     xmlns:zope="http://namespaces.zope.org/zope"
-    xmlns:zcml="http://namespaces.zope.org/zcml">
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="eduComponents">
 
+  <!-- resource directory -->
+  <resourceDirectory
+      name="ecaab_images"
+      directory="ecaab_images"
+      />    
+
+
+  <!-- kss -->
   <resource
     file="ecaab.kss"
     name="ecaab.kss"
   />
 
   <zope:adapter
-    name="ecaab.backend_form"
+    name="ecaab.fieldset_backend_input"
     provides="zope.contentprovider.interfaces.IContentProvider"
-    factory=".ecaab_kss.BackendForm"
+    factory=".ecaab_kss.FieldsetBackendInput"
+  />
+
+  <zope:adapter
+    name="ecaab.select_backend_tests"
+    provides="zope.contentprovider.interfaces.IContentProvider"
+    factory=".ecaab_kss.SelectBackendTests"
   />
 
   <page
@@ -21,5 +36,19 @@
     attribute="refresh_fieldset_backend"
     permission="cmf.ModifyPortalContent"
   />
+
+
+  <!-- control panel -->
+  <!-- ecaab control panel adapter -->    
+  <zope:adapter factory=".ecaabsettings.ECAABControlPanelAdapter" />
+  
+  <!-- ecaab control panel form view -->    
+  <page
+      zcml:condition="installed plone.app.controlpanel"
+      name="ecaab-controlpanel"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class=".ecaabsettings.ECAABControlPanel"
+      permission="cmf.ManagePortal"
+  />    
 
 </configure>
