@@ -102,14 +102,17 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Returns spooler status information
         """
-        log.info("xxx: _getStatus: Requesting spooler status information")
+        #log.info("xxx: _getStatus: Requesting spooler status information")
         
         try:
             spooler = self._getSpoolerHandle(host, port)
             return spooler.getStatus(self._getAuth(username, password))
 
-        except (socket.error, xmlrpclib.Fault):
-            log_exc()
+        except xmlrpclib.Fault, e:
+            log.warn("%s" % e)
+            pass
+        except socket.error, e:
+            log.warn("%s" % e)
             pass
 
 
@@ -118,15 +121,18 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Returns a dict with all backends currently registered to ECSpooler.
         """
-        log.info("xxx: _getAvailableBackends: Trying to get available backends")
+        #log.info("xxx: _getAvailableBackends: Trying to get available backends")
         
         try:
             spooler = self._getSpoolerHandle(host, port)
             return spooler.getBackends(self._getAuth(username, password))
 
-        except (socket.error, xmlrpclib.Fault):
-            log_exc()
-            return {}
+        except xmlrpclib.Fault, e:
+            log.warn("%s" % e)
+        except socket.error, e:
+            log.warn("%s" % e)
+
+        return {}
 
 
     security.declarePublic('getAvailableBackendsDL')
@@ -134,14 +140,14 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Returns a display list of all (actually) available backends.
         """
-        log.info("xxx: getAvailableBackendsDL")
+        #log.info("xxx: getAvailableBackendsDL")
 
         dl = DisplayList(())
         
         # get all available backends from spooler setup utily 
         backends = self._getAvailableBackends()
         
-        log.info('xxx: backends: ' + repr(backends))
+        #log.info('xxx: backends: ' + repr(backends))
         
         for key in backends.keys():
             id = key
@@ -158,7 +164,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Values for all currently selected backends will be chached.
         """
-        log.info("xxxxxxxx: manage_cacheBackends: reinit=%s" % reinit)
+        #log.info("xxxxxxxx: manage_cacheBackends: reinit=%s" % reinit)
         
         if reinit:
             self.backendValueCache.clear()
@@ -176,7 +182,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         Chaches all values for a backend.  Returns True if caching was ok, 
         otherwise False
         """
-        log.info("xxxxxxxx: Caching backend '%s'" % backend)
+        #log.info("xxxxxxxx: Caching backend '%s'" % backend)
         
         if not backend: 
             return False
@@ -213,12 +219,12 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
                 log.warn('Error while getting backend status: status is %s' % (status))
                 return False
 
-        except (socket.error, xmlrpclib.Fault):
-            log_exc()
-            return False
-        except Exception:
-            log_exc()
-            return False
+        except xmlrpclib.Fault, e:
+            log.warn("%s" % e)
+        except socket.error, e:
+            log.warn("%s" % e)
+
+        return False
 
 
     security.declarePublic('getCachedBackends')
@@ -226,7 +232,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Returns a list of backends which schema information are cached. 
         """
-        log.info("xxxxxxxx: getCachedBackends")
+        #log.info("xxxxxxxx: getCachedBackends")
         
         result = []
         
@@ -283,19 +289,19 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         
         for backend in selectedBackends:
 
-            log.info('0-xxx: backend: %s' % (backend))
+            #log.info('0-xxx: backend: %s' % (backend))
             
             if backend:
                 
                 isCached = self.backendValueCache.has_key(backend)
                 
-                log.info('1-xxx: %s : is chached: %s' % (backend, isCached))
+                #log.info('1-xxx: %s : is chached: %s' % (backend, isCached))
                 
                 if not isCached:
                     isCached = self._cacheBackend(backend) 
                 # end if
     
-                log.info('2-xxx: %s : is chached: %s' % (backend, isCached))
+                #log.info('2-xxx: %s : is chached: %s' % (backend, isCached))
 
                 if isCached:
                     dl.add(backend, '%s (%s)' % 
@@ -333,8 +339,11 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
                         # chache fields for this backend
                         self.backendValueCache[backend]['fields'] = fields[1]
 
-                except (socket.error, xmlrpclib.Fault):
-                    #log.error('%s' % err)
+                except xmlrpclib.Fault, e:
+                    log.warn("%s" % e)
+                    pass
+                except socket.error, e:
+                    log.warn("%s" % e)
                     pass
 
         if self.backendValueCache.has_key(backend):
@@ -366,8 +375,11 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         
                         self.backendValueCache[backend]['tests'] = tests[1]
         
-                except (socket.error, xmlrpclib.Fault):
-                    #log.error('%s' % err)
+                except xmlrpclib.Fault, e:
+                    log.warn("%s" % e)
+                    pass
+                except socket.error, e:
+                    log.warn("%s" % e)
                     pass
             
         if self.backendValueCache.has_key(backend):
@@ -383,7 +395,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         
         @return success or fail message string
         """
-        log.info("xxxxxxxx: test")
+        #log.info("xxxxxxxx: test")
 
         status = self._getStatus(host, port, username, password)
 
