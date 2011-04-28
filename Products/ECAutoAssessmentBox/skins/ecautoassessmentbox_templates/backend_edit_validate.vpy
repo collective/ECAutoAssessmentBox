@@ -1,4 +1,4 @@
-## Script (Python) "validate_base"
+## Script (Python) "validate_edit_validate"
 ##bind container=container
 ##bind context=context
 ##bind namespace=
@@ -13,5 +13,4 @@ if errors:
     context.plone_utils.addPortalMessage('Please correct the indicated errors: %s' % errors)
     return state.set(status='failure', errors=errors)
 else:
-    #context.plone_utils.addPortalMessage('Your changes have been saved.')
     return state

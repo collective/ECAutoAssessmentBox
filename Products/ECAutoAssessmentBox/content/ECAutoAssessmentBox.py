@@ -75,7 +75,7 @@ schema = Schema((
 
     StringField(
         'tests',
-        #required = True,
+        required = True,
         vocabulary = '_getTestsDisplayList',
         widget = MultiSelectionWidget(
             modes=('edit'),
@@ -84,6 +84,7 @@ schema = Schema((
             description='Select one or more tests.',
             description_msgid='help_tests',
             i18n_domain=I18N_DOMAIN,
+            macro="widget_select_backend_tests",
         ),
         schemata = 'backend',
         read_permission = 'Modify Portal Content',
@@ -116,6 +117,7 @@ ECAutoAssessmentBox_schema = ECAssignmentBox_schema.copy() + \
 ECAutoAssessmentBox_schema['id'].widget.visible = dict(edit=0, view=0)
 
 
+
 class ECAutoAssessmentBox(ECAssignmentBox):
     """
     """
@@ -144,14 +146,17 @@ class ECAutoAssessmentBox(ECAssignmentBox):
 
 
     #security.declarePrivate('_getTestsDisplayList')
-    def _getTestsDisplayList(self):
+    def _getTestsDisplayList(self, backend=None):
         """
         Returns a display list of all available tests for a backend.
         """
         result = DisplayList(())
 
+        if (backend == None):
+            backend = self.backend
+
         ecs_tool = getToolByName(self, ECS_NAME)
-        tests = ecs_tool.getBackendTestFields(self.backend)
+        tests = ecs_tool.getBackendTestFields(backend)
 
         [result.add(key, tests[key]) for key in tests]
              
@@ -169,22 +174,19 @@ class ECAutoAssessmentBox(ECAssignmentBox):
         """
         result = []
         
-        logger.info('xxx: self.backend: %s' % self.backend)
-        logger.info('xxx: backend: %s' % backend)
+        if (backend == None):
+            backend = self.backend
 
         ecs_tool = getToolByName(self, ECS_NAME)
-        
-        if backend:
-            fields = ecs_tool.getBackendInputFields(backend)
-        else:
-            fields = ecs_tool.getBackendInputFields(self.backend)
+        fields = ecs_tool.getBackendInputFields(backend)
         
         for field in fields:
+            
             # get field information
             type = fields[field].get('format', 'text')
             label = fields[field].get('label', '')
             description = fields[field].get('description', '')
-            required = fields[field].get('required', False),
+            required = fields[field].get('required', False)
             
             # set widget
             # StringField
@@ -196,7 +198,8 @@ class ECAutoAssessmentBox(ECAssignmentBox):
                             #visible = {'edit':'visible', 'view':'invisible'},
                             i18n_domain = I18N_DOMAIN,)
 
-                result.append(StringField(field, 
+                result.append(StringField(field,
+                                          required = required, 
                                           widget = widget, 
                                           ),
                              ) 
@@ -209,7 +212,8 @@ class ECAutoAssessmentBox(ECAssignmentBox):
                             #visible = {'edit':'visible', 'view':'invisible'},
                             i18n_domain = I18N_DOMAIN,)
 
-                result.append(BooleanField(field, 
+                result.append(BooleanField(field,
+                                           required = required,
                                            widget = widget, 
                                           ), 
                               )
@@ -223,7 +227,8 @@ class ECAutoAssessmentBox(ECAssignmentBox):
                             rows = 12,
                             i18n_domain = I18N_DOMAIN,)
 
-                result.append(TextField(field, 
+                result.append(TextField(field,
+                                        required = required, 
                                         widget = widget, 
                                         ), 
                               )

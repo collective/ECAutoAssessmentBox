@@ -59,8 +59,8 @@ class DynamicDataWidget(TypesWidget):
     _properties = TypesWidget._properties.copy()
 
     _properties.update({
-        'macro' : "widget_backenddata",
-        'helper_js': ('widget_backenddata.js',),
+        'macro' : "widget_dynamic_data",
+        'helper_js': ('widget_dynamic_data.js',),
         'fields' : {}, # Sequence of Column instances
         })
 
