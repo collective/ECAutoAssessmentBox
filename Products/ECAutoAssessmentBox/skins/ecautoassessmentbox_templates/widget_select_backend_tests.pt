@@ -9,15 +9,15 @@
     <!-- Selection Widgets -->
 
     <metal:view_macro define-macro="view"
-                      tal:define="vocab extVocab | python:field.Vocabulary(here);
+                      tal:define="vocab extVocab|python:field.Vocabulary(here);
                                   value python:accessor();
                                   display python:context.displayValue(vocab, value);"
                       tal:replace="structure display" />
 
     <metal:define define-macro="edit">
-    <metal:use use-macro="field_macro | context/widgets/field/macros/edit">
+    <metal:use use-macro="field_macro|context/widgets/field/macros/edit">
     <metal:fill fill-slot="widget_body"
-                tal:define="vocab extVocab | python:field.Vocabulary(here);
+                tal:define="vocab extVocab|python:field.Vocabulary(here);
                             format python:test(widget.format, widget.format, 'select');
                             selectionview context/@@at_selection_widget;
                             selection python:selectionview.getSelected(vocab, value);

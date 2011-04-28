@@ -72,7 +72,7 @@ schema = Schema((
 
     StringField(
         'tests',
-        #required = True,
+        required = True,
         vocabulary = '_getTestsDisplayList',
         widget = MultiSelectionWidget(
             modes=('edit'),
@@ -179,7 +179,7 @@ class ECAutoAssessmentBox(ECAssignmentBox):
             type = fields[field].get('format', 'text')
             label = fields[field].get('label', '')
             description = fields[field].get('description', '')
-            required = fields[field].get('required', False),
+            required = fields[field].get('required', False)
             
             # set widget
             # StringField
@@ -192,7 +192,7 @@ class ECAutoAssessmentBox(ECAssignmentBox):
                             i18n_domain = config.I18N_DOMAIN,)
 
                 result.append(StringField(field,
-                                          #required = required, 
+                                          required = required, 
                                           widget = widget, 
                                          ),
                              ) 
@@ -206,7 +206,7 @@ class ECAutoAssessmentBox(ECAssignmentBox):
                             i18n_domain = config.I18N_DOMAIN,)
 
                 result.append(BooleanField(field, 
-                                           #required = required, 
+                                           required = required, 
                                            widget = widget, 
                                           ), 
                               )

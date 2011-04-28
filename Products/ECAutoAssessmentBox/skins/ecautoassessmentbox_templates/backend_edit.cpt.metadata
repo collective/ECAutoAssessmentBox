@@ -2,7 +2,7 @@
 title = Edit test (backend) data
 
 [validators]
-validators=
+validators=backend_edit_validate
 
 [actions]
 action.success=traverse_to:string:content_edit
