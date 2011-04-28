@@ -1,8 +1,3 @@
-<!-- -*- coding: utf-8 -*- -->
-
-# Todos for release 1.1 (2009-07-15)
-
-- Selecting a backend will not load necessary fields for this backend;
-  you have to save and re-edit the auto assessment box.
+# TODOs for release 1.5 (2011-04-27)
 
 - 'ECAutoAssessmentTask' has not been integrated.

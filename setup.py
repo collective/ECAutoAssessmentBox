@@ -38,7 +38,7 @@ setup(name='Products.ECAutoAssessmentBox',
       install_requires=[
           'setuptools',
           # -*- Extra requirements: -*-
-          'Products.ECAssignmentBox >= 1.4',
+          'Products.ECAssignmentBox >= 1.5',
       ],
       entry_points="""
       # -*- Entry points: -*-

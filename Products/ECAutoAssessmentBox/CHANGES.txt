@@ -1,11 +1,15 @@
 History
 =======
 
-# Changes in release 1.4 (2011-04-01)
+# Changes in release 1.4 (2011-04-30)
 
 - Added compatibility for Plone 4. Plone 3.x support has been dropped.
-  Plone 3 users should use ECAutoAssessmentBox 1.1.x.
+  Plone 3 users should use ECAutoAssessmentBox 1.3.x.
 
+# Changes in release 1.3 (2011-04-29)
+
+- KSS is used to display input fields for a selected backend without 
+  loading the whole edit page again.
 
 # Changes in release 1.1 (2009-10-09)
 
