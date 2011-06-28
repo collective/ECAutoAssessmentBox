@@ -8,19 +8,28 @@
 __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
 
-from Products.Archetypes.atapi import *
-from AccessControl import ClassSecurityInfo
-from Products.Archetypes.utils import mapply
-from Products.Archetypes.Field import encode, decode, CHUNK
-from Products.Archetypes.Registry import registerField
-from Acquisition import aq_base
-from Products.Archetypes.interfaces.base import IBaseUnit
-from OFS.Image import File
-from ZPublisher.HTTPRequest import FileUpload
-from OFS.Image import Pdata
-from Products.Archetypes.utils import shasattr
 from types import FileType
+
+from AccessControl import ClassSecurityInfo
+
+#from Acquisition import aq_base
+
+from zope.contenttype import guess_content_type
+
+from Products.Archetypes.atapi import TextField
+from Products.Archetypes.exceptions import TextFieldException 
+#from Products.Archetypes.Field import encode, decode, 
+from Products.Archetypes.Field import CHUNK
+from Products.Archetypes.interfaces.base import IBaseUnit
+from Products.Archetypes.Registry import registerField
+#from Products.Archetypes.utils import mapply
+from Products.Archetypes.utils import shasattr
 from Products.CMFCore.utils import getToolByName
+
+from OFS.Image import File
+from OFS.Image import Pdata
+
+from ZPublisher.HTTPRequest import FileUpload
 
 class PlainTextField(TextField):
     """A specialized field for plain text only"""

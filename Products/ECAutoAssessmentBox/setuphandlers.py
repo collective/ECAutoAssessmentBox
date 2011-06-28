@@ -9,8 +9,6 @@ __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
 
 import transaction
-import logging
-log = logging.getLogger('ECAutoAssessmentBox: setuphandlers')
 
 from Products.CMFCore.utils import getToolByName
 
@@ -24,16 +22,16 @@ def isNotECAutoAssessmentBoxProfile(context):
     return context.readDataFile("ECAutoAssessmentBox_marker.txt") is None
 
 
-def setupHideToolsFromNavigation(context):
+def hideToolsFromNavigation(context):
     """Hide ecaab_utils from navigation
     """
     
     if isNotECAutoAssessmentBoxProfile(context): return 
 
-    LOG.info("Hiding '%s' from navigation" % config.ECS_NAME)
+    LOG.debug("Hiding '%s' from navigation" % config.ECS_NAME)
 
     # uncatalog ecaab_utils
-    toolnames = [config.ECS_NAME]
+    tool_id = config.ECS_NAME
 
     site = context.getSite()
     portal = getToolByName(site, 'portal_url').getPortalObject()
@@ -42,28 +40,28 @@ def setupHideToolsFromNavigation(context):
     navtreeProperties = getattr(portalProperties, 'navtree_properties')
     
     if navtreeProperties.hasProperty('idsNotToList'):
+        # get IDs of all unlisted items
         current = list(navtreeProperties.getProperty('idsNotToList') or [])
-        # add all ids 
-        for toolname in toolnames:
-            if toolname not in current:
-                current.append(toolname)
-                kwargs = {'idsNotToList': current}
-                navtreeProperties.manage_changeProperties(**kwargs)
 
-        """
-        for item in current:
-            try:
-                portal[item].unindexObject()
-            except:
-                LOG.warn('Could not unindex object: %s' % item)
-        """
+        # add our tools to list of unlisted items
+        if tool_id not in current:
+            current.append(tool_id)
+            kwargs = {'idsNotToList': current}
+            navtreeProperties.manage_changeProperties(**kwargs)
+
+        # unindex our tools        
+        try:
+            portal[tool_id].unindexObject()
+        except:
+            LOG.warn('Could not unindex object: %s' % tool_id)
+
 
 def fixTools(context):
     """Do post-processing on ecaab_utils
     """
     if isNotECAutoAssessmentBoxProfile(context): return 
 
-    LOG.info("Fixing '%s' after installation" % config.ECS_NAME)
+    LOG.debug("Fixing '%s' after installation" % config.ECS_NAME)
 
     site = context.getSite()
     
@@ -79,7 +77,7 @@ def updateRoleMappings(context):
 
     if isNotECAutoAssessmentBoxProfile(context): return 
     
-    LOG.info('Updating role mappings')
+    LOG.debug('Updating role mappings')
 
     wft = getToolByName(context.getSite(), 'portal_workflow')
     wft.updateRoleMappings()
@@ -92,8 +90,9 @@ def postInstall(context):
     
     if isNotECAutoAssessmentBoxProfile(context): return 
     
-    LOG.info('Post installation...')
-    reindexIndexes(context)
+    #LOG.debug('Post installation...')
+    # do not reindex any content because it's already donebei ECAB
+    #reindexIndexes(context)
 
 
 def installGSDependencies(context):
@@ -162,4 +161,4 @@ def reindexIndexes(context):
     if ids:
         pc.manage_reindexIndex(ids=ids)
     
-    LOG.info('Reindexed %s' % indexes)
+    LOG.info('Indexes %s re-indexed.' % indexes)

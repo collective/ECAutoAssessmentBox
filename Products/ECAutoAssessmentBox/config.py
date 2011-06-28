@@ -17,7 +17,7 @@ __docformat__ = 'plaintext'
 # AppConfig.py in your product's root directory. The items in there
 # will be included (by importing) in this file if found.
 from Products.CMFCore import permissions
-from Products.ATContentTypes.configuration.config import zconf
+#from Products.ATContentTypes.config import zconf
 
 # load custom configuration from product ECAssignmentBox
 try:

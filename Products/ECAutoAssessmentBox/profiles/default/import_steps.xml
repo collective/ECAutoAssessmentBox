@@ -3,9 +3,9 @@
 
  <import-step 
     id="ECAutoAssessmentBox-Hide-Tools-From-Navigation" 
-    handler="Products.ECAutoAssessmentBox.setuphandlers.setupHideToolsFromNavigation"
-    title="Hide Custom tools from Navigation for ECAutoAssessmentBox"
-    version="2008-10-06T08:20:41.695300">
+    handler="Products.ECAutoAssessmentBox.setuphandlers.hideToolsFromNavigation"
+    title="Hide custom tools from Navigation for ECAutoAssessmentBox"
+    version="2011-06-28T15:21:40">
    <dependency step="ECAutoAssessmentBox-QI-dependencies"/>
    Hides custom tools from navigation tree for ECAutoAssessmentBox
  </import-step>
@@ -14,7 +14,7 @@
     id="ECAutoAssessmentBox-Fix-Tools" 
     handler="Products.ECAutoAssessmentBox.setuphandlers.fixTools"
     title="Fix tools for ECAutoAssessmentBox"
-    version="2008-10-06T08:20:41.695300">
+    version="2011-06-28T15:21:41">
    <dependency step="ECAutoAssessmentBox-QI-dependencies"/>
    call initializeArchetyps for tools in ECAutoAssessmentBox
  </import-step>
@@ -23,7 +23,7 @@
     id="ECAutoAssessmentBox-Update-RoleMappings" 
     handler="Products.ECAutoAssessmentBox.setuphandlers.updateRoleMappings"
     title="Update Workflow role mappings for ECAutoAssessmentBox"
-    version="2008-10-06T08:20:41.695300">
+    version="2011-06-28T15:21:42">
    <dependency step="ECAutoAssessmentBox-QI-dependencies"/>
    updates the workflow role mappings for ECAutoAssessmentBox
  </import-step>
@@ -32,18 +32,16 @@
     id="ECAutoAssessmentBox-postInstall" 
     handler="Products.ECAutoAssessmentBox.setuphandlers.postInstall"
     title="manual coded post-install for ECAutoAssessmentBox"
-    version="2008-10-06T08:20:41.695300">
+    version="2011-06-28T15:21:43">
    <dependency step="ECAutoAssessmentBox-QI-dependencies"/>
    manual coded post-install for ECAutoAssessmentBox
  </import-step>
-
-<!-- ##code-section ADDITIONALSTEPS -->
 
 <import-step 
     id="ECAutoAssessmentBox-GS-dependencies" 
     handler="Products.ECAutoAssessmentBox.setuphandlers.installGSDependencies"
     title="Dependend GS profiles for ECAutoAssessmentBox"
-    version="20081026-01">
+    version="2011-06-28T15:21:44">
    <dependency step="plone-final"/>
    install Generic Setup profile dependencies for ECAutoAssessmentBox
  </import-step>
@@ -52,13 +50,10 @@
     id="ECAutoAssessmentBox-QI-dependencies" 
     handler="Products.ECAutoAssessmentBox.setuphandlers.installQIDependencies"
     title="Dependend QI installables for ECAutoAssessmentBox"
-    version="20081026-01">
+    version="2011-06-28T15:21:45">
    <dependency step="ECAutoAssessmentBox-GS-dependencies"/>
    install quickinstaller dependencies for ECAutoAssessmentBox
  </import-step>
-
-
-<!-- ##/code-section ADDITIONALSTEPS --> 
 
 </import-steps>
  

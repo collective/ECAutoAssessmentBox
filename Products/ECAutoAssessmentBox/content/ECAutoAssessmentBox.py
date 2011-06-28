@@ -10,28 +10,36 @@ __docformat__ = 'plaintext'
 
 import interfaces
 
-from Acquisition import aq_inner
+#from Acquisition import aq_inner
 
 from AccessControl import ClassSecurityInfo
-from Products.Archetypes.atapi import *
+
+from Products.Archetypes.atapi import StringField
+from Products.Archetypes.atapi import SelectionWidget
+from Products.Archetypes.atapi import Schema
+from Products.Archetypes.atapi import BooleanField
+from Products.Archetypes.atapi import BooleanWidget
+from Products.Archetypes.atapi import MultiSelectionWidget
+from Products.Archetypes.atapi import TextField
+from Products.Archetypes.atapi import TextAreaWidget
+from Products.Archetypes.atapi import StringWidget 
+from Products.Archetypes.atapi import registerType 
+from Products.Archetypes.atapi import DisplayList 
+
 from zope import interface
 from zope.interface import implements
 
 from Products.Archetypes.interfaces import IMultiPageSchema
 from Products.CMFCore.utils import getToolByName
-from Products.CMFDynamicViewFTI.browserdefault import BrowserDefaultMixin
-
-from Products.ATContentTypes.content.folder import ATFolder
-from Products.ATContentTypes.content.folder import ATFolderSchema
 
 from Products.ECAutoAssessmentBox import config
-from Products.ECAutoAssessmentBox import LOG
+#from Products.ECAutoAssessmentBox import LOG
 
+#from Products.ECAssignmentBox import permissions
+#from Products.ECAutoAssessmentBox.content.ECAutoAssignment import ECAutoAssignment
 from Products.ECAssignmentBox.content.ECAssignmentBox import ECAssignmentBox
 from Products.ECAssignmentBox.content.ECAssignmentBox import ECAssignmentBox_schema
-#from Products.ECAssignmentBox import permissions
 
-from Products.ECAutoAssessmentBox.content.ECAutoAssignment import ECAutoAssignment
 from Products.ECAutoAssessmentBox.content.DynamicDataField import DynamicDataField
 from Products.ECAutoAssessmentBox.content.DynamicDataWidget import DynamicDataWidget
 
@@ -223,9 +231,9 @@ class ECAutoAssessmentBox(ECAssignmentBox):
                 result.append(
                     TextField(field, 
                               required = required, 
-                              allowable_content_types = (config.EC_DEFAULT_MIME_TYPE,), 
-                              default_content_type = config.EC_DEFAULT_MIME_TYPE, 
-                              default_output_type = config.EC_DEFAULT_FORMAT,
+                              allowable_content_types = config.ALLOWED_CONTENT_TYPES, 
+                              default_content_type = config.DEFAULT_CONTENT_TYPE, 
+                              default_output_type = config.DEFAULT_OUTPUT_TYPE,
                               widget = widget, 
                              ), 
                     )

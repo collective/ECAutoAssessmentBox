@@ -8,7 +8,7 @@
 __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
 
-from Acquisition import aq_inner
+#from Acquisition import aq_inner
 
 from zope import event
 from zope.app.component.hooks import getSite
@@ -24,7 +24,6 @@ from zope.schema import Int
 from zope.schema import Password
 #from zope.schema import Tuple
 #from zope.schema import Choice
-
 
 from plone.app.controlpanel.form import ControlPanelForm
 #from plone.app.form.validators import null_validator
@@ -212,7 +211,7 @@ class ECAABControlPanel(ControlPanelForm):
             # get spooler tool
             ecs_tool = getToolByName(getSite(), 'ecaab_utils')
             # test connection without saving
-            backendIds, backendNames = ecs_tool.test(host, port, username, password)
+            backendIds, msg = ecs_tool.test(host, port, username, password)
         
             if backendIds is not None:
                 ecaab_props._updateProperty('backends', backendIds)
@@ -220,10 +219,10 @@ class ECAABControlPanel(ControlPanelForm):
                 msg = _(u'update_succeeded',
                         default=u'Your changes have been saved.  '
                                  'The following backends are available: %s. '
-                                 %  backendNames)
+                                 %  msg)
             else:
                 msg = _(u'test_failed',
-                        default=u'Service not responding (%s:%s).' % (host, port))
+                        default=u'%s' % msg)
                 
         else:
             msg = _(u'no_changes', default=u'No changes')

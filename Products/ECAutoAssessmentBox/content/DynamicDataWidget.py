@@ -9,20 +9,20 @@ __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
 
 # Python imports
-from types import DictType, FileType, StringType, UnicodeType
+#from types import DictType, FileType, StringType, UnicodeType
 
 # Zope imports
 from AccessControl import ClassSecurityInfo
-from Acquisition import aq_base, aq_parent
+#from Acquisition import aq_base, aq_parent
 
 # Plone imports
 from Products.Archetypes.Widget import TypesWidget
 from Products.Archetypes.Registry import registerWidget
-from Products.Archetypes.debug import log
-from Products.Archetypes.utils import className, unique, capitalize
-from Products.CMFCore.utils import getToolByName
-from Products.CMFCore.Expression import Expression, createExprContext
-from Products.generator.widget import macrowidget
+#from Products.Archetypes.debug import log
+#from Products.Archetypes.utils import className, unique, capitalize
+#from Products.CMFCore.utils import getToolByName
+#from Products.CMFCore.Expression import Expression, createExprContext
+#from Products.generator.widget import macrowidget
 
 # Local imports
 #from Column import Column

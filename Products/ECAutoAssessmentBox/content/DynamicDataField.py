@@ -9,19 +9,26 @@ __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
 
 # Python imports
-from types import DictionaryType, StringType, UnicodeType, ListType
+import StringIO
+
+from types import DictionaryType
+from types import StringType
+from types import UnicodeType
+#from types import ListType
 
 # Zope imports
 from AccessControl import ClassSecurityInfo
 
 # Plone imports
-from Products.Archetypes.public import *
+#from Products.Archetypes.public import *
 from Products.Archetypes.utils import mapply
-from Products.Archetypes.Field import ObjectField, registerField, encode, decode
+from Products.Archetypes.Field import ObjectField, registerField, encode
+#from Products.Archetypes.Field import decode
 
-from Products.CMFPlone.utils import log_exc, log
+#from Products.CMFPlone.utils import log_exc, log
 
 # Local product imports
+from Products.ECAutoAssessmentBox import LOG
 from Products.ECAutoAssessmentBox.content import DynamicDataWidget
 
 class DynamicDataField(ObjectField):
@@ -95,8 +102,8 @@ class DynamicDataField(ObjectField):
                     value = mapply(method, *args, **kw)
 
             else:
-                log('Unhandled type in fields')
-                log(value)
+                LOG.warn('Unhandled type in fields')
+                LOG.warn(value)
 
         return value
 

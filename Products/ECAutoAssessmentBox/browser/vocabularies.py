@@ -25,7 +25,7 @@ from Products.CMFCore.utils import getToolByName
 from Products.ECAutoAssessmentBox import ECMessageFactory as _
 from Products.ECAutoAssessmentBox import config
 
-    
+
 class ECAABBackendsVocabulary(object):
     """
     Vocabulary factory for backends

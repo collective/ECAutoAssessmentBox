@@ -8,9 +8,9 @@
 __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
 
+import sys
 import re, time
 import traceback
-import logging
 
 from types import BooleanType
 from types import IntType
@@ -18,13 +18,18 @@ from types import IntType
 import interfaces
 
 from AccessControl import ClassSecurityInfo
-from AccessControl import Unauthorized
+#from AccessControl import Unauthorized
 from AccessControl.SecurityManagement import getSecurityManager
 from AccessControl.SecurityManagement import newSecurityManager
 
 from zope.interface import implements
 
-from Products.Archetypes.atapi import *
+from Products.Archetypes.atapi import TextField
+from Products.Archetypes.atapi import Schema
+from Products.Archetypes.atapi import ComputedWidget
+from Products.Archetypes.atapi import StringField
+from Products.Archetypes.atapi import registerType 
+
 from Products.CMFDynamicViewFTI.browserdefault import BrowserDefaultMixin
 from Products.CMFCore.utils import getToolByName
 

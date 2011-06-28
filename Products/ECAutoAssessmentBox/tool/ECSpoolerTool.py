@@ -5,6 +5,7 @@
 #
 # This file is part of ECAutoAssessmentBox.
 #
+from docutils.nodes import status
 __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
 
@@ -30,6 +31,7 @@ from Products.CMFCore import permissions
 
 from Products.ECAutoAssessmentBox import config
 from Products.ECAutoAssessmentBox import LOG
+from Products.ECAutoAssessmentBox import ECMessageFactory as _
 
 
 ECSpoolerTool_schema = BaseSchema.copy()
@@ -83,7 +85,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Returns spooler status information
         """
-        LOG.info("Requesting spooler status information")
+        LOG.debug("Requesting spooler status information")
 
         try:
             spooler = self._getSpoolerHandle(host, port)
@@ -104,11 +106,11 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """Returns a dict with all backends currently registered and 
         available by ECSpooler.
         """
-        LOG.info("Trying to get available backends from...")
+        LOG.debug("Trying to get available backends from...")
         
         try:
             spooler = self._getSpoolerHandle(host, port)
-            #LOG.info("%s" % repr(spooler))
+            #LOG.debug("%s" % repr(spooler))
 
             return spooler.getBackends(self._getAuth(username, password))
 
@@ -125,14 +127,14 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Returns a display list of all (actually) available backends.
         """
-        #LOG.info("xdebug: getAvailableBackendsDL")
+        #LOG.debug("xdebug: getAvailableBackendsDL")
 
         dl = DisplayList(())
         
         # get all available backends from spooler setup utily 
         backends = self._getAvailableBackends()
         
-        #LOG.info('xdebug: backends: ' + repr(backends))
+        #LOG.debug('xdebug: backends: ' + repr(backends))
         
         for key in backends.keys():
             id = key
@@ -149,7 +151,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Values for all currently selected backends will be chached.
         """
-        #LOG.info("xdebug: manage_cacheBackends: reinit=%s" % reinit)
+        #LOG.debug("xdebug: manage_cacheBackends: reinit=%s" % reinit)
         
         if reinit:
             self.backendValueCache.clear()
@@ -163,7 +165,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """ Caches all values for a given backend.  Returns True if 
         the caching procedure was successful, otherwise False.
         """
-        #LOG.info("xdebug: Caching backend '%s'" % backend)
+        #LOG.debug("xdebug: Caching backend '%s'" % backend)
         
         if not backend: 
             return False
@@ -190,7 +192,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
                     if tests[0]:
                         cache[backend]['tests'] = tests[1]
     
-                    #LOG.info("xdebug: Backend '%s' successfully cached" % backend)
+                    #LOG.debug("xdebug: Backend '%s' successfully cached" % backend)
     
                     return True
                 
@@ -211,7 +213,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """Returns a list of backends which schema information 
         is in the local cache. 
         """
-        #LOG.info("xdebug: Getting cached backends")
+        #LOG.debug("xdebug: Getting cached backends")
         
         result = []
         
@@ -250,7 +252,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
     def getSelectedBackendsDL(self, withNone=True):
         """Returns a display list of all backends selected for this site.
         """
-        #LOG.info("Getting all selected backends as Archetypes.utils.DisplayList...")
+        #LOG.debug("Getting all selected backends as Archetypes.utils.DisplayList...")
 
         dl = DisplayList(())
         
@@ -263,15 +265,15 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
 
             if backend != None:
                 isCached = self.backendValueCache.has_key(backend)
-                #LOG.info("xdebug: backend '%s' is cached: %s" % (backend, isCached))
+                #LOG.debug("xdebug: backend '%s' is cached: %s" % (backend, isCached))
                 
                 if not isCached:
                     isCached = self._cacheBackend(backend) 
-                    #LOG.info("xdebug: backend '%s' is cached: %s" % (backend, isCached))
+                    #LOG.debug("xdebug: backend '%s' is cached: %s" % (backend, isCached))
                 # end if
 
                 if isCached:
-                    #LOG.info("xdebug: Adding backend '%s' to display list" % backend)
+                    #LOG.debug("xdebug: Adding backend '%s' to display list" % backend)
                     dl.add(backend, '%s (%s)' % 
                            (self.backendValueCache[backend].get('name', '?'),
                             self.backendValueCache[backend].get('version', '?'))
@@ -295,7 +297,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         
         if backend != BACKEND_NONE:
             
-            #LOG.info("Loading backend input fields for '%s'" % backend)
+            #LOG.debug("Loading backend input fields for '%s'" % backend)
             
             # look if the backend is available
             #if backend in self._getAvailableBackends():
@@ -304,7 +306,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
             if not self.backendValueCache.has_key(backend):
                 # not in cache -> try getting field information directly from 
                 # spooler and cache them
-                #LOG.info("xdebug: Input fields for backend '%s' are not cached" % (backend))
+                #LOG.debug("xdebug: Input fields for backend '%s' are not cached" % (backend))
                 self._cacheBackend(backend)
             # end if
     
@@ -324,7 +326,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         
         if backend != BACKEND_NONE:
             
-            #LOG.info("Loading backend test fields for '%s'" % backend)
+            #LOG.debug("Loading backend test fields for '%s'" % backend)
     
             # look if the backend is available
             #if backend in self._getAvailableBackends():
@@ -333,7 +335,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
             if not self.backendValueCache.has_key(backend):
                 # not in cache -> try getting field information directly from 
                 # spooler and cache them
-                #LOG.info("xdebug: Test fields for backend '%s' are not cached" % (backend))
+                #LOG.debug("xdebug: Test fields for backend '%s' are not cached" % (backend))
                 self._cacheBackend(backend)
             # end if
                 
@@ -351,26 +353,29 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         
         @return success or fail message string
         """
-        LOG.info("Testing spooler connection")
+        LOG.debug("Testing spooler connection")
 
         status = self._getStatus(host, port, username, password)
         
         if status:
-            # get backends
-            backends = self._getAvailableBackends(host, port, username, password)
-        
-            bIdList = []
-            [bIdList.append(key) for key in backends]
+            if status[0] > 0:
+                # get backends
+                backends = self._getAvailableBackends(host, port, username, password)
+            
+                bIdList = []
+                [bIdList.append(key) for key in backends]
+    
+                bNameList = []
+                [bNameList.append('%s (%s)' % (backends[key].get('name', 'xxx'), 
+                                         backends[key].get('version', 'x.x'))) 
+                  for key in backends]
+    
+                return bIdList, '[%s]' % ', '.join(bNameList)
 
-            bNameList = []
-            [bNameList.append('%s (%s)' % (backends[key].get('name', 'xxx'), 
-                                     backends[key].get('version', 'x.x'))) 
-              for key in backends]
-
-            return bIdList, '[%s]' % ', '.join(bNameList)
-        
-        
-        return None, None
+            elif status[0] < 0:
+                return None, status[1]
+        else:
+            return None, "Service not responding (%s:%s)" % (host, port)
 
 
     security.declarePublic('appendJob')
