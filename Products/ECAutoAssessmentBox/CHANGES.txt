@@ -1,6 +1,11 @@
 History
 =======
 
+# Changes in release 1.4.1 (2011-08-14)
+
+- Fixed issue: ImportError: No module named schema.vocabulary
+
+
 # Changes in release 1.4 (2011-08-10)
 
 - Added compatibility for Plone 4. Plone 3.x support has been dropped.

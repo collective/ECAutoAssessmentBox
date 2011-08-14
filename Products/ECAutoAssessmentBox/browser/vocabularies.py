@@ -13,7 +13,7 @@ __version__   = '$Revision:1311 $'
 Vocabularies used by control panel or widget
 """
 
-from zope.app.schema.vocabulary import IVocabularyFactory
+from zope.schema.interfaces import IVocabularyFactory
 from zope.interface import implements
 from zope.schema.vocabulary import SimpleVocabulary
 from zope.schema.vocabulary import SimpleTerm
