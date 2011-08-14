@@ -15,7 +15,7 @@ REQUEST = context.REQUEST
 I18N_DOMAIN = 'eduComponents'
 
 # get spooler tool
-ecs_tool = getToolByName(context, 'ecspooler_tool')
+ecs_tool = getToolByName(context, 'ecaab_utils')
 
 # reset backend IDs
 #ecs_tool.setSelectedBackends([])

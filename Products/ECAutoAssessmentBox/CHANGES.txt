@@ -1,6 +1,20 @@
 History
 =======
 
+# Changes in release 1.4.1 (2011-08-14)
+
+- Fixed issue: ImportError: No module named schema.vocabulary
+
+
+# Changes in release 1.4 (2011-08-10)
+
+- Added compatibility for Plone 4. Plone 3.x support has been dropped.
+  Plone 3 users should use ECAutoAssessmentBox 1.1.
+
+- KSS is used to display input fields for a selected backend without 
+  loading the whole edit page again.
+
+
 # Changes in release 1.1 (2009-10-09)
 
 - ECAutoAssessmentBox was completly re-implemented with support for 
@@ -8,6 +22,7 @@ History
 
 - ECAutoAssessmentBox is now eggified and uploaded to PyPI.  An old-style 
   tarball distribution is still available at plone.org.
+
 
 # Changes in release 1.0 (2007-04-16)
 

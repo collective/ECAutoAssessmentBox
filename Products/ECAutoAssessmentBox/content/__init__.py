@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
-# $Id:__init__.py 1313 2009-09-28 07:03:29Z amelung $
+# $Id$
 #
-# Copyright (c) 2006-2009 Otto-von-Guericke University Magdeburg
+# Copyright (c) 2006-2011 Otto-von-Guericke-UniversitŠt Magdeburg
 #
 # This file is part of ECAutoAssessmentBox.
 #
-__author__ = """Mario Amelung <mario.amelung@gmx.de>"""
-__docformat__ = 'plaintext'
-__version__   = '$Revision:1313 $'
-
-# Classes
 import ECAutoAssessmentBox
 import ECAutoAssignment

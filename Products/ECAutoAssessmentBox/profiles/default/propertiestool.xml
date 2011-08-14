@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <object name="portal_properties" meta_type="Plone Properties Tool">
- <object name="ecspooler_properties" meta_type="Plone Property Sheet">
+ <object name="ecaab_properties" meta_type="Plone Property Sheet">
   <property name="title">Auto Assessment Properties</property>
-  <property name="host" type="string">localhost</property>
+  <property name="host" type="string"></property>
   <property name="port" type="int">5050</property>
-  <property name="username" type="string">demo</property>
-  <property name="password" type="string">foobar</property>
+  <property name="username" type="string"></property>
+  <property name="password" type="string"></property>
   <property name="backends" type="lines"></property>
  </object>
  <object name="site_properties" meta_type="Plone Property Sheet">

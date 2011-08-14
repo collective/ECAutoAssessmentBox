@@ -1,43 +1,48 @@
 # -*- coding: utf-8 -*-
-# $Id:ECAutoAssessmentBox.py 1311 2009-09-28 07:03:00Z amelung $
+# $Id$
 #
-# Copyright (c) 2006-2010 Otto-von-Guericke-Universität Magdeburg
+# Copyright (c) 2006-2011 Otto-von-Guericke-UniversitŠt Magdeburg
 #
 # This file is part of ECAutoAssessmentBox.
 #
 __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
-__version__   = '$Revision:1311 $'
+
+import interfaces
+
+#from Acquisition import aq_inner
 
 from AccessControl import ClassSecurityInfo
-from Products.Archetypes.atapi import *
+
+from Products.Archetypes.atapi import StringField
+from Products.Archetypes.atapi import SelectionWidget
+from Products.Archetypes.atapi import Schema
+from Products.Archetypes.atapi import BooleanField
+from Products.Archetypes.atapi import BooleanWidget
+from Products.Archetypes.atapi import MultiSelectionWidget
+from Products.Archetypes.atapi import TextField
+from Products.Archetypes.atapi import TextAreaWidget
+from Products.Archetypes.atapi import StringWidget 
+from Products.Archetypes.atapi import registerType 
+from Products.Archetypes.atapi import DisplayList 
+
 from zope import interface
 from zope.interface import implements
-import interfaces
 
 from Products.Archetypes.interfaces import IMultiPageSchema
 from Products.CMFCore.utils import getToolByName
-from Products.CMFDynamicViewFTI.browserdefault import BrowserDefaultMixin
 
-from Products.ATContentTypes.content.folder import ATFolder
-from Products.ATContentTypes.content.folder import ATFolderSchema
-from Products.ECAutoAssessmentBox.config import *
+from Products.ECAutoAssessmentBox import config
+#from Products.ECAutoAssessmentBox import LOG
 
-##code-section module-header #fill in your manual code here
-import logging
-
+#from Products.ECAssignmentBox import permissions
+#from Products.ECAutoAssessmentBox.content.ECAutoAssignment import ECAutoAssignment
 from Products.ECAssignmentBox.content.ECAssignmentBox import ECAssignmentBox
 from Products.ECAssignmentBox.content.ECAssignmentBox import ECAssignmentBox_schema
-#from Products.ECAssignmentBox import permissions
 
-from Products.ECAutoAssessmentBox.content.ECAutoAssignment import ECAutoAssignment
 from Products.ECAutoAssessmentBox.content.DynamicDataField import DynamicDataField
 from Products.ECAutoAssessmentBox.content.DynamicDataWidget import DynamicDataWidget
 
-
-logger = logging.getLogger('ECAutoAssessmentBox')
-
-##/code-section module-header
 
 schema = Schema((
 
@@ -52,7 +57,7 @@ schema = Schema((
             label_msgid='label_backend',
             description='Select a test backend.',
             description_msgid='help_backend',
-            i18n_domain=I18N_DOMAIN,
+            i18n_domain=config.I18N_DOMAIN,
         ),
         schemata = 'backend',
         read_permission = 'Modify Portal Content',
@@ -67,7 +72,7 @@ schema = Schema((
             label_msgid = 'label_auto_accept',
             description = 'If selected, an assignment which passes all tests will be automatically accepted.',
             description_msgid = 'help_auto_accept',
-            i18n_domain = I18N_DOMAIN,
+            i18n_domain = config.I18N_DOMAIN,
         ),
         schemata = 'backend',
         read_permission = 'Modify Portal Content',
@@ -75,7 +80,7 @@ schema = Schema((
 
     StringField(
         'tests',
-        #required = True,
+        required = True,
         vocabulary = '_getTestsDisplayList',
         widget = MultiSelectionWidget(
             modes=('edit'),
@@ -83,7 +88,8 @@ schema = Schema((
             label_msgid='label_tests',
             description='Select one or more tests.',
             description_msgid='help_tests',
-            i18n_domain=I18N_DOMAIN,
+            i18n_domain=config.I18N_DOMAIN,
+            macro="widget_select_backend_tests"
         ),
         schemata = 'backend',
         read_permission = 'Modify Portal Content',
@@ -98,7 +104,7 @@ schema = Schema((
             description = 'Input fields for a backend',
             label_msgid = 'label_input_field',
             description_msgid = 'help_input_field',
-            i18n_domain = I18N_DOMAIN,
+            i18n_domain = config.I18N_DOMAIN,
         ),
         schemata = 'backend',
         read_permission = 'Modify Portal Content',
@@ -106,9 +112,6 @@ schema = Schema((
 
 ),
 )
-
-##code-section after-local-schema #fill in your manual code here
-##/code-section after-local-schema
 
 ECAutoAssessmentBox_schema = ECAssignmentBox_schema.copy() + \
     schema.copy()
@@ -139,19 +142,22 @@ class ECAutoAssessmentBox(ECAssignmentBox):
         """
         Returns a display list of all backends selected for this site.
         """
-        ecs_tool = getToolByName(self, ECS_NAME)
-        return ecs_tool.getSelectedBackendsDL()
+        ecaab_utils = getToolByName(self, config.ECS_NAME)
+        return ecaab_utils.getSelectedBackendsDL()
 
 
     #security.declarePrivate('_getTestsDisplayList')
-    def _getTestsDisplayList(self):
+    def _getTestsDisplayList(self, backend=None):
         """
         Returns a display list of all available tests for a backend.
         """
         result = DisplayList(())
 
-        ecs_tool = getToolByName(self, ECS_NAME)
-        tests = ecs_tool.getBackendTestFields(self.backend)
+        if (backend == None):
+            backend = self.backend
+
+        ecaab_utils = getToolByName(self, config.ECS_NAME)
+        tests = ecaab_utils.getBackendTestFields(backend)
 
         [result.add(key, tests[key]) for key in tests]
              
@@ -160,31 +166,28 @@ class ECAutoAssessmentBox(ECAssignmentBox):
     #security.declarePrivate('_getBackendInputFields')
     def _getBackendInputFields(self, backend=None):
         """
-        Returns a list of field objects depending on the cached values
-        for backend input fields in the spooler.
+        Returns a list of field objects depending on the cached
+        values for backend's input fields.
         
-        TODO: Move this method to ECSpoolerTool and cache the fields so we do
-              do not create them any time a auto assessment box is called in 
-              edit mode.
+        TODO, 2011-03-26, ma: 
+        Move this method to ECSpoolerTool and cache the fields so we
+        do not create them any time a auto assessment box is called 
+        in edit mode.
         """
         result = []
         
-        logger.info('xxx: self.backend: %s' % self.backend)
-        logger.info('xxx: backend: %s' % backend)
-
-        ecs_tool = getToolByName(self, ECS_NAME)
+        if (backend == None):
+            backend = self.backend
         
-        if backend:
-            fields = ecs_tool.getBackendInputFields(backend)
-        else:
-            fields = ecs_tool.getBackendInputFields(self.backend)
+        ecaab_utils = getToolByName(self, config.ECS_NAME)
+        fields = ecaab_utils.getBackendInputFields(backend)
         
         for field in fields:
             # get field information
             type = fields[field].get('format', 'text')
             label = fields[field].get('label', '')
             description = fields[field].get('description', '')
-            required = fields[field].get('required', False),
+            required = fields[field].get('required', False)
             
             # set widget
             # StringField
@@ -194,11 +197,12 @@ class ECAutoAssessmentBox(ECAssignmentBox):
                             description = description,
                             description_msgid = description,
                             #visible = {'edit':'visible', 'view':'invisible'},
-                            i18n_domain = I18N_DOMAIN,)
+                            i18n_domain = config.I18N_DOMAIN,)
 
-                result.append(StringField(field, 
+                result.append(StringField(field,
+                                          required = required, 
                                           widget = widget, 
-                                          ),
+                                         ),
                              ) 
             # BooleanField                  
             elif type == 'boolean':
@@ -207,9 +211,10 @@ class ECAutoAssessmentBox(ECAssignmentBox):
                             description = description,
                             description_msgid = description,
                             #visible = {'edit':'visible', 'view':'invisible'},
-                            i18n_domain = I18N_DOMAIN,)
+                            i18n_domain = config.I18N_DOMAIN,)
 
                 result.append(BooleanField(field, 
+                                           required = required, 
                                            widget = widget, 
                                           ), 
                               )
@@ -221,21 +226,20 @@ class ECAutoAssessmentBox(ECAssignmentBox):
                             description_msgid = description,
                             #visible = {'edit':'visible', 'view':'invisible'},
                             rows = 12,
-                            i18n_domain = I18N_DOMAIN,)
+                            i18n_domain = config.I18N_DOMAIN,)
 
-                result.append(TextField(field, 
-                                        widget = widget, 
-                                        ), 
-                              )
+                result.append(
+                    TextField(field, 
+                              required = required, 
+                              allowable_content_types = config.ALLOWED_CONTENT_TYPES, 
+                              default_content_type = config.DEFAULT_CONTENT_TYPE, 
+                              default_output_type = config.DEFAULT_OUTPUT_TYPE,
+                              widget = widget, 
+                             ), 
+                    )
         
         return result
 
 interface.alsoProvides(ECAutoAssessmentBox, IMultiPageSchema)
 
-registerType(ECAutoAssessmentBox, PROJECTNAME)
-# end of class ECAutoAssessmentBox
-
-##code-section module-footer #fill in your manual code here
-##/code-section module-footer
-
-
+registerType(ECAutoAssessmentBox, config.PROJECTNAME)

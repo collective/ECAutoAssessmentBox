@@ -15,10 +15,10 @@ REQUEST = context.REQUEST
 I18N_DOMAIN = 'eduComponents'
 
 # get spooler tool
-ecs_tool = getToolByName(context, 'ecspooler_tool')
+ecs_tool = getToolByName(context, 'ecaab_utils')
 
 #ecs_tool.manage_changeProperties(REQUEST)
-props = context.portal_properties.ecspooler_properties
+props = context.portal_properties.ecaab_properties
 props.manage_changeProperties(REQUEST)
 
 # test connection without saving

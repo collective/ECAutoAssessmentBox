@@ -1,0 +1,11 @@
+<div id="fieldset-backend-data"
+    tal:define="portal  view/portal;
+                errors  view/errors;
+                backend view/backend;
+                extFieldVocab python:here._getBackendInputFields(backend);">
+
+  <tal:fields repeat="fieldName python:['inputFields']">
+    <metal:use use-macro="python:here.widget(fieldName, mode='edit', use_label=1)" />
+  </tal:fields>
+    
+</div>

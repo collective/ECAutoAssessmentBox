@@ -1,43 +1,28 @@
 # -*- coding: utf-8 -*-
 # $Id$
 #
-# Copyright (c) 2006-2008 Otto-von-Guericke-Universität Magdeburg
+# Copyright (c) 2006-2011 Otto-von-Guericke-UniversitŠt Magdeburg
 #
 # This file is part of ECAutoAssessmentBox.
 #
-# ECAutoAssessmentBox is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# ECAutoAssessmentBox is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with ECAutoAssessmentBox; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-#
 __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
-__version__   = '$Revision$'
 
 # Python imports
-from types import DictType, FileType, StringType, UnicodeType
+#from types import DictType, FileType, StringType, UnicodeType
 
 # Zope imports
 from AccessControl import ClassSecurityInfo
-from Acquisition import aq_base, aq_parent
+#from Acquisition import aq_base, aq_parent
 
 # Plone imports
 from Products.Archetypes.Widget import TypesWidget
 from Products.Archetypes.Registry import registerWidget
-from Products.Archetypes.debug import log
-from Products.Archetypes.utils import className, unique, capitalize
-from Products.CMFCore.utils import getToolByName
-from Products.CMFCore.Expression import Expression, createExprContext
-from Products.generator.widget import macrowidget
+#from Products.Archetypes.debug import log
+#from Products.Archetypes.utils import className, unique, capitalize
+#from Products.CMFCore.utils import getToolByName
+#from Products.CMFCore.Expression import Expression, createExprContext
+#from Products.generator.widget import macrowidget
 
 # Local imports
 #from Column import Column
@@ -59,8 +44,8 @@ class DynamicDataWidget(TypesWidget):
     _properties = TypesWidget._properties.copy()
 
     _properties.update({
-        'macro' : "widget_backenddata",
-        'helper_js': ('widget_backenddata.js',),
+        'macro' : "widget_dynamic_data",
+        'helper_js': ('widget_dynamic_data.js',),
         'fields' : {}, # Sequence of Column instances
         })
 

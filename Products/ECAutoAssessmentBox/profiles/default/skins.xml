@@ -16,7 +16,7 @@
          meta_type="Filesystem Directory View"
          directory="ECAutoAssessmentBox/skins/ecautoassessmentbox_templates"/>
  
- <skin-path name="Plone Default">
+ <skin-path name="*">
   <layer insert-after="custom" 
          name="ecautoassessmentbox_images"/>
   <layer insert-after="custom" 

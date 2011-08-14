@@ -1,42 +1,34 @@
 # -*- coding: utf-8 -*-
 # $Id$
 #
-# Copyright (c) 2006-2008 Otto-von-Guericke-Universität Magdeburg
+# Copyright (c) 2006-2011 Otto-von-Guericke-UniversitŠt Magdeburg
 #
 # This file is part of ECAutoAssessmentBox.
 #
-# ECAutoAssessmentBox is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# ECAutoAssessmentBox is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with ECAutoAssessmentBox; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-#
 __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
-__version__   = '$Revision$'
 
 # Python imports
-from types import DictionaryType, StringType, UnicodeType, ListType
+import StringIO
+
+from types import DictionaryType
+from types import StringType
+from types import UnicodeType
+#from types import ListType
 
 # Zope imports
 from AccessControl import ClassSecurityInfo
 
 # Plone imports
-from Products.Archetypes.public import *
+#from Products.Archetypes.public import *
 from Products.Archetypes.utils import mapply
-from Products.Archetypes.Field import ObjectField, registerField, encode, decode
+from Products.Archetypes.Field import ObjectField, registerField, encode
+#from Products.Archetypes.Field import decode
 
-from Products.CMFPlone.utils import log_exc, log
+#from Products.CMFPlone.utils import log_exc, log
 
 # Local product imports
+from Products.ECAutoAssessmentBox import LOG
 from Products.ECAutoAssessmentBox.content import DynamicDataWidget
 
 class DynamicDataField(ObjectField):
@@ -60,7 +52,7 @@ class DynamicDataField(ObjectField):
     """
     
     #__implements__ = (ObjectField.__implements__, IDataGridField,)
-    __implements__ = (ObjectField.__implements__,)
+    #__implements__ = (ObjectField.__implements__,)
 
     _properties = ObjectField._properties.copy()
     _properties.update({
@@ -110,8 +102,8 @@ class DynamicDataField(ObjectField):
                     value = mapply(method, *args, **kw)
 
             else:
-                log('Unhandled type in fields')
-                log(value)
+                LOG.warn('Unhandled type in fields')
+                LOG.warn(value)
 
         return value
 

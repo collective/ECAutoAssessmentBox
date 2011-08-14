@@ -14,7 +14,6 @@
     <metal:main fill-slot="main">
       <tal:main-macro metal:define-macro="main"
           tal:define="errors     options/state/getErrors | nothing;
-                      Iterator   python:modules['Products.Archetypes'].IndexIterator;
                       fieldNames python:['backend'];">
   
         <!-- show header information -->
@@ -22,7 +21,6 @@
         <metal:use use-macro="here/base_macros/macros/eca_view_head" />
         -->
         
-        <!-- print a form with all test specification fields -->
         <form name="edit_form"
             method="post"
             enctype="multipart/form-data"
@@ -30,42 +28,40 @@
             action="backend_edit"
             tal:attributes="action string:${here/absolute_url}/${template/getId}">
 
+          <!-- backend, auto-accept and all test specifications -->
           <tal:fields repeat="fieldName python:['backend', 'autoAccept', 'tests']">
             <metal:use use-macro="python:here.widget(fieldName, mode='edit', use_label=1)" />
           </tal:fields>
 
-          <div id="fieldsetBackend">
+          <!-- all backend input fields -->
+          <div id="fieldset-backend-data">
             <tal:fields repeat="fieldName python:['inputFields']">
               <metal:use use-macro="python:here.widget(fieldName, mode='edit', use_label=1)" />
             </tal:fields>
           </div>
-    
+          
           <!-- submit button -->
           <div class="formControls" i18n:domain="plone">
             <input class="context"
-                tabindex=""
                 type="submit"
                 name="form.button.Submit"
                 value="Save"
                 i18n:domain="plone"
-                i18n:attributes="value"
-                tal:attributes="tabindex tabindex/next;"/>
+                i18n:attributes="value" />
 
             <input class="standalone"
-                tabindex=""
                 type="submit"
                 name="form.button.Cancel"
                 i18n:domain="plone"
                 value="Cancel"
-                i18n:attributes="value"
-                tal:attributes="tabindex tabindex/next;"/>
+                i18n:attributes="value" />
           </div>
 
           <input type="hidden" name="form.submitted" value="1" />
 
         </form>
 
-        <div metal:use-macro="here/document_byline/macros/byline" />
+        <div tal:replace="structure provider:plone.belowcontenttitle" />
         
       </tal:main-macro>
     </metal:main>

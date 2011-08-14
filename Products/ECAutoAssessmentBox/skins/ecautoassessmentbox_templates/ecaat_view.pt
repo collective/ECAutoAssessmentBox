@@ -10,7 +10,8 @@
     <metal:block fill-slot="css_slot">
       <style type="text/css" media="screen" tal:content="string: @import url($portal_url/ecabstyles.css);"/>
     </metal:block>
-    <metal:main fill-slot="main">
+    <metal:main fill-slot="main" tal:define="template_id template/getId;>
+      
       <tal:main-macro metal:define-macro="main">
 	<div metal:use-macro="here/document_actions/macros/document_actions"/>
 	<h1 class="documentFirstHeading" tal:content="here/title_or_id"/>
@@ -46,7 +47,7 @@
 	</tal:define>
 
 	<hr/>
-	<div metal:use-macro="here/document_byline/macros/byline"/>
+	<div tal:replace="structure provider:plone.belowcontenttitle" />
       </tal:main-macro>
     </metal:main>
   </body>

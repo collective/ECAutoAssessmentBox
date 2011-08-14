@@ -1,32 +1,17 @@
 # -*- coding: utf-8 -*-
-# $Id:ECSpoolerTool.py 1304 2009-09-28 06:55:16Z amelung $
+# $Id$
 #
-# Copyright (c) 2006-2008 Otto-von-Guericke-Universität Magdeburg
+# Copyright (c) 2006-2011 Otto-von-Guericke-UniversitŠt Magdeburg
 #
 # This file is part of ECAutoAssessmentBox.
 #
-# ECAutoAssessmentBox is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# ECAutoAssessmentBox is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with ECAutoAssessmentBox; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-#
+from docutils.nodes import status
 __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
 __docformat__ = 'plaintext'
-__version__   = '$Revision:1304 $'
 
 import sys
 import socket
 import xmlrpclib
-import logging
 import interfaces
 
 #from xml.parsers.expat import ExpatError
@@ -38,22 +23,21 @@ from AccessControl import ClassSecurityInfo
 from Products.Archetypes.atapi import Schema, BaseSchema, registerType
 from Products.Archetypes.atapi import BaseContent, DisplayList
 
+from Products.Archetypes.debug import log_exc
+
 from Products.CMFDynamicViewFTI.browserdefault import BrowserDefaultMixin
 from Products.CMFCore.utils import UniqueObject
 from Products.CMFCore import permissions
-from Products.CMFPlone.utils import log_exc
 
 from Products.ECAutoAssessmentBox import config
+from Products.ECAutoAssessmentBox import LOG
+from Products.ECAutoAssessmentBox import ECMessageFactory as _
 
-log = logging.getLogger('ECAutoAssessmentBox')
 
-schema = Schema((
+ECSpoolerTool_schema = BaseSchema.copy()
 
-),
-)
-
-ECSpoolerTool_schema = BaseSchema.copy() + \
-    schema.copy()
+# ID for the virtual non-backend
+BACKEND_NONE = 'None'
 
 
 class ConnectionFailedException(Exception):
@@ -70,10 +54,10 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
     implements(interfaces.IECSpoolerTool)
 
     plone_tool = True
-    meta_type = 'ECSpoolerTool'
-    _at_rename_after_creation = True
+    meta_type  = config.ECS_META
 
     schema = ECSpoolerTool_schema
+    #_at_rename_after_creation = False
 
     # cache for backend values
     backendValueCache = {} 
@@ -82,15 +66,14 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
     
 
     def __init__(self, id=None):
+        """Tool-constructors have no id argument, the id is fixed
         """
-        Tool-constructors have no id argument, the id is fixed
-        """
-        BaseContent.__init__(self, 'ecspooler_tool')
-        self.setTitle('')
+        BaseContent.__init__(self, config.ECS_NAME)
+        self.setTitle("")
+
 
     def at_post_edit_script(self):
-        """
-        Tool should not appear in portal_catalog
+        """Tool should not appear in portal_catalog
         """
         self.unindexObject()
 
@@ -102,31 +85,41 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Returns spooler status information
         """
-        log.info("xxx: _getStatus: Requesting spooler status information")
-        
+        LOG.debug("Requesting spooler status information")
+
         try:
             spooler = self._getSpoolerHandle(host, port)
+            LOG.debug("%s" % repr(spooler))
+        
             return spooler.getStatus(self._getAuth(username, password))
 
-        except (socket.error, xmlrpclib.Fault):
-            log_exc()
-            pass
+        except xmlrpclib.Fault, e:
+            LOG.warn("%s" % e)
+        except socket.error, e:
+            LOG.warn("%s" % e)
 
+        return None
+    
 
     #security.declarePrivate('_getAvailableBackends')
     def _getAvailableBackends(self, host=None, port=None, username=None, password=None):
+        """Returns a dict with all backends currently registered and 
+        available by ECSpooler.
         """
-        Returns a dict with all backends currently registered to ECSpooler.
-        """
-        log.info("xxx: _getAvailableBackends: Trying to get available backends")
+        LOG.debug("Trying to get available backends from...")
         
         try:
             spooler = self._getSpoolerHandle(host, port)
+            #LOG.debug("%s" % repr(spooler))
+
             return spooler.getBackends(self._getAuth(username, password))
 
-        except (socket.error, xmlrpclib.Fault):
-            log_exc()
-            return {}
+        except xmlrpclib.Fault, e:
+            LOG.warn("%s" % e)
+        except socket.error, e:
+            LOG.warn("%s" % e)
+
+        return {}
 
 
     security.declarePublic('getAvailableBackendsDL')
@@ -134,14 +127,14 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Returns a display list of all (actually) available backends.
         """
-        log.info("xxx: getAvailableBackendsDL")
+        #LOG.debug("xdebug: getAvailableBackendsDL")
 
         dl = DisplayList(())
         
         # get all available backends from spooler setup utily 
         backends = self._getAvailableBackends()
         
-        log.info('xxx: backends: ' + repr(backends))
+        #LOG.debug('xdebug: backends: ' + repr(backends))
         
         for key in backends.keys():
             id = key
@@ -158,25 +151,21 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Values for all currently selected backends will be chached.
         """
-        log.info("xxxxxxxx: manage_cacheBackends: reinit=%s" % reinit)
+        #LOG.debug("xdebug: manage_cacheBackends: reinit=%s" % reinit)
         
         if reinit:
             self.backendValueCache.clear()
         
-        selectedBackends = self.portal_properties.ecspooler_properties.backends
-        #log.debug('ecspooler_properties.backends=%s' % selectedBackends)
-        
-        for backend in selectedBackends:
+        for backend in self.getSelectedBackends():
             self._cacheBackend(backend)
 
 
     security.declarePrivate('_cacheBackend')
     def _cacheBackend(self, backend):
+        """ Caches all values for a given backend.  Returns True if 
+        the caching procedure was successful, otherwise False.
         """
-        Chaches all values for a backend.  Returns True if caching was ok, 
-        otherwise False
-        """
-        log.info("xxxxxxxx: Caching backend '%s'" % backend)
+        #LOG.debug("xdebug: Caching backend '%s'" % backend)
         
         if not backend: 
             return False
@@ -203,30 +192,28 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
                     if tests[0]:
                         cache[backend]['tests'] = tests[1]
     
-                    log.info("Backend '%s' cached" % backend)
+                    #LOG.debug("xdebug: Backend '%s' successfully cached" % backend)
     
                     return True
+                
                 elif status[0] < 0:
-                    log.warn('Error while getting backend status: %s, %s' % (status[0], status[1]))
-                    return False
+                    LOG.warn('Error while getting backend status: %s, %s' % (status[0], status[1]))
             else:
-                log.warn('Error while getting backend status: status is %s' % (status))
-                return False
+                LOG.warn('Error while getting backend status: status is %s' % (status))
 
-        except (socket.error, xmlrpclib.Fault):
-            log_exc()
-            return False
-        except Exception:
-            log_exc()
-            return False
+        except xmlrpclib.Fault, e:
+            LOG.warn("%s" % e)
+        except socket.error, e:
+            LOG.warn("%s" % e)
 
+        return False
 
     security.declarePublic('getCachedBackends')
     def getCachedBackends(self):
+        """Returns a list of backends which schema information 
+        is in the local cache. 
         """
-        Returns a list of backends which schema information are cached. 
-        """
-        log.info("xxxxxxxx: getCachedBackends")
+        #LOG.debug("xdebug: Getting cached backends")
         
         result = []
         
@@ -238,8 +225,10 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
                                'version': self.backendValueCache[backend]['version'],
                                #'online': backend in availableBackends,
                                })
-            except Exception:
-                log_exc()
+            except Exception, e:
+                LOG.warn("%s" % e)
+
+        return None
         
         return result
 
@@ -249,131 +238,112 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         Sets the list of currently selected backends.
         """
-        self.portal_properties.ecspooler_properties.backends = backends
+        self.portal_properties.ecaab_properties.backends = backends
 
     
     security.declarePublic('getSelectedBackends')
     def getSelectedBackends(self):
+        """Returns a list of all backends selected for this site.
         """
-        Returns a list of all backends selected for this site.
-        """
-        return self.portal_properties.ecspooler_properties.backends
+        return self.portal_properties.ecaab_properties.backends
         
 
     security.declarePublic('getSelectedBackendsDL')
     def getSelectedBackendsDL(self, withNone=True):
+        """Returns a display list of all backends selected for this site.
         """
-        Returns a display list of all backends selected for this site.
-        """
+        #LOG.debug("Getting all selected backends as Archetypes.utils.DisplayList...")
+
         dl = DisplayList(())
         
         if withNone:
-            # set a value for none testing
-            value = 'none'
-            #label = self.translate(msgid = 'label_no_backend', 
-            #                       domain = I18N_DOMAIN,
-            #                       default = 'None')
-            #
-            #dl.add(value, label)
-
+            # set a value for no testing
+            value = BACKEND_NONE
             dl.add(value, '----')
         
-        # add backends (they must be in the list of selected backends)
-        selectedBackends = self.portal_properties.ecspooler_properties.backends
-        
-        for backend in selectedBackends:
+        for backend in self.getSelectedBackends():
 
-            log.info('0-xxx: backend: %s' % (backend))
-            
-            if backend:
-                
+            if backend != None:
                 isCached = self.backendValueCache.has_key(backend)
-                
-                log.info('1-xxx: %s : is chached: %s' % (backend, isCached))
+                #LOG.debug("xdebug: backend '%s' is cached: %s" % (backend, isCached))
                 
                 if not isCached:
                     isCached = self._cacheBackend(backend) 
+                    #LOG.debug("xdebug: backend '%s' is cached: %s" % (backend, isCached))
                 # end if
-    
-                log.info('2-xxx: %s : is chached: %s' % (backend, isCached))
 
                 if isCached:
+                    #LOG.debug("xdebug: Adding backend '%s' to display list" % backend)
                     dl.add(backend, '%s (%s)' % 
                            (self.backendValueCache[backend].get('name', '?'),
                             self.backendValueCache[backend].get('version', '?'))
                            )
+                else:
+                    LOG.warn("Cannot add backend '%s' to display list "
+                             "because it is not cached" % backend)
                 # end if
             # end if
+        # end for
              
         return dl
 
     
     security.declarePublic('getBackendInputFields')
     def getBackendInputFields(self, backend):
+        """Returns a dict with all input fields for this backend.
         """
-        Returns a dict with all fields for this backend.
-        """
-        log.info("getBackendInputFields: %s" % backend)
         
-        # look if the backend is available
-        if backend in self._getAvailableBackends():
+        result = {}
+        
+        if backend != BACKEND_NONE:
+            
+            #LOG.debug("Loading backend input fields for '%s'" % backend)
+            
+            # look if the backend is available
+            #if backend in self._getAvailableBackends():
+    
             # is this backend already cached?
             if not self.backendValueCache.has_key(backend):
-                # not in cache -> get the fields from spooler
-                try:
-                    spooler = self._getSpoolerHandle()
-                    fields = spooler.getBackendInputFields(self._getAuth(), 
-                                                           backend)
+                # not in cache -> try getting field information directly from 
+                # spooler and cache them
+                #LOG.debug("xdebug: Input fields for backend '%s' are not cached" % (backend))
+                self._cacheBackend(backend)
+            # end if
+    
+            # backend input fields should be cached now
+            if self.backendValueCache.has_key(backend):
+                result = self.backendValueCache[backend]['fields']
 
-                    if fields[0]:
-                        # check if the backend is already cached
-                        if not self.backendValueCache.has_key(backend):
-                            self.backendValueCache[backend] = {}
-        
-                        # chache fields for this backend
-                        self.backendValueCache[backend]['fields'] = fields[1]
-
-                except (socket.error, xmlrpclib.Fault):
-                    #log.error('%s' % err)
-                    pass
-
-        if self.backendValueCache.has_key(backend):
-            return self.backendValueCache[backend]['fields']
-        else:
-            return {}
+        return result
 
 
     security.declarePublic('getBackendTestFields')
     def getBackendTestFields(self, backend):
+        """Returns a dict with test specifiactions for this backend.
         """
-        Returns a dict with test specifiactions for this backend.
-        """
-        log.info("getBackendTestFields: %s" % backend)
 
-        # look if the backend is available
-        if backend in self._getAvailableBackends():
+        result = {}
+        
+        if backend != BACKEND_NONE:
+            
+            #LOG.debug("Loading backend test fields for '%s'" % backend)
+    
+            # look if the backend is available
+            #if backend in self._getAvailableBackends():
+    
             # is this backend already cached?
             if not self.backendValueCache.has_key(backend):
-                # not in cache -> get the fields from spooler
-                try:
-                    spooler = self._getSpoolerHandle()
-                    tests = spooler.getBackendTestFields(self._getAuth(), 
-                                                         backend)
+                # not in cache -> try getting field information directly from 
+                # spooler and cache them
+                #LOG.debug("xdebug: Test fields for backend '%s' are not cached" % (backend))
+                self._cacheBackend(backend)
+            # end if
+                
+            # backend test fields should be cached now
+            if self.backendValueCache.has_key(backend):
+                result = self.backendValueCache[backend]['tests']
 
-                    if tests[0]:
-                        if not self.backendValueCache.has_key(backend):
-                            self.backendValueCache[backend] = {}
-        
-                        self.backendValueCache[backend]['tests'] = tests[1]
-        
-                except (socket.error, xmlrpclib.Fault):
-                    #log.error('%s' % err)
-                    pass
-            
-        if self.backendValueCache.has_key(backend):
-            return self.backendValueCache[backend]['tests']
-        else:
-            return {}
+        return result
 
 
     security.declareProtected(permissions.ModifyPortalContent, 'test')
@@ -383,20 +353,29 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         
         @return success or fail message string
         """
-        log.info("xxxxxxxx: test")
+        LOG.debug("Testing spooler connection")
 
         status = self._getStatus(host, port, username, password)
-
-        if status:
-            # get backends
-            backends = self._getAvailableBackends(host, port, username, password)
         
-            bList = []
-            [bList.append('%s (%s)' % (backends[key].get('name', 'xxx'), 
-                                     backends[key].get('version', 'x.x'))) 
-             for key in backends]
+        if status:
+            if status[0] > 0:
+                # get backends
+                backends = self._getAvailableBackends(host, port, username, password)
+            
+                bIdList = []
+                [bIdList.append(key) for key in backends]
+    
+                bNameList = []
+                [bNameList.append('%s (%s)' % (backends[key].get('name', 'xxx'), 
+                                         backends[key].get('version', 'x.x'))) 
+                  for key in backends]
+    
+                return bIdList, '[%s]' % ', '.join(bNameList)
 
-            return '[%s]' % ', '.join(bList)
+            elif status[0] < 0:
+                return None, status[1]
+        else:
+            return None, "Service not responding (%s:%s)" % (host, port)
 
 
     security.declarePublic('appendJob')
@@ -427,7 +406,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
             return result
         
         except xmlrpclib.Fault, ef:
-            log.warn('%s: %s' % (sys.exc_info()[0], ef))
+            LOG.warn('%s: %s' % (sys.exc_info()[0], ef))
             
             if retry:
                 # take care of hexadecimal Unicode escape sequences
@@ -446,8 +425,8 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         Returns the result for a check job with the given job id.
         """
         handle = self._getSpoolerHandle()
-        username = self.portal_properties.ecspooler_properties.username
-        password = self.portal_properties.ecspooler_properties.password
+        username = self.portal_properties.ecaab_properties.username
+        password = self.portal_properties.ecaab_properties.password
 
         AUTH = {'username':username, 'password':password}
 
@@ -468,27 +447,19 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         if not host:
             #self.host
-            host = self.portal_properties.ecspooler_properties.host or 'localhost'
+            host = self.portal_properties.ecaab_properties.host# or 'localhost'
         
         if not port:
             #self.port
-            port = self.portal_properties.ecspooler_properties.port or 5050
+            port = self.portal_properties.ecaab_properties.port# or 5050
         
         assert (host != None) and (len(host) != ''), \
             "Host is required and must not be empty."
         assert (port != None) and (type(port) == int), \
             "Port is required and must be an integer."
             
-        #log.debug("Spooler handle: http://%s:%d" % (host, port))
-
-        #try:
-        #log.debug('xmlrpclib.Server("http://%s:%d")' % (host, port), severity=DEBUG)
+        LOG.debug("Spooler handle: http://%s:%d" % (host, port))
         return xmlrpclib.ServerProxy("http://%s:%d" % (host, port))
-
-        #except (socket.error, xmlrpclib.Fault), err:
-        #except Exception, e:
-        #    # FIXME: could not connect to server -> return a error message
-        #    return None
 
 
     security.declarePrivate('_getAuth')
@@ -497,11 +468,11 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """
         if not username:
             #self.username
-            username = self.portal_properties.ecspooler_properties.username or ''
+            username = self.portal_properties.ecaab_properties.username or ''
         
         if not password:
             #self.password
-            password = self.portal_properties.ecspooler_properties.password or ''
+            password = self.portal_properties.ecaab_properties.password or ''
 
         return {'username':username, 'password':password}
 

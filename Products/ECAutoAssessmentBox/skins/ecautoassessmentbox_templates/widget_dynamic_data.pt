@@ -24,33 +24,34 @@
 			      tal:condition="python:visState == 'visible' and visCondition">
 
           <div tal:condition="python:'view' in widget.modes and 'r' in item.mode and item.checkPermission('r', here)">
-		          <tal:if_use_label condition="use_label | nothing">
-		            <metal:use_label use-macro="label_macro" />
-		          </tal:if_use_label>
-
-		          <metal:use_data use-macro="data_macro | default" />
+            <tal:if_use_label condition="use_label | nothing">
+              <metal:use_label use-macro="label_macro" />
+            </tal:if_use_label>
+  
+            <metal:use_data use-macro="data_macro | default" />
           </div>
         </li>
       </ul>
 
-<!--
-        <table class="listing"
-               tal:define="columns python:field.getColumns(here);
-                           fielddata python:field.getAccessor(context)()">
-            <thead>
-                <tr>
-                    <th tal:repeat="column columns" 
-                        tal:content="column">NAME</th>
-                </tr>
-            </thead>
-            <tbody class="datagrid">
-                <tr tal:repeat="rows fielddata">
-                    <td tal:repeat="column columns"
-                        tal:content="python:rows.get(column)" />
-                </tr>  
-            </tbody>
-        </table>
--->
+      <!--
+      <table class="listing"
+             tal:define="columns python:field.getColumns(here);
+                         fielddata python:field.getAccessor(context)()">
+          <thead>
+              <tr>
+                  <th tal:repeat="column columns" 
+                      tal:content="column">NAME</th>
+              </tr>
+          </thead>
+          <tbody class="datagrid">
+              <tr tal:repeat="rows fielddata">
+                  <td tal:repeat="column columns"
+                      tal:content="python:rows.get(column)" />
+              </tr>  
+          </tbody>
+      </table>
+      -->
+
     </metal:view_macro>
 
 
@@ -59,47 +60,50 @@
         tal:define="fieldvocab extFieldVocab | python:field.fieldVocabulary(context);
                     fielddata  python:field.getEditAccessor(context)();">
 
-      <div id="fieldset-backend">
-      <metal:block tal:repeat="field fieldvocab">
-        <tal:field define="fieldName string:${fieldName}.${field/getName}:records;
-                           widget    python:field.widget;
-                           accessor  python:lambda:fielddata.get(field.getName(), '');">
-
-          <tal:if condition="python:field.type == 'boolean'">
-            <metal:use use-macro="field_macro | here/widgets/boolean/macros/edit" />
-          </tal:if>
-        
-          <tal:if condition="python:field.type == 'string'">
-            <metal:use use-macro="field_macro | here/widgets/string/macros/edit" />
-          </tal:if>
-
-          <tal:if condition="python:field.type == 'text'">
-            <metal:use use-macro="here/widgets/textarea/macros/edit" />
-
-<!--
-            <div tal:define="edit_accessor python:field.getEditAccessor(here);
-                             getMethod python:(widget.populate and (edit_accessor or accessor)) or None;" 
-              tal:content="structure accessor" />
--->
-          </tal:if>
-<!--
-          <metal:use use-macro="field_macro | here/widgets/field/macros/edit">
-
-            <metal:fill fill-slot="widget_body">
-							<input name=""  
-							       onkeypress="handleKeyPress(event);"
-							       tal:attributes="name string:${fieldName};
-							                       value python:fielddata.get(field.getName(), '?');
-							                       tabindex tabindex/next;"
-							       type="text" />
-		        </metal:fill>
-          </metal:use>
--->
-
-        </tal:field>
-      </metal:block>
+      <div id="fieldset-backend-data">
+        <metal:block tal:repeat="field fieldvocab">
+          <tal:field define="fieldName string:${fieldName}.${field/getName}:records;
+                             widget    python:field.widget;
+                             accessor  python:lambda:fielddata.get(field.getName(), '');">
+  
+            <tal:if condition="python:field.type == 'boolean'">
+              <metal:use use-macro="field_macro | here/widgets/boolean/macros/edit" />
+            </tal:if>
+          
+            <tal:if condition="python:field.type == 'string'">
+              <metal:use use-macro="field_macro | here/widgets/string/macros/edit" />
+            </tal:if>
+  
+            <tal:if condition="python:field.type == 'text'">
+              <metal:use use-macro="here/widgets/textarea/macros/edit" />
+  
+              <!--
+              <div tal:define="edit_accessor python:field.getEditAccessor(here);
+                               getMethod python:(widget.populate and (edit_accessor or accessor)) or None;" 
+                tal:content="structure accessor" />
+              -->
+  
+            </tal:if>
+  
+            <!--
+            <metal:use use-macro="field_macro | here/widgets/field/macros/edit">
+  
+              <metal:fill fill-slot="widget_body">
+  							<input name=""  
+  							       onkeypress="handleKeyPress(event);"
+  							       tal:attributes="name string:${fieldName};
+  							                       value python:fielddata.get(field.getName(), '?');
+  							                       tabindex tabindex/next;"
+  							       type="text" />
+  		        </metal:fill>
+            </metal:use>
+            -->
+  
+          </tal:field>
+        </metal:block>
       </div>
-<!--
+
+      <!--
       <metal:use use-macro="field_macro | here/widgets/field/macros/edit">
         <metal:body metal:fill-slot="widget_body">
             
@@ -144,7 +148,8 @@
 
         </metal:body>
       </metal:use>
--->
+      -->
+    
     </metal:edit_macro>
 
     <div metal:define-macro="search">

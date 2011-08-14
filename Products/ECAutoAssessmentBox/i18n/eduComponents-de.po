@@ -246,9 +246,9 @@ msgid "submission_accepted"
 msgstr "Die Einreichung wurde akzeptiert."
 
 #: .\skins\ECAutoCheckAssignmentBox\prefs_spooler_form.cpt
-# Original: "Available and selected backends."
+# Original: "Available backends"
 msgid "legend_backend_details"
-msgstr "Verfügbare und ausgewählte Backends"
+msgstr "Ausgewählte Backends"
 
 #: .\skins\ECAutoCheckAssignmentBox\prefs_spooler_form.cpt
 # Original: "Backend schema cache."

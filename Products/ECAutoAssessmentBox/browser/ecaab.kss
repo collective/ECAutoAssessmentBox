@@ -1,9 +1,4 @@
-select#backend:change {
-   action-server: refresh_fieldset_backend;
-   refresh_fieldset_backend-backend: currentFormVar('backend');
-}
-
-select#backend:keypress {
-   action-server: refresh_fieldset_backend;
-   refresh_fieldset_backend-backend: currentFormVar('backend');
+#backend:change {
+  action-server: refresh_fieldset_backend;
+  refresh_fieldset_backend-kssSubmitForm: currentForm();
 }
