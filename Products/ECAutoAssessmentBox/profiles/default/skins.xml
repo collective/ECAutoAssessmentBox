@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<object name="portal_skins"
+        meta_type="Plone Skins Tool"
+        allow_any="False"
+        cookie_persistence="False"
+        request_varname="plone_skin">
+
+ <object name="ecautoassessmentbox_images"
+         meta_type="Filesystem Directory View"
+         directory="ECAutoAssessmentBox/skins/ecautoassessmentbox_images"/>
+ <object name="ecautoassessmentbox_styles"
+         meta_type="Filesystem Directory View"
+         directory="ECAutoAssessmentBox/skins/ecautoassessmentbox_styles"/>
+ <object name="ecautoassessmentbox_templates"
+         meta_type="Filesystem Directory View"
+         directory="ECAutoAssessmentBox/skins/ecautoassessmentbox_templates"/>
+ 
+ <skin-path name="*">
+  <layer insert-after="custom" 
+         name="ecautoassessmentbox_images"/>
+  <layer insert-after="custom" 
+         name="ecautoassessmentbox_styles"/>
+  <layer insert-after="custom" 
+         name="ecautoassessmentbox_templates"/>
+ </skin-path>
+
+</object>

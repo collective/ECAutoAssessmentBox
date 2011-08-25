@@ -1,0 +1,44 @@
+History
+=======
+
+# Changes in release 1.4.1 (2011-08-14)
+
+- Fixed issue: ImportError: No module named schema.vocabulary
+
+
+# Changes in release 1.4 (2011-08-10)
+
+- Added compatibility for Plone 4. Plone 3.x support has been dropped.
+  Plone 3 users should use ECAutoAssessmentBox 1.1.
+
+- KSS is used to display input fields for a selected backend without 
+  loading the whole edit page again.
+
+
+# Changes in release 1.1 (2009-10-09)
+
+- ECAutoAssessmentBox was completly re-implemented with support for 
+  Plone 3.
+
+- ECAutoAssessmentBox is now eggified and uploaded to PyPI.  An old-style 
+  tarball distribution is still available at plone.org.
+
+
+# Changes in release 1.0 (2007-04-16)
+
+- Added check box "Automatically accept assignments" to 
+  ECAutoAssessmentBox to automatically move an assignment in state 
+  "accepted" if it successfully passed all tests.  (Makes sense for
+  backens which return true or false only.)
+
+- Settings for ECSpooler and appropriated backends are now stored as 
+  portal properties.  Therefore it is no longer necessary to set up
+  spooler and backends after re-install.
+
+- Indicators are now differ depending on the backends result type, 
+  i.e., for backends returning True or False an icon will be displayed,
+  otherwise the plain result value (e.g., percentage or score.)
+
+- Performance improvements: We are now using portal_catalog where
+  possible.
+

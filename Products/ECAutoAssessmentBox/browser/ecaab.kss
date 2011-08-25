@@ -1,0 +1,4 @@
+#backend:change {
+  action-server: refresh_fieldset_backend;
+  refresh_fieldset_backend-kssSubmitForm: currentForm();
+}

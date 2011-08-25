@@ -1,0 +1,163 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="plone">
+<body>
+
+    <!-- Backend data widgets -->
+    <!-- VIEW -->
+    <metal:view_macro define-macro="view"
+        tal:define="fieldvocab python:field.fieldVocabulary(context);
+                    fielddata  python:field.getAccessor(context)();">
+
+      <ul tal:repeat="item fieldvocab">
+        <li tal:define="
+	            widget       python:item.widget;
+	            widget_view  python:here.widget(field.getName(), mode=mode, field=item, use_label=1);
+	            accessor     python:lambda:fielddata.get(item.getName(), '');
+	            label_macro  here/widgets/field/macros/label;
+	            data_macro   here/widgets/field/macros/data;
+	            visState     python:widget.isVisible(here, mode);
+	            visCondition python:item.widget.testCondition(here, portal, template);"
+  
+			      tal:condition="python:visState == 'visible' and visCondition">
+
+          <div tal:condition="python:'view' in widget.modes and 'r' in item.mode and item.checkPermission('r', here)">
+            <tal:if_use_label condition="use_label | nothing">
+              <metal:use_label use-macro="label_macro" />
+            </tal:if_use_label>
+  
+            <metal:use_data use-macro="data_macro | default" />
+          </div>
+        </li>
+      </ul>
+
+      <!--
+      <table class="listing"
+             tal:define="columns python:field.getColumns(here);
+                         fielddata python:field.getAccessor(context)()">
+          <thead>
+              <tr>
+                  <th tal:repeat="column columns" 
+                      tal:content="column">NAME</th>
+              </tr>
+          </thead>
+          <tbody class="datagrid">
+              <tr tal:repeat="rows fielddata">
+                  <td tal:repeat="column columns"
+                      tal:content="python:rows.get(column)" />
+              </tr>  
+          </tbody>
+      </table>
+      -->
+
+    </metal:view_macro>
+
+
+    <!-- EDIT -->
+    <metal:edit_macro define-macro="edit"
+        tal:define="fieldvocab extFieldVocab | python:field.fieldVocabulary(context);
+                    fielddata  python:field.getEditAccessor(context)();">
+
+      <div id="fieldset-backend-data">
+        <metal:block tal:repeat="field fieldvocab">
+          <tal:field define="fieldName string:${fieldName}.${field/getName}:records;
+                             widget    python:field.widget;
+                             accessor  python:lambda:fielddata.get(field.getName(), '');">
+  
+            <tal:if condition="python:field.type == 'boolean'">
+              <metal:use use-macro="field_macro | here/widgets/boolean/macros/edit" />
+            </tal:if>
+          
+            <tal:if condition="python:field.type == 'string'">
+              <metal:use use-macro="field_macro | here/widgets/string/macros/edit" />
+            </tal:if>
+  
+            <tal:if condition="python:field.type == 'text'">
+              <metal:use use-macro="here/widgets/textarea/macros/edit" />
+  
+              <!--
+              <div tal:define="edit_accessor python:field.getEditAccessor(here);
+                               getMethod python:(widget.populate and (edit_accessor or accessor)) or None;" 
+                tal:content="structure accessor" />
+              -->
+  
+            </tal:if>
+  
+            <!--
+            <metal:use use-macro="field_macro | here/widgets/field/macros/edit">
+  
+              <metal:fill fill-slot="widget_body">
+  							<input name=""  
+  							       onkeypress="handleKeyPress(event);"
+  							       tal:attributes="name string:${fieldName};
+  							                       value python:fielddata.get(field.getName(), '?');
+  							                       tabindex tabindex/next;"
+  							       type="text" />
+  		        </metal:fill>
+            </metal:use>
+            -->
+  
+          </tal:field>
+        </metal:block>
+      </div>
+
+      <!--
+      <metal:use use-macro="field_macro | here/widgets/field/macros/edit">
+        <metal:body metal:fill-slot="widget_body">
+            
+            <table tal:define="columnNames widget/column_names;
+                               columns python:field.getColumns(here);
+                               columnNames python:test(len(columnNames) == len(columns), columnNames, columns);
+                               fielddata python:field.getEditAccessor(context)()">
+                <thead>
+                    <tr>
+                        <th tal:repeat="columnName columnNames" tal:content="columnName" i18n:translate="">NAME</th>
+                    </tr>
+                </thead>            
+                <tbody>
+                    <tr tal:repeat="rows fielddata">
+                        <td tal:repeat="column columns">
+                            <input name="myfield.name:records"  
+                                   onkeypress="handleKeyPress(event);"
+                                   tal:attributes="name string:${fieldName}.${column}:records;
+                                                   value python:rows.get(column)"
+                                   type="text" />
+                        </td>
+                        <td>
+                            <img src="" 
+                                 tal:attributes="src string:${portal_url}/delete_icon.gif" 
+                                 alt="Delete row"  
+                                 onclick="removeFieldRow(this);return false"/>
+                        </td>
+                    </tr>  
+                    <tr>
+                        <td tal:repeat="column columns">
+                            <input  name="myfield.name:records" 
+                                    onkeypress="handleKeyPress(event);"
+                                    tal:attributes="name string:${fieldName}.${column}:records;"
+                                    type="text" />
+                        </td>
+                        <td>
+                            <img style="display: none" src="" tal:attributes="src string:${portal_url}/delete_icon.gif" alt="Delete row"  onclick="removeFieldRow(this);return false"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </metal:body>
+      </metal:use>
+      -->
+    
+    </metal:edit_macro>
+
+    <div metal:define-macro="search">
+        <div metal:use-macro="here/widgets/string/macros/edit">
+        </div>
+    </div>
+
+</body>
+
+</html>
+

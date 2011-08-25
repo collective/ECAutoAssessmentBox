@@ -1,0 +1,61 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="eduComponents">
+
+  <!-- resource directory -->
+  <resourceDirectory
+      name="ecaab_images"
+      directory="ecaab_images"
+      />    
+
+
+  <!-- kss -->
+  <resource
+    file="ecaab.kss"
+    name="ecaab.kss"
+  />
+
+  <zope:adapter
+    name="ecaab.fieldset_backend_input"
+    provides="zope.contentprovider.interfaces.IContentProvider"
+    factory=".ecaab_kss.FieldsetBackendInput"
+  />
+
+  <zope:adapter
+    name="ecaab.select_backend_tests"
+    provides="zope.contentprovider.interfaces.IContentProvider"
+    factory=".ecaab_kss.SelectBackendTests"
+  />
+
+  <page
+    name="refresh_fieldset_backend"
+    for="Products.ECAutoAssessmentBox.content.interfaces.IECAutoAssessmentBox"
+    class=".ecaab_kss.Refresh"
+    attribute="refresh_fieldset_backend"
+    permission="cmf.ModifyPortalContent"
+  />
+
+
+  <!-- control panel -->
+  <!-- ecaab control panel adapter -->    
+  <zope:adapter factory=".ecaabsettings.ECAABControlPanelAdapter" />
+  
+  <!-- ecaab control panel form view -->    
+  <page
+      zcml:condition="installed plone.app.controlpanel"
+      name="ecaab-controlpanel"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class=".ecaabsettings.ECAABControlPanel"
+      permission="cmf.ManagePortal"
+  />    
+
+
+  <!-- vocabularies -->       
+  <zope:utility
+    component=".vocabularies.ECAABBackendsVocabularyFactory"
+    name="ecaab.vocabularies.backends"
+  />
+ 
+</configure>

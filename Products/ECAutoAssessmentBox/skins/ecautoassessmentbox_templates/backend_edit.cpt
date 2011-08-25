@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+                      "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="eduComponents">
+
+  <body>
+    <metal:block fill-slot="css_slot">
+      <style type="text/css" media="screen"
+          tal:content="string: @import url($portal_url/ecabstyles.css);" />
+    </metal:block>
+
+    <metal:main fill-slot="main">
+      <tal:main-macro metal:define-macro="main"
+          tal:define="errors     options/state/getErrors | nothing;
+                      fieldNames python:['backend'];">
+  
+        <!-- show header information -->
+        <!-- 
+        <metal:use use-macro="here/base_macros/macros/eca_view_head" />
+        -->
+        
+        <form name="edit_form"
+            method="post"
+            enctype="multipart/form-data"
+            class="enableUnloadProtection"
+            action="backend_edit"
+            tal:attributes="action string:${here/absolute_url}/${template/getId}">
+
+          <!-- backend, auto-accept and all test specifications -->
+          <tal:fields repeat="fieldName python:['backend', 'autoAccept', 'tests']">
+            <metal:use use-macro="python:here.widget(fieldName, mode='edit', use_label=1)" />
+          </tal:fields>
+
+          <!-- all backend input fields -->
+          <div id="fieldset-backend-data">
+            <tal:fields repeat="fieldName python:['inputFields']">
+              <metal:use use-macro="python:here.widget(fieldName, mode='edit', use_label=1)" />
+            </tal:fields>
+          </div>
+          
+          <!-- submit button -->
+          <div class="formControls" i18n:domain="plone">
+            <input class="context"
+                type="submit"
+                name="form.button.Submit"
+                value="Save"
+                i18n:domain="plone"
+                i18n:attributes="value" />
+
+            <input class="standalone"
+                type="submit"
+                name="form.button.Cancel"
+                i18n:domain="plone"
+                value="Cancel"
+                i18n:attributes="value" />
+          </div>
+
+          <input type="hidden" name="form.submitted" value="1" />
+
+        </form>
+
+        <div tal:replace="structure provider:plone.belowcontenttitle" />
+        
+      </tal:main-macro>
+    </metal:main>
+
+  </body>
+</html>
