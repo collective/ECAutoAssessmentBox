@@ -265,7 +265,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
 
             if backend != None:
                 isCached = self.backendValueCache.has_key(backend)
-                #LOG.debug("xdebug: backend '%s' is cached: %s" % (backend, isCached))
+                #LOG.debug("Backend '%s' is cached: %s" % (backend, isCached))
                 
                 if not isCached:
                     isCached = self._cacheBackend(backend) 
@@ -366,8 +366,8 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
                 [bIdList.append(key) for key in backends]
     
                 bNameList = []
-                [bNameList.append('%s (%s)' % (backends[key].get('name', 'xxx'), 
-                                         backends[key].get('version', 'x.x'))) 
+                [bNameList.append('%s (%s)' % (backends[key].get('name', '?'), 
+                                         backends[key].get('version', '?'))) 
                   for key in backends]
     
                 return bIdList, '[%s]' % ', '.join(bNameList)
@@ -400,8 +400,9 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
 
             result = spooler.appendJob(self._getAuth(), data)
 
-            # FIXME: do some testing with this result
             assert result[0], result[1]
+
+            # FIXME: do some testing with this result
             
             return result
         

@@ -1,6 +1,15 @@
 History
 =======
 
+# Changes in release 1.4.2 (2011-10-07)
+
+- The new field ``Instant Feedback`` for AutoAssessmentBoxes allows teachers
+  to decide whether or not the automatic feedback from ECSpooler/backends will
+  be shown to students.
+
+- A lot of minor bugfixes regarding the new release of ECSpooler (1.2). 
+
+
 # Changes in release 1.4.1 (2011-08-14)
 
 - Fixed issue: ImportError: No module named schema.vocabulary

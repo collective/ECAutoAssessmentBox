@@ -41,17 +41,17 @@ from Products.ECAutoAssessmentBox.tool import ECSpoolerTool
 
 # set max wait time; after a maxium of 15 tries we will give up getting 
 # any result from the spooler until this assignment will be accessed again
-MAX_WAIT_TIME = 15
+MAX_WAIT_TIME = 3
 MAX_SLEEP_TIME = 1.2
 
 schema = Schema((
 
-    # backendResultMessage
     TextField(
         'auto_feedback',
         #allowable_content_types = ('text/plain',),
         default_output_type = ('text/plain',),
         searchable = True,
+        accessor = 'getAutoFeedback',
         widget = ComputedWidget(
             label = "Auto feedback",
             label_msgid = "label_auto_feedback",
@@ -62,7 +62,6 @@ schema = Schema((
         ),
     ),
 
-    # backendResultValue
     StringField(
         'backendResultCode',
         #searchable = True,
@@ -84,7 +83,7 @@ schema = Schema((
             modes=('view'),
             label='Job id',
             label_msgid = "label_job_id",
-            description = "The id of the spooler job for this assignment.",
+            description = "Job-ID for this assignment.",
             description_msgid = 'help_job_id',
             i18n_domain = config.I18N_DOMAIN,
         ),
@@ -108,9 +107,6 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
 
     schema = ECAutoAssignment_schema
 
-    ##code-section class-header #fill in your manual code here
-    ##/code-section class-header
-
     # Methods
     #security.declarePublic('getAutoFeedback')
     def getAutoFeedback(self):
@@ -121,8 +117,10 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
         @return: feedback message as String
         """
         
-        if not self.auto_feedback:
+        if not self.auto_feedback and self.jobId:
             try:
+                LOG.debug("Trying to retrieve results from spooler for job: %s" % self.jobId)
+        
                 ecaab_utils = getToolByName(self, config.ECS_NAME)
                 assert ecaab_utils != None, "%s is required." % config.ECS_NAME 
             
@@ -134,28 +132,31 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
                     self.setBackendResultCode(result[self.jobId].get('value'))
                     self.setAuto_feedback(result[self.jobId].get('message'))
                     
-                    #self._autoAccept()
                     auto_accept = self.aq_parent.getAutoAccept()
-                    backend = self.aq_parent.getBackend() 
                     
                     # change workflow state if parent assignment box has auto 
-                    # accept enabled.
+                    # acception enabled.
                     if (auto_accept and self.isSolved()):
-                        self._changeWfState('accept', 
-                                            "Automatically tested by '%s' "
-                                            "and accepted." % backend)
+                        self._changeWfState('accept', "Automatically tested and accepted.")
+
                     # 2009-03-30, ma: 
                     # For some reasons we do not put the assignment in 
                     # state pending
                     #else:
-                    #    self._changeWfState('retract', 
-                    #                       "Automatically checked by '%s'." % backend)
+                    #    self._changeWfState('retract', "Automatically tested")
                     
             except Exception, e:
                 #LOG.error('Error: %s' % str(e))
                 LOG.warn('Could not get result from spooler: %s' % str(e))
 
-        return self.getAuto_feedback()
+
+        instant_feedback = self.aq_parent.getInstantFeedback()
+        ecab_utils = getToolByName(self, 'ecab_utils')
+
+        if instant_feedback or ecab_utils.isGrader(self):
+            return self.auto_feedback #self.getAuto_feedback()
+        else:
+            return None
 
 
     security.declarePublic('isSolved')
@@ -244,18 +245,13 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
         result = 1;
         msgId = ''
         msgDefault = ''
+        msgMapping = {}
         
         # get the selected backend in the parent box
         backend = parent.getBackend()
         
-        #LOG.debug('xdebug: %s' % backend)
         
         if backend == ECSpoolerTool.BACKEND_NONE:
-            #return self.translate(
-            #    msgid   = 'no_backend_given',
-            #    domain  = I18N_DOMAIN,
-            #    default = 'Automatic checking failed. No backend was specified.')
-
             # behave like a normal assginment box
             return ECAssignment.evaluate(self, parent)
         
@@ -275,10 +271,9 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
                 # FIXME: translate error message
                 raise Exception('Submission is not plain text.')
   
-            # 2009-03-30, ma: 
-            # For some reasons we do not put the assignment in state peding
-            #self._changeWfState('review', 
-            #                    "Queued for automatic checking by '%s'." % backend)
+            # HINT, 2009-03-30, ma: 
+            # For some reasons we do not put the assignment in state pending
+            #self._changeWfState('review', "Queued for automatic testing")
     
             spoolerWSI =  getToolByName(self, config.ECS_NAME)
             assert spoolerWSI != None, "A valid portal ecspooler is required."
@@ -295,7 +290,8 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
             if job[0] < 0:
                 result = job[0];
                 msgId = 'submission_saved_check_failed'
-                msgDefault = 'Testing this submission failed (%s).' % (job[1],)
+                msgDefault = 'Testing this submission failed (exc).'
+                msgMapping = {'exc': job[1]}
             else:
                 # remember the job id and set inital values for feedback
                 self.jobId = job[1]
@@ -325,22 +321,23 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
                         # automatically move this submission into state 
                         # accepted if it passed all tests (solved == True)
                         # and 'autoAccept' is True
-                        self._changeWfState('accept', "Automatically checked "
-                                            "by '%s' and accepted." % backend)
+                        self._changeWfState('accept', "Automatically tested and accepted.")
 
                         msgId = 'submission_accepted'
                         msgDefault = 'Submission has been accepted.'
 
-                    # 2009-03-30, ma: 
+                    # HINT, 2009-03-30, ma: 
                     # For some reasons we do not put the assignment in 
                     # state pending
                     #else:
-                    #    self._changeWfState('retract', "Automatically checked "
-                    #                        "by '%s'." % backend)
+                    #    self._changeWfState('retract', "Automatically tested")
         
                 else:
                     LOG.warn('[%s] no feedback after %d polls' % (self.getId(), 
                                                            MAX_WAIT_TIME))
+
+                    msgId = 'submission_saved_no_feedback'
+                    msgDefault = 'No feedback available.'
                 # end if
             # end if
 
@@ -352,11 +349,13 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
             
             result = -42;
             msgId = 'submission_saved_check_failed'
-            msgDefault = 'Testing this submission failed (%s).' % (e,)
+            msgDefault = 'Testing this submission failed (${exc}).'
+            msgMapping = {'exc': str(e)}
 
         message = self.translate(msgid = msgId,
                                  domain = config.I18N_DOMAIN,
-                                 default = msgDefault)
+                                 default = msgDefault,
+                                 mapping = msgMapping)
         
         # TODO:
         return (result, message)
@@ -411,7 +410,7 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
         return result
 
 
-    security.declarePublic('getFooIndicators')
+    security.declarePublic('getIndicators')
     def getIndicators(self):
         """
         Returns a list of dictionaries which contain information necessary

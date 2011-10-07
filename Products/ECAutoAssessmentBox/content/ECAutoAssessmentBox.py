@@ -59,22 +59,37 @@ schema = Schema((
             description_msgid='help_backend',
             i18n_domain=config.I18N_DOMAIN,
         ),
-        schemata = 'backend',
+        schemata = 'tests',
         read_permission = 'Modify Portal Content',
     ),
     
     BooleanField(
         'autoAccept',
         default = False,
-        #required = True,
+        required = False,
         widget = BooleanWidget(
             label = 'Automatically accept assignments',
             label_msgid = 'label_auto_accept',
-            description = 'If selected, an assignment which passes all tests will be automatically accepted.',
+            description = 'If selected, an assignment which passes all tests will be accepted automatically.',
             description_msgid = 'help_auto_accept',
             i18n_domain = config.I18N_DOMAIN,
         ),
-        schemata = 'backend',
+        schemata = 'tests',
+        read_permission = 'Modify Portal Content',
+    ),
+
+    BooleanField('instantFeedback',
+         # Instant feedback means that students will see
+         # their results immediately after submitting
+         required = False,
+         default = True,
+         widget=BooleanWidget(
+             label='Instant Feedback',
+             label_msgid='instant_feedback_label',
+             description='Feedback for an assignment will be given instantly.',
+             description_msgid='instant_feedback_tool_tip',
+             i18n_domain=config.I18N_DOMAIN),
+        schemata = 'tests',
         read_permission = 'Modify Portal Content',
     ),
 
@@ -91,7 +106,7 @@ schema = Schema((
             i18n_domain=config.I18N_DOMAIN,
             macro="widget_select_backend_tests"
         ),
-        schemata = 'backend',
+        schemata = 'tests',
         read_permission = 'Modify Portal Content',
     ),
 
@@ -106,7 +121,7 @@ schema = Schema((
             description_msgid = 'help_input_field',
             i18n_domain = config.I18N_DOMAIN,
         ),
-        schemata = 'backend',
+        schemata = 'tests',
         read_permission = 'Modify Portal Content',
     ),
 
@@ -133,7 +148,7 @@ class ECAutoAssessmentBox(ECAssignmentBox):
     ##code-section class-header #fill in your manual code here
 
     # FIXME: allowed_content_types is defined in profile.default.types.ECAutoAssessmentBox.xml
-    #        and should be used elsewhere
+    # and should be used elsewhere
     allowed_content_types = ['ECAA']
     
     # Methods
@@ -231,8 +246,8 @@ class ECAutoAssessmentBox(ECAssignmentBox):
                 result.append(
                     TextField(field, 
                               required = required, 
-                              allowable_content_types = config.ALLOWED_CONTENT_TYPES, 
-                              default_content_type = config.DEFAULT_CONTENT_TYPE, 
+                              allowable_content_types = 'text/plain', 
+                              default_content_type = 'text/plain', 
                               default_output_type = config.DEFAULT_OUTPUT_TYPE,
                               widget = widget, 
                              ), 

@@ -17,8 +17,6 @@ __docformat__ = 'plaintext'
 #       use the protected code section at the bottom of initialize().
 
 import logging
-logger = logging.getLogger('ECAutoAssessmentBox')
-logger.debug('Installing Product')
 
 import sys
 import os
@@ -38,6 +36,7 @@ from Products.CMFPlone.utils import ToolInit
 from Products.ECAutoAssessmentBox import config
 
 LOG = logging.getLogger(config.PROJECTNAME)
+LOG.debug('Installing Product')
 
 ECMessageFactory = MessageFactory('eduComponents')
 

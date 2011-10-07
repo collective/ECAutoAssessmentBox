@@ -264,3 +264,28 @@ msgstr "Reinitialisieren"
 # Original: "Apply"
 msgid "Apply"
 msgstr "Anwenden"
+
+#: ECAutoAssignment.py
+# Original: "Instant Feedback"
+msgid "instant_feedback_label"
+msgstr "Ergebnisse sofort anzeigen"
+
+#: ECAutoAssignment.py
+# Original: "Feedback for an assignment will be given instantly."
+msgid "instant_feedback_tool_tip"
+msgstr "Die Ergebnisse des automatischen Tests werden sofort angezeigt."
+
+#: ECAutoAssignment.py
+# Original: "Testing this submission failed (${exc})."
+msgid "submission_saved_check_failed"
+msgstr "Fehler beim automatischen Testen (${exc})."
+
+#: ECAutoAssignment.py
+# Original: "Submission has been accepted."
+msgid "submission_accepted"
+msgstr "Ihre Einreichung wurde automatisch akzeptiert."
+
+#: ECAutoAssignment.py
+# Original: "No feedback available."
+msgid "submission_saved_no_feedback"
+msgstr "Es ist bisher keine automatische Rückmeldung verfügbar."
