@@ -165,48 +165,50 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         """ Caches all values for a given backend.  Returns True if 
         the caching procedure was successful, otherwise False.
         """
-        #LOG.debug("xdebug: Caching backend '%s'" % backend)
-        
         if not backend: 
             return False
         
         cache = self.backendValueCache
+        
+        LOG.info("xdebug: Caching backend '%s'" % backend)
         
         try:
             status = None
             spooler = self._getSpoolerHandle()
             
             status = spooler.getBackendStatus(self._getAuth(), backend)
+            
+            LOG.info("xdebug: %s" % status)
                 
             if status:
-                if status[0] > 0:
-                    cache[backend] = {}
-                    cache[backend]['name'] = status[1]['name']
-                    cache[backend]['version'] = status[1]['version']
-                    
-                    fields = spooler.getBackendInputFields(self._getAuth(), backend)
-                    if fields[0]:
-                        cache[backend]['fields'] = fields[1]
-                        
-                    tests = spooler.getBackendTestFields(self._getAuth(), backend)
-                    if tests[0]:
-                        cache[backend]['tests'] = tests[1]
-    
-                    #LOG.debug("xdebug: Backend '%s' successfully cached" % backend)
-    
-                    return True
                 
-                elif status[0] < 0:
-                    LOG.warn('Error while getting backend status: %s, %s' % (status[0], status[1]))
+                fields = spooler.getBackendInputFields(self._getAuth(), backend)
+
+                if fields:
+                    
+                    tests = spooler.getBackendTestFields(self._getAuth(), backend)
+                    
+                    if tests:
+                        cache[backend] = {}
+                        cache[backend]['name'] = status['name']
+                        cache[backend]['version'] = status['version']
+                        cache[backend]['fields'] = fields
+                        cache[backend]['tests'] = tests
+
+                        #LOG.debug("xdebug: Backend '%s' successfully cached" % backend)
+
+                        return True
+                    # end if
+                # end if
+            # end if
             else:
                 LOG.warn('Error while getting backend status: status is %s' % (status))
 
-        except xmlrpclib.Fault, e:
-            LOG.warn("%s" % e)
-        except socket.error, e:
+        except Exception, e:
             LOG.warn("%s" % e)
 
         return False
+
 
     security.declarePublic('getCachedBackends')
     def getCachedBackends(self):
@@ -358,29 +360,25 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
         status = self._getStatus(host, port, username, password)
         
         if status:
-            if status[0] > 0:
-                # get backends
-                backends = self._getAvailableBackends(host, port, username, password)
-            
-                bIdList = []
-                [bIdList.append(key) for key in backends]
-    
-                bNameList = []
-                [bNameList.append('%s (%s)' % (backends[key].get('name', '?'), 
-                                         backends[key].get('version', '?'))) 
-                  for key in backends]
-    
-                return bIdList, '[%s]' % ', '.join(bNameList)
+            # get backends
+            backends = self._getAvailableBackends(host, port, username, password)
+        
+            bIdList = []
+            [bIdList.append(key) for key in backends]
 
-            elif status[0] < 0:
-                return None, status[1]
+            bNameList = []
+            [bNameList.append('%s (%s)' % (backends[key].get('name', '?'), 
+                                     backends[key].get('version', '?'))) 
+              for key in backends]
+
+            return bIdList, '[%s]' % ', '.join(bNameList)
         else:
             return None, "Service not responding (%s:%s)" % (host, port)
 
 
     security.declarePublic('appendJob')
     #def appendJob(self, backend, input, **kwargs):
-    def appendJob(self, backend, submission, inputFields, tests, retry=True):
+    def appendJob(self, backend, submission, inputFields, tests, lang, retry=True):
         """
         Adds a job to the spooler server.
         """
@@ -395,6 +393,8 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
             data['submission'] = submission
             # set tests
             data['tests'] = tests
+            # set language
+            data['lang'] = lang
             # set input fields
             data.update(inputFields)
 

@@ -95,7 +95,7 @@ schema = Schema((
 
     StringField(
         'tests',
-        required = True,
+        #required = True,
         vocabulary = '_getTestsDisplayList',
         widget = MultiSelectionWidget(
             modes=('edit'),

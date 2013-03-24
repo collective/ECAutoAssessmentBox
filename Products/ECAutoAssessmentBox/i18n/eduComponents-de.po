@@ -288,4 +288,4 @@ msgstr "Ihre Einreichung wurde automatisch akzeptiert."
 #: ECAutoAssignment.py
 # Original: "No feedback available."
 msgid "submission_saved_no_feedback"
-msgstr "Es ist bisher keine automatische Rückmeldung verfügbar."
+msgstr "Es ist bisher keine automatische Rückmeldung verfügbar. Bitte Laden Sie diese Seite neu."

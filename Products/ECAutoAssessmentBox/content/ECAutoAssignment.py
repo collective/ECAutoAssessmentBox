@@ -230,7 +230,21 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
 
         # return to the current users security context
         newSecurityManager(REQUEST, currentUser) 
-        
+    
+    security.declarePublic('getPreferedLanguage')
+    def getPreferedLanguage(self, parent):
+        """
+        """
+        site_properties = self.portal_properties.site_properties
+        ecab_utils = getToolByName(self, 'ecab_utils')
+
+        # 'en' is used as fallback language if default_language is not set; 
+        # this shouldn't normally happen
+        portal_language = getattr(site_properties, 'default_language', 'en')
+
+        # portal_language is used as fallback
+        return ecab_utils.getUserPropertyById(parent.Creator(), 'language', portal_language)
+
 
     # -- overridden methods from ECAssignment ---------------------------------
     security.declarePublic('evaluate')
@@ -260,9 +274,10 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
             inputFields = parent.getInputFields()
             # get selected tests provided by this backend
             tests = parent.getTests()
-
             # set student solution 
             studentSolution = self.getAsPlainText()
+            # get prefered language
+            prefLang = self.getPreferedLanguage(parent)
             
             #LOG.debug('xxx: %s' % studentSolution)
             #LOG.debug('xxx: %s' % studentSolution.decode('unicode_escape'))
@@ -275,70 +290,62 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
             # For some reasons we do not put the assignment in state pending
             #self._changeWfState('review', "Queued for automatic testing")
     
-            spoolerWSI =  getToolByName(self, config.ECS_NAME)
+            spoolerWSI = getToolByName(self, config.ECS_NAME)
             assert spoolerWSI != None, "A valid portal ecspooler is required."
     
             # enqueue students' solution
             # TODO: rename sample_soution to model_solution
     
-            job = spoolerWSI.appendJob(backend, studentSolution, 
-                                       inputFields, tests)
+            jobId = spoolerWSI.appendJob(backend, studentSolution, 
+                                       inputFields, tests, prefLang)
 
-            LOG.debug('[%s] enqueue: %s' % (self.getId(), repr(job)))
+            LOG.debug('[%s] enqueue: %s' % (self.getId(), repr(jobId)))
             
-            # An error occured; return error message
-            if job[0] < 0:
-                result = job[0];
-                msgId = 'submission_saved_check_failed'
-                msgDefault = 'Testing this submission failed (exc).'
-                msgMapping = {'exc': job[1]}
-            else:
-                # remember the job id and set inital values for feedback
-                self.jobId = job[1]
-                feedback = {}
-                i = 0
+            # remember the job id and set inital values for feedback
+            self.jobId = jobId
+            feedback = {}
 
-                # reset feedback text
-                self.auto_feedback = ''
+            # reset feedback text
+            self.auto_feedback = ''
 
-                # wait until a feedback has been retrieved from the spooler
-                # or max number of retries has been reached
-                while (not feedback.has_key(self.jobId)) and (i < MAX_WAIT_TIME):
-                    time.sleep(MAX_SLEEP_TIME)
-                    feedback = spoolerWSI.getResult(self.jobId)
-                    i += 1
-                    
-                if feedback.has_key(self.jobId):
-                    #self.setBackendResultCode(feedback[self.jobId].get('code'))
-                    self.setBackendResultCode(feedback[self.jobId].get('value'))
-                    #self.setAuto_feedback(feedback[self.jobId].get('value'))
-                    self.setAuto_feedback(feedback[self.jobId].get('message'))
-            
-                    LOG.debug("[%s] result value: '%s'" % 
-                        (self.getId(), self.getBackendResultCode()))
-
-                    if (parent.getAutoAccept()) and (self.isSolved()):
-                        # automatically move this submission into state 
-                        # accepted if it passed all tests (solved == True)
-                        # and 'autoAccept' is True
-                        self._changeWfState('accept', "Automatically tested and accepted.")
-
-                        msgId = 'submission_accepted'
-                        msgDefault = 'Submission has been accepted.'
-
-                    # HINT, 2009-03-30, ma: 
-                    # For some reasons we do not put the assignment in 
-                    # state pending
-                    #else:
-                    #    self._changeWfState('retract', "Automatically tested")
+            i = 0
+            # wait until a feedback has been retrieved from the spooler
+            # or max number of retries has been reached
+            while (not feedback.has_key(self.jobId)) and (i < MAX_WAIT_TIME):
+                time.sleep(MAX_SLEEP_TIME)
+                feedback = spoolerWSI.getResult(self.jobId)
+                i += 1
+                
+            if feedback.has_key(self.jobId):
+                #self.setBackendResultCode(feedback[self.jobId].get('code'))
+                self.setBackendResultCode(feedback[self.jobId].get('value'))
+                #self.setAuto_feedback(feedback[self.jobId].get('value'))
+                self.setAuto_feedback(feedback[self.jobId].get('message'))
         
-                else:
-                    LOG.warn('[%s] no feedback after %d polls' % (self.getId(), 
-                                                           MAX_WAIT_TIME))
+                LOG.debug("[%s] result value: '%s'" % 
+                    (self.getId(), self.getBackendResultCode()))
 
-                    msgId = 'submission_saved_no_feedback'
-                    msgDefault = 'No feedback available.'
-                # end if
+                if (parent.getAutoAccept()) and (self.isSolved()):
+                    # automatically move this submission into state 
+                    # accepted if it passed all tests (solved == True)
+                    # and 'autoAccept' is True
+                    self._changeWfState('accept', "Automatically tested and accepted.")
+
+                    msgId = 'submission_accepted'
+                    msgDefault = 'Submission has been accepted.'
+
+                # HINT, 2009-03-30, ma: 
+                # For some reasons we do not put the assignment in 
+                # state pending
+                #else:
+                #    self._changeWfState('retract', "Automatically tested")
+    
+            else:
+                LOG.warn('[%s] no feedback after %d polls' % (self.getId(), 
+                                                       MAX_WAIT_TIME))
+
+                msgId = 'submission_saved_no_feedback'
+                msgDefault = 'No feedback available. Please reload page.'
             # end if
 
         except Exception, e:
@@ -347,6 +354,7 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
 
             #self._changeWfState('retract', 'Auto check failed: %s' % str(e))
             
+            # An error occured; return error message
             result = -42;
             msgId = 'submission_saved_check_failed'
             msgDefault = 'Testing this submission failed (${exc}).'
