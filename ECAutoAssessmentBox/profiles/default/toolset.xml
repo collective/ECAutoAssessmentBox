@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<tool-setup>
+  <required tool_id="ecaab_utils" class="Products.ECAutoAssessmentBox.tool.ECSpoolerTool.ECSpoolerTool"/>
+</tool-setup>

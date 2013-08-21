@@ -1,0 +1,13 @@
+[default]
+title = View ECAutoAssignment
+
+[security]
+View = 0:Authenticated
+
+[validators]
+validators=
+
+[actions]
+action.success..Recheck=traverse_to:string:ecaa_recheck
+action.success=traverse_to:string:ecaa_view
+action.failure=traverse_to:string:ecaa_view

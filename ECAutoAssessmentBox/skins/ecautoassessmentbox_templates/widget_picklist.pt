@@ -1,0 +1,159 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="plone">
+  <head><title></title></head>
+  <body>
+
+    <!-- 
+      A Picklist Widgets with additions form AddRemoveWidget.
+      See also 
+        Archetype/skins/archetypes/widgets/picklist.pt 
+        AddRemoveWidget/skins/AddRemoveWidget/widget_addremove.pt
+    -->
+
+    <metal:view_macro define-macro="view"
+        tal:define="vocabulary python:field.Vocabulary(here);
+                    value python:accessor();
+                    display python:here.displayValue(vocabulary, value);"
+        tal:replace="structure display" />
+
+    <!-- Edit - display two boxes, side-by-side, with Add and Remove buttons.
+         
+         To reuse the widget outside archetypes, define:
+         
+            fieldName       - Name of the field to submit
+            leftVocabulary  - A DisplayList of permitted values (left box)
+            rightVocabulary - A DisplayList of permitted values (right box)
+            
+         optionally define:
+            
+            value           - A list of currently selected values (right box, default [])
+            size            - The height of the add boxes (default 7)
+            width           - The width of the add boxes (default 10em)
+            width_absolute  - Whether the width is absolute or min-width (default false)
+            
+         and then include the macro picklist_box. Be sure to include
+         picklist.js as well.
+    -->
+
+    <metal:define define-macro="edit">
+      <metal:use use-macro="here/widgets/field/macros/edit">
+        <metal:fill fill-slot="widget_body"
+              tal:define="leftVocabulary  python:field.Vocabulary(here);
+                          rightVocabulary leftVocabulary;
+                          vlen            python:len(vocabulary);
+                          required        field/required;
+
+                          size            widget/size;
+                          width_absolute  widget/width_absolute;
+                          width           widget/width;"
+        >
+
+          <metal:widget define-macro="picklist_box"
+              tal:define="value          value          | python:[];
+                          allowAdd       allowAdd       | python:False;
+
+                          size           size           | string:7;
+                          width_absolute width_absolute | python:False; 
+                          width          width          | string:10em;
+                          
+                          selectedItems  python:request.get(fieldName, value);
+                          fromBox        string:${fieldName}_unselected; 
+                          toBox          string:${fieldName}_selected;
+                          addBox         string:${fieldName}_new;
+                          widthSpec      python:test(width_absolute, 'width', 'min-width');
+                          required       required | python:False;"
+          >
+
+            <input type="hidden"
+                   value=""
+                   tal:condition="not:required|nothing"
+                   tal:attributes="name string:$fieldName:default:list;"
+                   />
+  
+            <table cellpadding="2" cellspacing="2">
+            <tr>
+              <!-- Available items -->
+              <td valign="top" style=""
+                  tal:attributes="style string:${widthSpec}:${width}">
+                <div class="formHelp" i18n:translate="label_available">
+                    Available:
+                </div>
+                <select
+                  multiple="multiple"
+                  tal:attributes="name       string:${fieldName}_options;
+                                  id         string:${fieldName}_options;
+                                  size       size;
+                                  style      string:${widthSpec}:${width};
+                                  tabindex   tabindex/next;
+                                  onDblClick string:javascript:pick_moveKeywords('${fieldName}_options','${fieldName}','${fieldName}')">
+                  <option
+                    tal:repeat="item leftVocabulary"
+                    tal:attributes="value item;"
+                    tal:content="python:here.translate(leftVocabulary.getMsgId(item), default=leftVocabulary.getValue(item))">
+                    option
+                  </option>
+                </select>
+              </td>
+
+              <!-- Add/Remove buttons -->
+              <td valign="middle" align="center">
+                <input type="button" class="context" value="&rarr;"
+                       style="width: 100%;" onClick=""
+                       tal:attributes="tabindex tabindex/next;
+                                       onClick  string:javascript:pick_moveKeywords('${fieldName}_options','${fieldName}','${fieldName}');"
+                       />
+                <br/>
+                <input type="button" class="context" value="&larr;"
+                       style="width: 100%; margin: 0"
+                       tal:attributes="tabindex tabindex/next;
+                                       onClick  string:javascript:pick_removeKeywords('${fieldName}','${fieldName}');"
+                       />
+              </td>
+
+              <!-- Selected items -->
+              <td valign="top" style=""
+                  tal:attributes="style string:${widthSpec}:${width}">
+
+                <div class="formHelp" i18n:translate="label_selected">
+                    Selected:
+                </div>
+
+                <select
+                  multiple="multiple"
+                  tal:attributes="name       string:${fieldName}:list;
+                                  id         string:${fieldName};
+                                  style      string:${widthSpec}:${width};
+                                  size       size;
+                                  tabindex   tabindex/next;
+                                  onDblClick string:javascript:pick_removeKeywords('${fieldName}','${fieldName}')">
+
+                  <tal:block tal:repeat="single_value value">
+                    <option
+                      tal:condition="python:test(here.unicodeTestIn(single_value, leftVocabulary + rightVocabulary), 1, 0)"
+                      tal:attributes="value single_value;"
+                      tal:content="python: (single_value in leftVocabulary.keys() and here.translate(leftVocabulary.getMsgId(single_value), default=leftVocabulary.getValue(single_value))) or here.translate(rightVocabulary.getMsgId(single_value), default=rightVocabulary.getValue(single_value))"
+		                  selected="selected">
+                      option
+                    </option>
+
+                  </tal:block>
+                </select>
+              </td>
+            </tr>
+            </table>
+
+          </metal:widget>
+        </metal:fill>
+      </metal:use>
+    </metal:define>
+
+    <div metal:define-macro="search">
+      <div metal:use-macro="here/widgets/multiselection/macros/edit">
+      </div>
+    </div>
+
+  </body>
+</html>
