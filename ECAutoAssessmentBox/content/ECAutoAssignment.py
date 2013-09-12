@@ -3,6 +3,8 @@
 #
 # Copyright (c) 2006-2011 Otto-von-Guericke-UniversitŠt Magdeburg
 #
+# extended 2013 by tsabsch <t.sabsch@arcor.de>
+#
 # This file is part of ECAutoAssessmentBox.
 #
 __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
@@ -11,7 +13,7 @@ __docformat__ = 'plaintext'
 import sys
 import re, time
 import traceback
-# test by Tim Sabsch
+
 import mimetypes
 
 from types import BooleanType
@@ -278,11 +280,10 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
             tests = parent.getTests()
             # set student solution 
             studentSolution = self.getAsPlainText()
-            # test by Tim Sabsch
-            # set second submission (uploadFile)
-            supportFile = self.getAsPlainText('uploadedFile')
+            # set second submission (supportFile)
+            supportFile = self.getAsPlainText('supportFile')
             if supportFile:
-                supportExtension = mimetypes.guess_all_extensions(self.getContentType('uploadedFile'), False)
+                supportExtension = mimetypes.guess_all_extensions(self.getContentType('supportFile'), False)
                 supportFile = [supportFile, supportExtension]
             
             # get prefered language
@@ -304,7 +305,6 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
     
             # enqueue students' solution
             # TODO: rename sample_soution to model_solution
-            # test by Tim Sabsch
             jobId = spoolerWSI.appendJob(backend, studentSolution, supportFile,
                                        inputFields, tests, prefLang)
 
@@ -377,7 +377,7 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
         # TODO:
         return (result, message)
 
-    # test by Tim Sabsch
+
     security.declarePublic('getViewModeReadFieldNames')
     def getViewModeReadFieldNames(self):
         """
@@ -392,7 +392,7 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
         result = ECAssignment.getViewModeReadFieldNames(self)
         
         for name in result:
-            if name == 'uploadedFile':
+            if name == 'supportFile':
                 i = result.index(name)
 
                 for elem in fieldNames:

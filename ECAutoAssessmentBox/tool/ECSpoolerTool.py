@@ -3,6 +3,8 @@
 #
 # Copyright (c) 2006-2011 Otto-von-Guericke-UniversitŠt Magdeburg
 #
+# extended 2013 by tsabsch <t.sabsch@arcor.de>
+#
 # This file is part of ECAutoAssessmentBox.
 #
 from docutils.nodes import status
@@ -378,7 +380,6 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
 
     security.declarePublic('appendJob')
     #def appendJob(self, backend, input, **kwargs):
-    # test by Tim Sabsch
     def appendJob(self, backend, submission, supportFile, inputFields, tests, lang, retry=True):
         """
         Adds a job to the spooler server.
@@ -392,7 +393,6 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
             data['backend'] = backend
             # set student solution
             data['submission'] = submission
-            # test by Tim Sabsch
             # set supportFile
             if supportFile:
                 data['supportFile'] = supportFile
