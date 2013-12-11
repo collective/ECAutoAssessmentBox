@@ -3,8 +3,6 @@
 #
 # Copyright (c) 2006-2011 Otto-von-Guericke-UniversitŠt Magdeburg
 #
-# extended 2013 by tsabsch <t.sabsch@arcor.de>
-#
 # This file is part of ECAutoAssessmentBox.
 #
 __author__ = """Mario Amelung <mario.amelung@gmx.de>"""
@@ -13,8 +11,6 @@ __docformat__ = 'plaintext'
 import sys
 import re, time
 import traceback
-
-import mimetypes
 
 from types import BooleanType
 from types import IntType
@@ -278,20 +274,26 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
             inputFields = parent.getInputFields()
             # get selected tests provided by this backend
             tests = parent.getTests()
-            # set student solution 
-            studentSolution = self.getAsPlainText()
-            # set second submission (supportFile)
-            supportFile = self.getAsPlainText('supportFile')
-            if supportFile:
-                supportExtension = mimetypes.guess_all_extensions(self.getContentType('supportFile'), False)
-                supportFile = [supportFile, supportExtension]
+            # set students solution
+            submission = self.getSubmission()
+            supportFiles = []
+            for file in submission:
+                if file == submission[0]:
+                    # set first file as primary file
+                    # this file gets the semantic tests
+                    studentSolution = self.get_data(file)
+                else:
+                    supportFile = self.get_data(file)
+                    supportFiles.append(supportFile)
             
             # get prefered language
             prefLang = self.getPreferedLanguage(parent)
             
-            #LOG.debug('xxx: %s' % studentSolution)
-            #LOG.debug('xxx: %s' % studentSolution.decode('unicode_escape'))
-            
+            #LOG.info('xxx: %s' % studentSolution)
+            #LOG.info('xxx: %s' % studentSolution.decode('unicode_escape'))
+            #LOG.info('supportFiles in ECAutoAssignment: %s' % supportFiles)
+        
+                    
             if not studentSolution:
                 # FIXME: translate error message
                 raise Exception('Submission is not plain text.')
@@ -305,7 +307,7 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
     
             # enqueue students' solution
             # TODO: rename sample_soution to model_solution
-            jobId = spoolerWSI.appendJob(backend, studentSolution, supportFile,
+            jobId = spoolerWSI.appendJob(backend, studentSolution, supportFiles,
                                        inputFields, tests, prefLang)
 
             LOG.debug('[%s] enqueue: %s' % (self.getId(), repr(jobId)))
@@ -392,7 +394,7 @@ class ECAutoAssignment(ECAssignment, BrowserDefaultMixin):
         result = ECAssignment.getViewModeReadFieldNames(self)
         
         for name in result:
-            if name == 'supportFile':
+            if name == 'submission':
                 i = result.index(name)
 
                 for elem in fieldNames:

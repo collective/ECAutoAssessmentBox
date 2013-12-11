@@ -91,6 +91,40 @@ class SelectBackendTests(Explicit):
 
     #LOG.info("xdebug: Processing 'SelectBackendTests'")
     render = ViewPageTemplateFile("select_backend_tests.pt")
+  
+    
+class MaximumProcessable(Explicit):
+    """
+    """
+    adapts(Interface, IDefaultBrowserLayer, IBrowserView)
+    
+    def __init__(self, context, request, view):
+        """
+        """
+        #LOG.info('xdebug: request: %s' % request)
+        #LOG.info('xdebug: backend: %s' % hasattr(request, 'backend'))
+        
+        self.__parent__ = view
+        self.context = context
+        self.request = request
+        self.view = view
+        self.backend = request.backend
+        #planned = self.context.restrictedTraverse('@@planned-iterations')
+        #self.projectlist = planned.projectlist()
+        #self.total = planned.total()
+        self.portal = getToolByName(context, 'portal_url').getPortalObject()
+        
+        if hasattr(request, 'errors'):
+            self.errors = request.errors
+        else:
+            self.errors = {}
+    
+    def update(self):
+        pass
+    
+    #LOG.info("xdebug: Processing 'MaximumProcessable'")
+    render = ViewPageTemplateFile("maximum_processable.pt")
+
 
 class Refresh(PloneKSSView):
     """
@@ -119,6 +153,9 @@ class Refresh(PloneKSSView):
         selector = core_commands.getHtmlIdSelector("archetypes-fieldname-tests")
         zope_commands.refreshProvider(selector, name='ecaab.select_backend_tests')
         
+        # refresh maximum processable information
+        selector = core_commands.getHtmlIdSelector("valueset-maximum_processable")
+        zope_commands.refreshProvider(selector, name='ecaab.maximum_processable')
         
         # refresh backend input fields
         selector = core_commands.getHtmlIdSelector("fieldset-backend-data")

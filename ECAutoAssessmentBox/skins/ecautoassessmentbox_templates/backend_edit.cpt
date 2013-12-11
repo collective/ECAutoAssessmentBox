@@ -33,6 +33,14 @@
             <metal:use use-macro="python:here.widget(fieldName, mode='edit', use_label=1)" />
           </tal:fields>
 
+          <!-- maximum number of processable files -->         
+          <p id="valueset-maximum_processable">
+            <b i18n:translate="maximum_processable"> 
+              The maximum number of processable files for this backend amounts:
+            </b>  &nbsp;
+            <tal:content content="here/getBackendMaxProcessable | nothing"/>
+          </p>
+          
           <!-- all backend input fields -->
           <div id="fieldset-backend-data">
             <tal:fields repeat="fieldName python:['inputFields']">
@@ -40,6 +48,7 @@
             </tal:fields>
           </div>
           
+                    
           <!-- submit button -->
           <div class="formControls" i18n:domain="plone">
             <input class="context"

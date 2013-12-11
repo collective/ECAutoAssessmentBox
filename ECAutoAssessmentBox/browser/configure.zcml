@@ -28,6 +28,12 @@
     provides="zope.contentprovider.interfaces.IContentProvider"
     factory=".ecaab_kss.SelectBackendTests"
   />
+  
+  <zope:adapter
+    name="ecaab.maximum_processable"
+    provides="zope.contentprovider.interfaces.IContentProvider"
+    factory=".ecaab_kss.MaximumProcessable"
+  />
 
   <page
     name="refresh_fieldset_backend"

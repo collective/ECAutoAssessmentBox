@@ -33,7 +33,7 @@ from Products.Archetypes.interfaces import IMultiPageSchema
 from Products.CMFCore.utils import getToolByName
 
 from Products.ECAutoAssessmentBox import config
-#from Products.ECAutoAssessmentBox import LOG
+from Products.ECAutoAssessmentBox import LOG
 
 #from Products.ECAssignmentBox import permissions
 #from Products.ECAutoAssessmentBox.content.ECAutoAssignment import ECAutoAssignment
@@ -190,7 +190,7 @@ class ECAutoAssessmentBox(ECAssignmentBox):
         in edit mode.
         """
         result = []
-        
+  
         if (backend == None):
             backend = self.backend
         
@@ -254,6 +254,28 @@ class ECAutoAssessmentBox(ECAssignmentBox):
                     )
         
         return result
+   
+    
+    #security.declarePrivate('getBackendMaxProcessable')
+    def getBackendMaxProcessable(self, backend=None):
+        """
+        Returns the maximum number of files, that the backend can handle
+        """   
+
+        if (backend == None):
+            backend = self.backend
+
+        ecaab_utils = getToolByName(self, config.ECS_NAME)
+        return ecaab_utils.getBackendMaxProcessable(backend)
+    
+    def getMaxFiles(self):
+        maxFiles = self.getBackendMaxProcessable();
+        
+        if maxFiles is None:
+            maxFiles = ECAssignmentBox.getMaxFiles(self);
+            
+        return maxFiles;
+
 
 interface.alsoProvides(ECAutoAssessmentBox, IMultiPageSchema)
 

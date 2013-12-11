@@ -1,6 +1,13 @@
 History
 =======
 
+# Changes in release 1.5 (2013-11-26)
+
+- ECAutoAssessmentBox can now handle submissions with more than one file
+
+- The 'Test' tab will show the maximum number of files, that the selected 
+  backend can handle
+
 # Changes in release 1.4.3 (2013-03-28)
 
 - ECSpooler 1.3.0 returns an exception instead of an errorcode if an error 

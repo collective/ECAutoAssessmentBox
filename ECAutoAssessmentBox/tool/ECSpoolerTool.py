@@ -3,8 +3,6 @@
 #
 # Copyright (c) 2006-2011 Otto-von-Guericke-UniversitŠt Magdeburg
 #
-# extended 2013 by tsabsch <t.sabsch@arcor.de>
-#
 # This file is part of ECAutoAssessmentBox.
 #
 from docutils.nodes import status
@@ -190,12 +188,18 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
                     
                     tests = spooler.getBackendTestFields(self._getAuth(), backend)
                     
+                    try:
+                        maxPr = spooler.getBackendMaxProcessable(self._getAuth(), backend)
+                    except Exception:
+                        maxPr = 1
+                    
                     if tests:
                         cache[backend] = {}
                         cache[backend]['name'] = status['name']
                         cache[backend]['version'] = status['version']
                         cache[backend]['fields'] = fields
                         cache[backend]['tests'] = tests
+                        cache[backend]['maxPr'] = maxPr
 
                         #LOG.debug("xdebug: Backend '%s' successfully cached" % backend)
 
@@ -348,8 +352,30 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
                 result = self.backendValueCache[backend]['tests']
 
         return result
+    
+    
+    security.declarePublic('getBackendMaxProcessable')
+    def getBackendMaxProcessable(self, backend):
+        """
+        Returns the maximum number of files, that the backend can handle
+        """
+        result = None
+        
+        if backend != BACKEND_NONE:
+    
+            # is this backend already cached?
+            if not self.backendValueCache.has_key(backend):
+                # not in cache -> try getting field information directly from 
+                # spooler and cache them
+                self._cacheBackend(backend)
+                
+            # backend test fields should be cached now
+            if self.backendValueCache.has_key(backend):
+                result = self.backendValueCache[backend]['maxPr']
 
+        return result
 
+    
     security.declareProtected(permissions.ModifyPortalContent, 'test')
     def test(self, host=None, port=None, username=None, password=None):
         """
@@ -379,8 +405,8 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
 
 
     security.declarePublic('appendJob')
-    #def appendJob(self, backend, input, **kwargs):
-    def appendJob(self, backend, submission, supportFile, inputFields, tests, lang, retry=True):
+    # def appendJob(self, backend, input, **kwargs):
+    def appendJob(self, backend, submission, supportFiles, inputFields, tests, lang, retry=True):
         """
         Adds a job to the spooler server.
         """
@@ -394,8 +420,8 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
             # set student solution
             data['submission'] = submission
             # set supportFile
-            if supportFile:
-                data['supportFile'] = supportFile
+            if supportFiles:
+                data['supportFiles'] = supportFiles
             # set tests
             data['tests'] = tests
             # set language
@@ -418,7 +444,7 @@ class ECSpoolerTool(UniqueObject, BaseContent, BrowserDefaultMixin):
                 # take care of hexadecimal Unicode escape sequences
                 submission = submission.decode('unicode_escape')
                 # retry appending this submission 
-                return self.appendJob(backend, submission, supportFile, inputFields, tests, False)
+                return self.appendJob(backend, submission, supportFiles, inputFields, tests, False)
 
         except Exception, e:
             log_exc()

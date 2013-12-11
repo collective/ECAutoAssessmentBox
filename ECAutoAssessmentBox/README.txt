@@ -89,6 +89,8 @@ Credits
 ECAssignmentBox was written by `Mario Amelung`_ and 
 `Michael Piotrowski`_.
 
+Additional programming by `Tim Sabsch`_.
+
 The icons used in ECAssignmentBox are from the `Silk icon set`_ by 
 Mark James.  They are licensed under a `Creative Commons Attribution 
 2.5 License`_.
@@ -99,6 +101,7 @@ University of Magdeburg.
 
 .. _Mario Amelung: mario.amelung@gmx.de
 .. _Michael Piotrowski: mxp@dynalabs.de
+.. _Tim Sabsch: t.sabsch@arcor.de
 .. _Silk icon set: http://www.famfamfam.com/lab/icons/silk/
 .. _Creative Commons Attribution 2.5 License: http://creativecommons.org/licenses/by/2.5/
 .. _Eudemonia Solutions AG: http://www.eudemonia-solutions.de/
