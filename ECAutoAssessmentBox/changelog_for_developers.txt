@@ -1,0 +1,45 @@
+Upgrade 1.3.0 --> 1.4
+=====================
+
+# author: Tim Sabsch t.sabsch@arcor.de
+# date:   26.11.2013
+
+# created files:
+
+- ../browser/maximum_processable.pt
+	* page template; necessary for kss update
+
+# deleted files:
+
+# modified files:
+
+- ../browser/configure.zcml
+	* added <zope:adapter /> for MaximumProcessable
+
+- ../browser/ecaab_kss.py
+	* added class MaximumProcessable
+
+- ../content/ECAutoAssessmentBox.py
+	* created getBackendMaxProcessable() to get the maximum number of files, that the 
+		backend can handle
+	* created getMaxFiles(), which checks getBackendMaxProcessable() for availability;
+		if not: return getMaxFiles() from ECAssignmentBox
+	
+- ../content/ECAutoAssignment.py
+	* modified evaluate(); now it iterates through the submission (which is a list now) and
+		sets the first file as primary file (which will be tested in backend). The other
+		files are stored in an extra list of tuples: [(content_1, mimetype_1), ...,(content_n, mt_n)]
+	* adjusted getViewModeReadFieldNames()
+
+ - ../i18n/eduComponents-de.po
+	* created a new translation
+
+- ../skins/ecautoassessmentbox_templates/backend_edit.cpt
+	* added html code for maximum_processable
+
+- ../tool/ECSpoolerTool.py
+	* adjusted _cacheBackend() to cache maxProcessable
+	* created getBackendMaxProcessable() to get the maximum number of files, that the backend can
+		handle
+	* adjusted appendJob() to consider the possibility of more than one file in a submission
+

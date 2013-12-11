@@ -1,0 +1,12 @@
+<p id="valueset-maximum_processable"
+    tal:define="portal  view/portal;
+                errors  view/errors;
+                backend view/backend;
+                maxPr python:here.getBackendMaxProcessable(backend);">
+
+  <b i18n:translate="maximum_processable"
+     i18n:domain="eduComponents"> 
+    The maximum number of processable files for this backend amounts:
+  </b>  &nbsp;
+  <tal:content content="maxPr | nothing"/>
+</p>
