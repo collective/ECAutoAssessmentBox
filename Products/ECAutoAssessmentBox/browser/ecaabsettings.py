@@ -11,7 +11,10 @@ __docformat__ = 'plaintext'
 #from Acquisition import aq_inner
 
 from zope import event
-from zope.app.component.hooks import getSite
+try:
+    from zope.app.component.hooks import getSite
+except ImportError:
+    from zope.component.hooks import getSite
 from zope.component import adapts
 from zope.formlib import form
 from zope.interface import implements, Interface
