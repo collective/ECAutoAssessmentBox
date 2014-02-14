@@ -1,0 +1,66 @@
+# Gettext Message File for eduComponents.
+# -*- coding: iso-8859-1 -*-
+# Leonardo J. Caballero G. <leonardocaballero@gmail.com>, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: ECAutoAssessmentBox\n"
+"POT-Creation-Date: 2004-11-25 10:29 +0100\n"
+"PO-Revision-Date: 2014-01-17 11:56-0430\n"
+"Last-Translator: Leonardo J. Caballero G. <leonardocaballero@gmail.com>\n"
+"Language-Team: ES <LL@li.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.7.1\n"
+"Language-Code: es\n"
+"Language-Name: Spanish\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: plone\n"
+"X-Is-Fallback-For: es-ar es-bo es-cl es-co es-cr es-do es-ec es-es es-sv es-gt es-hn es-mx es-ni es-pa es-py es-pe es-pr es-us es-uy es-ve\n"
+
+# Original: Auto Assessment Box
+#: ECAutoAssessmentBox.py
+msgid "Auto Assessment Box"
+msgstr "Caja de Auto Evaluación"
+
+#: ECAutoAssessmentTask.py
+msgid "Auto Assessment Task"
+msgstr "Tarea de Auto Evaluación"
+
+#: ECAutoAssessmentTask.py
+msgid "Assignment task for an auto assessment box."
+msgstr "Tarea de Evaluación para una caja de auto evaluación."
+
+# Original: Enables the creation, submission and grading of automatically tested online assignments.
+#: ECAutoAssessmentBox.py
+msgid "description_edit_ecaab"
+msgstr ""
+"Permite la creación, presentación y clasificación de las asignaciones en "
+"línea a prueba de forma automática."
+
+# Original: Automatically tests submitted assignments
+#: ECAutoAssessmentBox.py
+msgid "Automatically tests submitted assignments"
+msgstr "Pruebas de las asignaciones enviadas automáticamente"
+
+#: .\skins\ECAutoAssessmentBox\ecspooler_prefs_form.cpt
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: .\skins\ECAutoAssessmentBox\ecspooler_prefs_form.cpt
+msgid "Test"
+msgstr "Prueba"
+
+#: .\skins\ECAutoAssessmentBox\ecspooler_prefs_form.cpt
+msgid "Save"
+msgstr "Guardar"
+
+#: .\skins\ECAutoAssessmentBox\ecspooler_prefs_form.cpt
+msgid "Next"
+msgstr "Próximo"
+
+#: .\skins\ECAutoAssessmentBox\ecaa_view.cpt
+msgid "Recheck"
+msgstr "Verificar de nuevo"

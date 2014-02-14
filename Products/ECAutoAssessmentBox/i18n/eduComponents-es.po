@@ -1,0 +1,284 @@
+# Gettext Message File for eduComponents.
+# -*- coding: utf-8 -*-
+# Leonardo J. Caballero G. <leonardocaballero@gmail.com>, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: ECAutoAssessmentBox\n"
+"POT-Creation-Date: 2006-05-12 15:17+0000\n"
+"PO-Revision-Date: 2014-01-17 11:18-0430\n"
+"Last-Translator: Leonardo J. Caballero G. <leonardocaballero@gmail.com>\n"
+"Language-Team: ES <LL@li.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.7.1\n"
+"Language-Code: es\n"
+"Language-Name: Spanish\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: eduComponents\n"
+"X-Is-Fallback-For: es-ar es-bo es-cl es-co es-cr es-do es-ec es-es es-sv es-gt es-hn es-mx es-ni es-pa es-py es-pe es-pr es-us es-uy es-ve\n"
+
+#: .\skins\ECAutoCheckAssignmentBox\ecspooler_prefs_validate.vpy
+msgid "Please correct the indicated errors."
+msgstr "Por favor, corrija los errores indicados."
+
+#: .\skins\ECAutoCheckAssignmentBox\ecspooler_prefs_save.cpy
+msgid "Your changes have been saved."
+msgstr "Sus cambios han sido guardados."
+
+#: .\skins\ECAutoCheckAssignmentBox\ecspooler_prefs_validate.vpy
+msgid "Your settings are valid."
+msgstr "Sus configuraciones son válidos."
+
+# Original: "ECSpooler settings."
+#. <p i18n:translate="description_ecspooler_setup">
+#.  ECSpooler settings.
+#. </p>
+#: .\skins\ECAutoCheckAssignmentBox\ecspooler_prefs_form.cpt
+msgid "description_ecspooler_setup"
+msgstr "Configuraciones ECSpooler."
+
+# Original: "Error message"
+#: .\skins\ECAutoCheckAssignmentBox\ecspooler_prefs_form.cpt
+msgid "error_host"
+msgstr "Se requiere la especificación del host"
+
+# Original: "Error message"
+#: .\skins\ECAutoCheckAssignmentBox\ecspooler_prefs_form.cpt
+msgid "error_password"
+msgstr "Por favor, ingrese una contraseña válida."
+
+# Original: "Error message"
+#: .\skins\ECAutoCheckAssignmentBox\ecspooler_prefs_form.cpt
+msgid "error_port"
+msgstr "Es necesario especificar el puerto."
+
+# Original: "Error message"
+#: .\skins\ECAutoCheckAssignmentBox\ecspooler_prefs_form.cpt
+msgid "error_username"
+msgstr "Por favor, introduzca un nombre de usuario válido."
+
+# Original: "Spooler/Auto Assessment Box Settings"
+#: .\skins\ECAutoCheckAssignmentBox\ecspooler_prefs_form.cpt
+msgid "heading_ecspooler_setup"
+msgstr "Configuraciones Spooler/Caja de Auto Evaluación"
+
+# Original: "Auto Assessment Box Settings"
+msgid "Auto Assessment Box Settings"
+msgstr "Configuraciones Caja de Auto Evaluación"
+
+# Original: "The address of your spooler service (e.g., aix.cs.uni-magdeburg.de)."
+#: .\skins\ECAutoCheckAssignmentBox\ecspooler_prefs_form.cpt
+msgid "help_host"
+msgstr ""
+"La dirección de su servicio spooler (por ejemplo, aix.cs.uni-magdeburg.de)."
+
+# Original: "The port of your spooler service (e.g., 5050)."
+#: .\skins\ECAutoCheckAssignmentBox\ecspooler_prefs_form.cpt
+msgid "help_port"
+msgstr "El puerto de su servicio spooler (por ejemplo, 5050)."
+
+# Original: "Username for authentication to your spooler service."
+#: .\skins\ECAutoCheckAssignmentBox\ecspooler_prefs_form.cpt
+msgid "help_username"
+msgstr "Nombre de usuario para autenticación al servicio spooler."
+
+# Original: "The password for the user account."
+#: .\skins\ECAutoCheckAssignmentBox\ecspooler_prefs_form.cpt
+msgid "help_password"
+msgstr "La contraseña para la cuenta de usuario."
+
+# Original: "Host"
+#: .\skins\ECAutoCheckAssignmentBox\ecspooler_prefs_form.cpt
+msgid "label_host"
+msgstr "Host"
+
+# Original: "Port"
+#: .\skins\ECAutoCheckAssignmentBox\ecspooler_prefs_form.cpt
+msgid "label_port"
+msgstr "Puerto"
+
+# Original: "Username"
+#: .\skins\ECAutoCheckAssignmentBox\ecspooler_prefs_form.cpt
+msgid "label_username"
+msgstr "Nombre de usuario"
+
+# Original: "Password"
+#: .\skins\ECAutoCheckAssignmentBox\ecspooler_prefs_form.cpt
+msgid "label_password"
+msgstr "Contraseña"
+
+# Original: "Spooler connection settings"
+#: .\skins\ECAutoCheckAssignmentBox\ecspooler_prefs_form.cpt
+msgid "legend_ecspooler_details"
+msgstr "Configuraciones de conexión Spooler"
+
+#. Default: "Test backend"
+#: ECAutoAssessmentBox.py
+msgid "label_backend"
+msgstr "Backend de prueba"
+
+#. Default: "Select a test backend."
+msgid "help_backend"
+msgstr "Seleccione un backend de prueba"
+
+#. Default: "Tests',
+msgid "label_tests"
+msgstr "Pruebas"
+
+#. Default: "Select one or more tests."
+msgid "help_tests"
+msgstr "Seleccione una o mas pruebas."
+
+#. Default: "Model solution',
+msgid "label_model_solution"
+msgstr "solución Modelo"
+
+#. Default: "Enter a model solution."
+msgid "help_model_solution"
+msgstr "Ingrese una solución modelo."
+
+#. Default: "Help functions',
+msgid "label_help_functions"
+msgstr "Funciones de ayuda"
+
+#. Default: "Enter help functions if needed."
+msgid "help_help_functions"
+msgstr "Ingrese funciones de ayuda si es necesario."
+
+#. Default: "Test data"
+msgid "label_test_data"
+msgstr "Data de Prueba"
+
+#. Default: "Enter one or more function calls.
+#.           A function call consists of the
+#.           function name (given in the exercise directives)
+#.           and test data as parameters of this funtion.
+#.           Each function call must be written in a single line."
+msgid "help_test_data"
+msgstr ""
+"Introduce una o más llamadas a funciones. Una llamada a la función consiste "
+"en el nombre de función (dado en las directivas de ejercicio) y los datos de "
+"prueba como parámetros de esta función. Cada llamada a la función debe "
+"escribirse en una sola línea."
+
+# Original: "In the left box you will find all backends 
+#            currently available by the spooler service at 
+#            '${host}:${port}'. Select one or more backends and 
+#            add them to the list of accessible backends for 
+#            your site."
+#: .\skins\ECAutoCheckAssignmentBox\prefs_spooler_form.cpt
+msgid "help_backend_details"
+msgstr ""
+
+# Original: "Each backend provides a schema which describes the required input 
+#.     fields. The schema is cached. The cached values will be used for 
+#.     faster access or in case a backend is temporarily off-line. 
+#.     Schemata for the backends listed below are currently in
+#.     the cache. You can reset and reinitialize the cache with the 
+#.     selected backends for this site."
+#: .\skins\ECAutoCheckAssignmentBox\prefs_spooler_form.cpt
+msgid "help_backend_cache"
+msgstr ""
+
+# Original: "Note: Reinitializing the cache will delete information about 
+#.     backends currently unavailable. If there are auto assessment boxes
+#.     using these backends they will become unusable."
+#: .\skins\ECAutoCheckAssignmentBox\prefs_spooler_form.cpt
+msgid "help_backend_cache_note"
+msgstr ""
+
+#. Default: "Auto feedback"
+#: ECAutoAssignment.py
+msgid "label_auto_feedback"
+msgstr "Auto retroalimentación"
+
+#. Default: "The automatic feedback for this assignment."
+#: ECAutoAssignment.py
+msgid "help_auto_feedback"
+msgstr "El auto retroalimentación para esta asignación."
+
+#. Default: "Backend result code"
+msgid "label_result_code"
+msgstr "Código de resultado de Backend"
+
+#. Default: "The result code of the backend for this assignment."
+msgid "help_result_code"
+msgstr "El código de resultado del backend para esta tarea."
+
+#. Default: "Job id"
+msgid "label_job_id"
+msgstr "ID de trabajo"
+
+#. Default: "The id of the spooler job for this assignment."
+msgid "help_job_id"
+msgstr "El id del spooler para esta asignación."
+
+# Original: "Submission has been rechecked."
+#: ./skins/ECAutoAssessmentBox/ecaa_recheck.cpy
+msgid "submission_rechecked"
+msgstr "Presentación se ha revisado de nuevo."
+
+# Original: "Automatically accept assignments"
+#: ECAutoAssignment.py
+msgid "label_auto_accept"
+msgstr "Aceptar automáticamente las asignaciones"
+
+# Original: "If selected, an assignment which passes all tests will be automatically accepted."
+#: ECAutoAssignment.py
+msgid "help_auto_accept"
+msgstr ""
+"Si se selecciona, una asignación el cual pasa todas las pruebas serán "
+"automáticamente aceptada."
+
+# Original: "Your Submission has been accepted."
+#: ECAutoAssignment.py
+msgid "submission_accepted"
+msgstr "Su envío ha sido aceptado."
+
+# Original: "Available backends"
+#: .\skins\ECAutoCheckAssignmentBox\prefs_spooler_form.cpt
+msgid "legend_backend_details"
+msgstr "Backends disponibles"
+
+# Original: "Backend schema cache."
+#: .\skins\ECAutoCheckAssignmentBox\prefs_spooler_form.cpt
+msgid "legend_cache_details"
+msgstr "Esquema de cache Backend."
+
+# Original: "Reinitialize"
+#: .\skins\ECAutoCheckAssignmentBox\prefs_spooler_form.cpt
+msgid "Reinitialize"
+msgstr "Reinicializar"
+
+# Original: "Apply"
+#: .\skins\ECAutoCheckAssignmentBox\prefs_spooler_form.cpt
+msgid "Apply"
+msgstr "Aplicar"
+
+# Original: "Instant Feedback"
+#: ECAutoAssignment.py
+msgid "instant_feedback_label"
+msgstr "Retroalimentación instantánea"
+
+# Original: "Feedback for an assignment will be given instantly."
+#: ECAutoAssignment.py
+msgid "instant_feedback_tool_tip"
+msgstr "Retroalimentación para una asignación ser dada instantáneamente."
+
+# Original: "Testing this submission failed (${exc})."
+#: ECAutoAssignment.py
+msgid "submission_saved_check_failed"
+msgstr "Prueba de esta presentación falló (${exc})."
+
+# Original: "Submission has been accepted."
+#: ECAutoAssignment.py
+msgid "submission_accepted"
+msgstr "Presentación ha sido aceptada."
+
+# Original: "No feedback available."
+#: ECAutoAssignment.py
+msgid "submission_saved_no_feedback"
+msgstr "Sin retroalimentación disponibles."
